@@ -12,4 +12,5 @@ import { Observable } from 'rxjs/Observable'
 export abstract class AccountProvider  {
   abstract getInxAccount() : InxAccount;
   abstract getUserInfo(): Observable<InxAccount>;
+  // abstract updateUserInfo(empId:string, deviceToken: string): Observable<boolean>;
 }

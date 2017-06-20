@@ -9,7 +9,7 @@ import { InterceptedHttp} from '../app/intercepted-http'
 @Injectable()
 export class UmdDepartmentProvider implements DepartmentProvider {
     constructor(public http: Http) {
-    console.log('Hello Message Provider');
+    console.log('Hello Department Provider');
   }
 
 

@@ -13,6 +13,7 @@ export class UmdEmployeeProvider implements EmployeeProvider {
   preEmpId: string = "";
   preResult: Employee[] = [];
   constructor(public http: Http) {
+     console.log('Hello Employee Provider');
   }
 
   getEmployees(empID: string, pattern: string) : Observable<Employee[]>

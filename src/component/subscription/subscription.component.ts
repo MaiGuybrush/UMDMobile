@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter} from '@angular/core';
-import { NavController } from 'ionic-angular'
 import { Subscribe } from '../../models/subscribe'
 
 /*
@@ -15,8 +14,7 @@ import { Subscribe } from '../../models/subscribe'
 export class SubscriptionComponent {
   @Input()
   subscription: Subscribe;
-  @Input()
-  navCtrl: NavController;  
+  // @Output() checkClick = new EventEmitter<Subscribe>();
   @Output() editClick = new EventEmitter<Subscribe>();
   constructor() {
 

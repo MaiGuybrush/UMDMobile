@@ -1,33 +1,20 @@
 <ion-header>
-
-  <!--<ion-navbar>
-    <ion-title>{{category}}已訂閱清單</ion-title>
-  </ion-navbar>-->
-
   <ion-navbar>
     <ion-buttons end>
-     <button ion-button (click)="gotoAdd()" ><!--ion-icon name="add"></ion-icon-->
+     <button ion-button (click)="gotoAdd()" >
         新增
       </button>
-      <!--</ion-buttons><ion-title>Message</ion-title>-->
     </ion-buttons><ion-title>{{alarmtype}}已訂閱清單</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 <ion-content padding>
- <!--<ion-searchbar ></ion-searchbar>-->
-
-   <!--<ion-fab top right edge>
-    <button ion-fab mini  color="danger"><ion-icon name="add"></ion-icon></button>
-  </ion-fab>-->
-
    <ion-fab bottom right>
-    <button ion-fab mini  color="danger"><ion-icon name="close"></ion-icon></button>
+    <button ion-fab color="danger" mini (click)="cancelAlarm()" ><ion-icon name="close"></ion-icon></button>
   </ion-fab>
 
 <ion-list>
-  <!--<subscription *ngFor="let subscription of subscriptions" [subscription]="subscription"></subscription>-->
   <subscription *ngFor="let subscription of subscriptions" [subscription]="subscription" (editClick)="gotoEdit($event)" ></subscription>
 </ion-list>
 </ion-content>

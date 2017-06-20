@@ -1,7 +1,7 @@
     <ion-item>
       <ion-label>
-          <h2>{{nosubscription.alarmId}}</h2>
-          <p>{{nosubscription.description}}<p>
+          <h2>{{nosubscription.description}}</h2>
+          <p>{{nosubscription.alarmId}}<p>
       </ion-label>
-          <ion-checkbox color="danger"></ion-checkbox>
+          <ion-checkbox color="danger" [(ngModel)]="nosubscription.isChecked"></ion-checkbox>
     </ion-item>

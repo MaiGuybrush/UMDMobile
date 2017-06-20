@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { MappGroup } from '../../models/mappgroup';
-import { MappGroupProvider } from '../../providers/mappgroup-provider'
+import { AlarmAction } from '../../models/alarm-action';
 
 /*
   Generated class for the SubscribeMappgroup page.
@@ -14,19 +13,18 @@ import { MappGroupProvider } from '../../providers/mappgroup-provider'
   templateUrl: 'subscribe-mappgroup.html'
 })
 export class SubscribeMappgroupPage {
-  constructor(public navCtrl: NavController, public navParams: NavParams, public provider: MappGroupProvider) {}
-  id: string;
-  description: string;
-  mappgroups : MappGroup[] = [];
-  mappgroup : MappGroup;
+  actionValue: string;
+  chatName: string;
+  alarmAction: AlarmAction;
+  actionType: number;
+  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  }
+
   ionViewDidLoad() {
+    this.actionType = this.navParams.get("actionType");
     console.log('ionViewDidLoad SubscribeMappgroupPage');
   }
 
-  onInput($event)
-  {
-
-  }
 
   
   done()
@@ -35,8 +33,16 @@ export class SubscribeMappgroupPage {
 
     if(callback != null)
     {
-      this.mappgroup = {id: this.id, description: this.description};
-      callback(this.mappgroup).then(()=>{
+      this.alarmAction = {
+        actionType: this.actionType, 
+        actionValue : this.actionValue, 
+        chatName: this.chatName, 
+        enabled: true, 
+        name:"",
+        mailEmpId:"",
+        isDept: false
+      };
+      callback(this.alarmAction).then(()=>{
         this.navCtrl.pop();   
       });
     }

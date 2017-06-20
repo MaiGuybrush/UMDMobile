@@ -6,7 +6,7 @@ import { Group } from '../../models/group'
 import { GroupEditPage } from '../group-edit/group-edit'
 import { Observable } from 'rxjs/Rx'
 import { AccountProvider } from '../../providers/account-provider'
-
+import { LoadingController } from 'ionic-angular';
 
 @Component({
   selector: 'page-groups',
@@ -15,19 +15,31 @@ import { AccountProvider } from '../../providers/account-provider'
 export class GroupsPage {
   groups : Group[];
   isSuccess : boolean;
-  constructor(public navCtrl: NavController, public provider: GroupProvider
-                                    , public accountProvider: AccountProvider) {
-      var me: GroupsPage = this;
+  constructor(public navCtrl: NavController, public provider: GroupProvider,
+              public loading: LoadingController,  public accountProvider: AccountProvider) {
+
+  } 
+
+  ionViewDidLoad() {
+     let loader = this.loading.create({
+        content: 'Loading...',
+      });
+
+     loader.present();
       this.provider.getGroups(this.accountProvider.getInxAccount().empNo,'').subscribe(
-          value => me.groups = value,
-          error => me.groups = [],
+          value => {
+              this.groups = value
+              loader.dismiss();
+            },
+          error => this.groups = [],
           () => console.log("done")
       );
-  } 
+    console.log('ionViewDidLoad SubscribeEditPage');
+  }
 
   gotoEdit(group: Group): void
   {
-      this.navCtrl.push(GroupEditPage, {'group': group});
+      this.navCtrl.push(GroupEditPage, {'callback': this.callbackFunction, 'group': group});
   }
 
   doDelete(group: Group): void
@@ -39,5 +51,13 @@ export class GroupsPage {
       );
   }
 
+  callbackFunction = () => 
+  {
+      this.provider.getGroups(this.accountProvider.getInxAccount().empNo,'').subscribe(
+          value => this.groups = value,
+          error => this.groups = [],
+          () => console.log("callback")
+      );
+  }
 
 }

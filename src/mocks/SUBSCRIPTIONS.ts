@@ -2,7 +2,8 @@ import { Subscribe } from '../models/Subscribe';
 export const SUBSCRIPTIONS: Subscribe[] = [
       {
           alarmId: 'AALL-CIM-RTQCS-AP_fail',
-          description: 'AALL-CIM-RTQCS-AP_fail'
+          description: 'AALL-CIM-RTQCS-AP_fail',
+          isChecked: false
           // alarmType: 'RTQCS',
           // createUserEmpId: 'cat.wang',
           // alarmActions: [
@@ -20,7 +21,8 @@ export const SUBSCRIPTIONS: Subscribe[] = [
       },
       {
           alarmId: 'ATFT3-CIM-RTQCS-AP_fail',
-          description: 'ATFT3-CIM-RTQCS-AP_fail'
+          description: 'ATFT3-CIM-RTQCS-AP_fail',
+          isChecked: false
           // alarmType: 'RTQCS',
           // createUserEmpId: 'cat.wang',
           // alarmActions: [

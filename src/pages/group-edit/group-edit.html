@@ -7,9 +7,6 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <!--<ion-fab top right edge>
-    <button ion-fab  color="secondary" mini><ion-icon name="checkmark"></ion-icon></button>
-  </ion-fab>-->
   <ion-list>
     <ion-item-group>
       <ion-item-divider color="light">群組資訊</ion-item-divider>
@@ -23,10 +20,10 @@
       </ion-item>
     </ion-item-group>
 
-    <ion-item-group  >
+    <ion-item-group>
       <ion-item-divider color="light">人員<button ion-button item-right (click)="SearchClick()"><ion-icon name="add"></ion-icon> </button></ion-item-divider>
-      <ion-item *ngFor="let oemployee of oemployees; let i = index;">{{oemployee.name}}<button ion-button color="light" item-right (click)="doDelete(i,'oemployee')"><ion-icon name="remove"></ion-icon> </button></ion-item>
-      <ion-item *ngFor="let nemployee of nemployees; let i = index;">{{nemployee.name}}<button ion-button color="light" item-right (click)="doDelete(i,'nemployee')"><ion-icon name="remove"></ion-icon> </button></ion-item>
+      <ion-item *ngFor="let oemployee of oemployees; let i = index;">{{oemployee.name}}<button ion-button color="light" item-right (click)="doDelete(i,'oemployee')"><ion-icon name="remove"></ion-icon></button></ion-item>
+      <ion-item *ngFor="let nemployee of nemployees; let i = index;">{{nemployee.name}}<button ion-button color="light" item-right (click)="doDelete(i,'nemployee')"><ion-icon name="remove"></ion-icon></button></ion-item>
     </ion-item-group>
   </ion-list>
 </ion-content>

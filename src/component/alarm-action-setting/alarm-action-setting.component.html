@@ -1,0 +1,15 @@
+    <ion-item>
+        <ion-label *ngIf="alarmActionSetting.settingType ==='M'">
+            {{alarmActionSetting.mailRecipient}}
+        </ion-label>
+        <ion-label *ngIf="alarmActionSetting.settingType ==='AP' || alarmActionSetting.settingType ==='AG'">
+             {{alarmActionSetting.mAppRecipient}}
+        </ion-label>
+        <ion-label *ngIf="alarmActionSetting.settingType ==='AC'">
+             {{alarmActionSetting.mAppChatName}}
+        </ion-label>
+        <button *ngIf="alarmActionSetting.clmEmpId === accountId" ion-button color="light" item-right 
+                (click)="deleteClick.emit(alarmActionSetting)">
+           <ion-icon name="remove"></ion-icon>
+        </button>
+    </ion-item>

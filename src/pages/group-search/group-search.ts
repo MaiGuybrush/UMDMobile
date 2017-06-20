@@ -4,6 +4,7 @@ import { Group } from '../../models/group'
 import { GroupProvider } from '../../providers/group-provider'
 import { Observable } from 'rxjs/Rx'
 import { AccountProvider } from '../../providers/account-provider'
+import { AlarmAction } from '../../models/alarm-action';
 /*
   Generated class for the PeopleSearch page.
 
@@ -21,24 +22,37 @@ export class GroupSearchPage {
   pageTitle = "選擇群組";
   callback : (Group);
   selectedGroup : Group = null;
+  selectedAlarmAction : AlarmAction = null;
+  alarmActions: AlarmAction[] = [];
+  actionType: number;
+  filterGroups: Group[];
+  filterAlarmActions: AlarmAction[];
   constructor(public navCtrl: NavController, public navParams: NavParams, public provider: GroupProvider
                                                                         , public accountProvider: AccountProvider)  
   {
-
-    let filterGroups: Group[] = navParams.get("filterGroups");
-    if (filterGroups)
+    this.filterGroups = navParams.get("filterGroups");
+    this.filterAlarmActions =navParams.get("filterAlarmActions");
+    this.actionType = navParams.get("actionType");
+    if (this.filterGroups)
     {
-      filterGroups.forEach(group => {
-        this.filterGroupIDs.add(group.groupId);    
+      this.filterGroups.forEach(group => {
+        this.filterGroupIDs.add(group.groupId);
+      });
+    }
+    else if (this.filterAlarmActions)
+    {
+      this.filterAlarmActions.forEach(alarmAction => {
+        if (alarmAction.actionType == this.actionType) {this.filterGroupIDs.add(alarmAction.actionValue);}
       });
     }
     var me = this;
+    this.pattern ="";
     this.getGroups(this.accountProvider.getInxAccount().empNo, this.pattern).subscribe({
         next: m => me.groups = m,
         error: (result) => console.log(result)
     });    
-    this.pattern ="";
-    this.getGroups(this.accountProvider.getInxAccount().empNo, this.pattern).subscribe(m => me.groups = m);
+    // this.pattern ="";
+    // this.getGroups(this.accountProvider.getInxAccount().empNo, this.pattern).subscribe(m => me.groups = m);
     let title: string = navParams.get("pageTitle");
     if (null != title && title.trim().length > 0)
     {
@@ -93,7 +107,19 @@ export class GroupSearchPage {
 
   selectGroup(group: Group)
   {
-    this.selectedGroup = this.selectedGroup === group ? null : group;
+    if (group != null)
+    { 
+      this.selectedGroup = this.selectedGroup === group ? null : group;
+      this.selectedAlarmAction = {
+        actionType: this.actionType, 
+        actionValue: group.groupId, 
+        chatName:"", 
+        enabled: true, 
+        name: group.groupName, 
+        mailEmpId:"",
+        isDept: false 
+      };
+    }
   }
 
   done()
@@ -102,9 +128,17 @@ export class GroupSearchPage {
 
     if(callback != null)
     {
-      callback(this.selectedGroup).then(()=>{
+      if (this.filterAlarmActions)
+      {
+       callback(this.selectedAlarmAction).then(()=>{
         this.navCtrl.pop();   
-      });
+       });
+      }else if (this.filterGroups)
+      {
+         callback(this.selectedGroup).then(()=>{
+          this.navCtrl.pop();   
+         });
+      }
     }
   }
 

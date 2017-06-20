@@ -10,6 +10,7 @@ import { StatusBar } from '@ionic-native/status-bar'
 import { SplashScreen } from '@ionic-native/splash-screen'
 import { MyApp } from './app.component'
 import { InterceptedHttp } from './intercepted-http'
+import { FilterPipe } from './filter.pipe.ts'
 import { GroupByPipe } from './groupby.pipe.ts'
 import { AboutPage } from '../pages/about/about'
 import { AuthTestPage } from '../pages/auth-test/auth-test'
@@ -37,6 +38,8 @@ import { MessageCategoryComponent } from '../component/message-category/message-
 import { SubscriptionComponent } from '../component/subscription/subscription.component'
 import { NosubscriptionComponent } from '../component/nosubscription/nosubscription.component'
 import { DepartmentComponent } from '../component/department/department.component'
+import { AlarmActionComponent } from '../component/alarm-action/alarm-action.component'
+import { AlarmActionSettingComponent } from '../component/alarm-action-setting/alarm-action-setting.component'
 import { MessageProvider } from '../providers/message-provider'
 import { GroupProvider } from '../providers/group-provider'
 import { DepartmentProvider } from '../providers/department-provider'
@@ -47,7 +50,6 @@ import { EmployeeProvider } from '../providers/employee-provider'
 import { ExtraInfoProvider } from '../providers/extrainfo-provider'
 import { SubscriptionProvider } from '../providers/subscription-provider'
 import { AlarmProvider } from '../providers/alarm-provider'
-import { MappGroupProvider } from '../providers/mappgroup-provider'
 import { UmdGroupProvider } from '../providers/umd-group-provider'
 import { UmdGroupDetailProvider } from '../providers/umd-group-detail-provider'
 import { UmdMessageProvider } from '../providers/umd-message-provider'
@@ -61,7 +63,6 @@ import { MockGroupProvider } from '../mocks/providers/mock-group-provider'
 import { MockGroupDetailProvider } from '../mocks/providers/mock-group-detail-provider'
 import { MockDepartmentProvider } from '../mocks/providers/mock-department-provider'
 import { MockGeneralDataProvider } from '../mocks/providers/mock-general-data-provider'
-import { MockMappGroupProvider } from '../mocks/providers/mock-mappgroup-provider'
 import { MockMessageProvider } from '../mocks/providers/mock-message-provider'
 import { MockSubscriptionProvider } from '../mocks/providers/mock-subscription-provider'
 import { MockAccountProvider } from '../mocks/providers/mock-account-provider'
@@ -69,6 +70,7 @@ import { MockAccountProvider } from '../mocks/providers/mock-account-provider'
 @NgModule({
   declarations: [
     MyApp,
+    FilterPipe,
     GroupByPipe,
     AboutPage,
     AuthTestPage,
@@ -90,6 +92,8 @@ import { MockAccountProvider } from '../mocks/providers/mock-account-provider'
     GroupComponent,
     GroupEditComponent,
     SubscriptionComponent,
+    AlarmActionComponent,
+    AlarmActionSettingComponent,
     PeopleSearchPage, 
     GroupSearchPage,
     DepartmentSelectPage,
@@ -134,7 +138,6 @@ import { MockAccountProvider } from '../mocks/providers/mock-account-provider'
             , {provide: MessageProvider, useClass: MockMessageProvider}
             , {provide: SubscriptionProvider, useClass: UmdSubscriptionProvider}
             , {provide: AlarmProvider, useClass: UmdAlarmProvider}
-            , {provide: MappGroupProvider, useClass: MockMappGroupProvider}
             , AppConfig
             , ExtraInfoProvider
             , LocalNotifications
@@ -160,6 +163,6 @@ import { MockAccountProvider } from '../mocks/providers/mock-account-provider'
             //     },
             //     deps: [XHRBackend, RequestOptions, ExtraInfoProvider]
             //   }
-            // ]
+             ]
 })
 export class AppModule {}

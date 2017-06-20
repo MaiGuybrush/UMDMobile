@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter} from '@angular/core';
-// import { NavController } from 'ionic-angular'
-import { Subscribe } from '../../models/subscribe'
+import { AlarmAction } from '../../models/alarm-action'
 
 /**
  * Generated class for the NosubscriptionComponent component.
@@ -9,14 +8,13 @@ import { Subscribe } from '../../models/subscribe'
  * for more info on Angular Components.
  */
 @Component({
-  selector: 'nosubscription',
-  templateUrl: 'nosubscription.component.html'
+  selector: 'alarmAction',
+  templateUrl: 'alarm-action.component.html'
 })
-export class NosubscriptionComponent {
+export class AlarmActionComponent {
   @Input()
-  nosubscription: Subscribe;
-  // @Input()
-  // navCtrl: NavController;  
+  alarmAction: AlarmAction;
+  @Output() deleteClick = new EventEmitter<AlarmAction>();
 
   constructor() {
   }

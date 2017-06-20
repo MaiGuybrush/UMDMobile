@@ -39,4 +39,8 @@ export class MockAccountProvider implements AccountProvider
         });
     }
 
+    // updateUserInfo(empId:string, deviceToken: string): Observable<boolean>{
+    //     return Observable.from([true]);
+    // }
+
 }

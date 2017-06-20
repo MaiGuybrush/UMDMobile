@@ -10,7 +10,7 @@ import { InterceptedHttp} from '../app/intercepted-http'
 @Injectable()
 export class UmdAlarmProvider implements AlarmProvider {
     constructor(public http: Http) {
-    console.log('Hello Message Provider');
+    console.log('Hello Alarm Provider');
   }
 
   getAlarmActionSetting(alarmId:string) : Observable<AlarmActionSetting[]>
@@ -34,7 +34,7 @@ export class UmdAlarmProvider implements AlarmProvider {
 
      let url = Api.getHttpUrl('SetAlarmAction');
 
-     let body = {"AlarmId": `${alarmId}`,"CreateUserEmpId": `${createUserEmpId}`,"AlarmActions": `${alarmActions}`};
+     let body = {"AlarmID": `${alarmId}`,"CreateUserEmpId": `${createUserEmpId}`,"AlarmActions": Api.toPascal(alarmActions)};
 
      console.log('post start');
      return this.http.post(url, body, options).map(res => 

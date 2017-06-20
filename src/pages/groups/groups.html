@@ -8,24 +8,8 @@
 </ion-header>
 
 <ion-content>
-  <!--<ion-fab top right edge>
-    <button ion-fab  color="secondary" mini (click)="gotoEdit()"><ion-icon name="add" ></ion-icon></button>
-  </ion-fab>-->
  <ion-list>
-      <!--<ion-item-sliding *ngFor="let group of groups">
-         <ion-item>
-                      <h2>{{group.groupName}}</h2>
-                      <p>{{group.description}}</p>
-          </ion-item>-->
-
-     <group-edit *ngFor="let group of groups" [group]="group" (editClick)="gotoEdit($event)" (deleteClick)="doDelete($event)"></group-edit>
-     <!--<group *ngFor="let group of groups" [group]="group" [navCtrl]="navCtrl"></group>-->
-          <!--<ion-item-options side="right">
-              <button ion-button color="danger">
-                  <ion-icon name="trash"></ion-icon> Delete
-              </button>
-          </ion-item-options>
-      </ion-item-sliding>-->
+     <group-edit *ngFor="let group of groups" [group]="group" (editClick)="gotoEdit($event)" (deleteClick)="doDelete($event)">
+     </group-edit>
   </ion-list>
-
 </ion-content>

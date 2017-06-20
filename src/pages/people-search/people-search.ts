@@ -5,6 +5,7 @@ import { Employee } from '../../models/employee'
 import { EmployeeProvider } from '../../providers/employee-provider'
 import { Observable } from 'rxjs/Rx'
 import { AccountProvider } from '../../providers/account-provider'
+import { AlarmAction } from '../../models/alarm-action';
 
 /*
   Generated class for the PeopleSearch page.
@@ -25,16 +26,28 @@ export class PeopleSearchPage {
   pattern : string;
   searchControl: FormControl;
   searching: boolean = false;
+  selectedAlarmAction : AlarmAction = null;
+  alarmActions: AlarmAction[] = [];
+  actionType: number;
+  filterEmployees: Employee[];
+  filterAlarmActions: AlarmAction[];
   constructor(public navCtrl: NavController, public navParams: NavParams, public provider: EmployeeProvider
                                                                   , public accountProvider: AccountProvider) 
   {
     this.searchControl = new FormControl();
-    
-    let filterEmployees: Employee[] = navParams.get("filterEmployees");
-    if (filterEmployees)
+    this.filterEmployees = navParams.get("filterEmployees");
+    this.filterAlarmActions = navParams.get("filterAlarmActions");
+    this.actionType = navParams.get("actionType");
+    if (this.filterEmployees)
     {
-      filterEmployees.forEach(employee => {
-        this.filterEmployeeIDs.add(employee.empId);    
+      this.filterEmployees.forEach(employee => {
+        this.filterEmployeeIDs.add(employee.empId);
+      });
+    }
+    else if (this.filterAlarmActions)
+    {
+      this.filterAlarmActions.forEach(alarmAction => {
+        if (alarmAction.actionType == this.actionType) {this.filterEmployeeIDs.add(alarmAction.actionValue);}
       });
     }
 
@@ -86,7 +99,7 @@ export class PeopleSearchPage {
     return employees.map((x, idx) => {
         let output : Employee[] = [];
         x.forEach(employee => {
-          if (!me.filterEmployeeIDs.has(employee.empId))
+          if (!me.filterEmployeeIDs.has(employee.empId) && !me.filterEmployeeIDs.has(employee.adId) )
           {
             output.push(employee);
           }      
@@ -117,7 +130,21 @@ export class PeopleSearchPage {
 
   selectEmployee(employee: Employee)
   {
-    this.selectedEmployee = this.selectedEmployee === employee ? null : employee;
+    if (employee != null)
+    { 
+      this.selectedEmployee = this.selectedEmployee === employee ? null : employee;
+      if (this.filterAlarmActions){
+      this.selectedAlarmAction = {
+        actionType: this.actionType, 
+        actionValue: this.actionType === 1 ? employee.adId :employee.empId,
+        chatName:"", 
+        enabled: true,
+        name: employee.name,
+        mailEmpId: employee.empId,
+        isDept: false
+      };
+      }
+    }
   }
 
   done()
@@ -126,9 +153,17 @@ export class PeopleSearchPage {
 
     if(callback != null)
     {
-      callback(this.selectedEmployee).then(()=>{
-        this.navCtrl.pop();   
-      });
+       if (this.filterAlarmActions)
+       {
+         callback(this.selectedAlarmAction).then(()=>{
+          this.navCtrl.pop();   
+         });
+       }else if (this.filterEmployees)
+       {
+         callback(this.selectedEmployee).then(()=>{
+          this.navCtrl.pop();   
+         });
+       }
     }
   }
   

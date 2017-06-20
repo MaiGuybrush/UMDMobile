@@ -11,6 +11,9 @@ import { Subscribe } from '../../models/subscribe';
 import { AlarmAction } from '../../models/alarm-action';
 import { AlarmActionSetting } from '../../models/alarm-action-setting';
 import { AlarmProvider } from '../../providers/alarm-provider';
+import { AccountProvider } from '../../providers/account-provider'
+import { SubscriptionProvider } from '../../providers/subscription-provider'
+import { LoadingController } from 'ionic-angular';
 
 /*
   Generated class for the SubscribeConfig page.
@@ -23,37 +26,103 @@ import { AlarmProvider } from '../../providers/alarm-provider';
   templateUrl: 'subscribe-config.html'
 })
 export class SubscribeConfigPage {
-  groups: string[] = [];
-  employees: string[] = [];
-  departments: string[] = [];
-  pgroups: string[] = [];
-  pemployees: string[] = [];
-  mappgroups: string[] = [];
-  mode: string;
   subscription: Subscribe;
   alarmtype: string;
   alarmActionSettings: AlarmActionSetting[] = [];
-  oalarmActions: AlarmAction[] = [];
-  nalarmActions: AlarmAction[] = [];
-  constructor(public navCtrl: NavController, public navParams: NavParams, public events: Events, public platform: Platform
-                                           , public provider: AlarmProvider, public actionsheetCtrl: ActionSheetController) {
-          this.subscription = this.navParams.get('subscription');
-          this.alarmtype = this.navParams.get('alarmtype');
-          if (this.subscription != null)
-          {
-             this.provider.getAlarmActionSetting(this.subscription.alarmId).subscribe(
-                 res => this.alarmActionSettings = res
-             ); 
-          }
+  alarmActions: AlarmAction[] = [];
+  isSuccess : boolean;
+  accountId: string;
+  actionType: number;
+  alarmIds: string[]=[];
+  constructor(public navCtrl: NavController, public navParams: NavParams, public events: Events, public platform: Platform,
+              public provider: AlarmProvider, public subscriptionProvider: SubscriptionProvider, public loading: LoadingController, 
+              public accountProvider: AccountProvider, public actionsheetCtrl: ActionSheetController) {
   }
 
   ionViewDidLoad() {
+        let loader = this.loading.create({
+           content: 'Loading...',
+        });
+
+        loader.present();
+          this.subscription = this.navParams.get('subscription');
+          this.alarmtype = this.navParams.get('alarmtype');
+          this.alarmIds = this.navParams.get('alarmIds');
+          this.accountId = this.accountProvider.getInxAccount().empNo;
+          if (this.subscription)
+          {
+             this.provider.getAlarmActionSetting(this.subscription.alarmId).subscribe(
+                 res => {
+                   this.alarmActionSettings = res
+                   if(res) loader.dismiss();
+                  }
+             ); 
+          }else{
+            loader.dismiss();
+          }
     console.log('ionViewDidLoad SubscribeConfigPage');
   }
 
-  gotoEdit(): void
+  done(): void
   {
-      this.navCtrl.pop(SubscribeEditPage);
+     let loader = this.loading.create({
+        content: '正在處理中...',
+      });
+
+     loader.present();
+
+        if (this.subscription !=null && this.alarmActions != null)
+        {
+          this.provider.addAlarmAction(
+            this.subscription.alarmId,this.accountProvider.getInxAccount().empNo,this.alarmActions)
+              .subscribe(
+                m => 
+                  {
+                   if (m === true) 
+                   {
+                     loader.dismiss();
+                     this.navCtrl.pop();
+                   }
+                  }
+                );
+        }else if (this.alarmIds != null && this.alarmActions != null)
+        {
+          this.alarmActions.forEach(alarmAction => {
+            if (alarmAction.actionType === 1 && alarmAction.isDept === false) //For SubscribeAlarm 發送對象工號, 或 &[部門代碼]
+            {
+             this.subscriptionProvider.subscribeAlarm(this.alarmIds,alarmAction.actionType,alarmAction.mailEmpId,
+                                                      alarmAction.chatName,this.accountProvider.getInxAccount().empNo)
+              .subscribe(                
+                m => 
+                  {
+                   if (m === true) 
+                   {
+                     loader.dismiss();
+                     this.navCtrl.push(SubscribeEditPage, {'alarmtype': this.alarmtype});
+                   }
+                  }
+                );
+            }else
+            {
+             this.subscriptionProvider.subscribeAlarm(this.alarmIds,alarmAction.actionType,alarmAction.actionValue,
+                                                      alarmAction.chatName,this.accountProvider.getInxAccount().empNo)
+              .subscribe(
+                m => 
+                  {
+                   if (m === true) 
+                   {
+                     loader.dismiss();
+                     this.navCtrl.push(SubscribeEditPage, {'alarmtype': this.alarmtype});
+                   }
+                  }
+                );
+            }
+          });
+        
+        }else{
+          loader.dismiss();
+          this.navCtrl.push(SubscribeEditPage, {'alarmtype': this.alarmtype});
+        }
   }
 
   callbackFunction = (params) => 
@@ -61,52 +130,49 @@ export class SubscribeConfigPage {
      return new Promise((resolve, reject) => {
             if (params)
             {
-              if (this.mode =='group')
-              {
-                 this.groups.push(params);
-              }else if (this.mode =='employee')
-              {
-                 this.employees.push(params);
-              }else if (this.mode =='department')
-              {
-                 this.departments.push(params);
-              }else if (this.mode =='pgroup')
-              {
-                 this.pgroups.push(params);
-              }else if (this.mode =='pemployee')
-              {
-                 this.pemployees.push(params);
-              }else if (this.mode =='mappgroup')
-              {
-                 this.mappgroups.push(params);
-              }
+               this.alarmActions.push(params);
             }
             resolve();
          });
   }
 
-  doDelete(mode:string,i): void
+  doDeleteS(alarmActionSetting: AlarmActionSetting): void
   {
-              if (mode =='group')
-              {
-                 this.groups.splice(i, 1);
-              }else if (mode =='employee')
-              {
-                 this.employees.splice(i, 1);
-              }else if (mode =='department')
-              {
-                 this.departments.splice(i, 1);
-              }else if (mode =='pgroup')
-              {
-                 this.pgroups.splice(i, 1);
-              }else if (mode =='pemployee')
-              {
-                 this.pemployees.splice(i, 1);
-              }else if (mode =='mappgroup')
-              {
-                 this.mappgroups.splice(i, 1);
-              }     
+                if (alarmActionSetting.settingType === "M"){
+                 for (let i=0; i<this.alarmActionSettings.length;i++) {
+                    if (this.alarmActionSettings[i].mailRecipient === alarmActionSetting.mailRecipient) {
+                      this.provider.deleteAlarmAction(
+                        this.subscription.alarmId,this.alarmActionSettings[i].settingType,this.alarmActionSettings[i].mailRecipient,
+                        this.alarmActionSettings[i].mAppChatSn,this.accountProvider.getInxAccount().empNo).subscribe(m => this.isSuccess = m);
+                      this.alarmActionSettings.splice(i,1); 
+                    }
+                 }
+                }else if (alarmActionSetting.settingType === "AP" || 
+                          alarmActionSetting.settingType === "AG" || 
+                          alarmActionSetting.settingType === "AC"){
+                 for (let i=0; i<this.alarmActionSettings.length;i++) {
+                  if (this.alarmActionSettings[i].mAppChatSn === alarmActionSetting.mAppChatSn) {
+                      this.provider.deleteAlarmAction(
+                        this.subscription.alarmId,this.alarmActionSettings[i].settingType,this.alarmActionSettings[i].mailRecipient,
+                        this.alarmActionSettings[i].mAppChatSn,this.accountProvider.getInxAccount().empNo).subscribe(m => this.isSuccess = m);
+                      this.alarmActionSettings.splice(i,1); 
+                   }
+                 }
+                }
+
   }
+
+  doDelete(alarmAction: AlarmAction): void
+  {
+                 for (let i=0; i<this.alarmActions.length;i++) {
+                  if (this.alarmActions[i].actionType === alarmAction.actionType && 
+                      this.alarmActions[i].actionValue === alarmAction.actionValue) {
+                      this.alarmActions.splice(i,1); 
+                  }
+                 }
+  }
+
+
 
   openMenu(menuType: number) {
     let menuButtons = undefined;
@@ -118,24 +184,24 @@ export class SubscribeConfigPage {
             text: 'Mail-選擇群組',
             icon: !this.platform.is('ios') ? 'trash' : null,
             handler: () => {
-              this.mode = 'group';
-              this.navCtrl.push(GroupSearchPage, {'callback': this.callbackFunction, 'pageTitle': "選擇群組", 'filterGroups': this.groups})
+              this.actionType = 2;
+              this.navCtrl.push(GroupSearchPage, {'callback': this.callbackFunction, 'actionType': this.actionType, 'pageTitle': "選擇群組", 'filterAlarmActions': this.alarmActions})
             }
           },
           {
             text: 'Mail-選擇人員',
             icon: !this.platform.is('ios') ? 'share' : null,
             handler: () => {
-              this.mode = 'employee';            
-              this.navCtrl.push(PeopleSearchPage, {'callback': this.callbackFunction, 'pageTitle': "選擇人員", 'filterEmployees': this.employees})
+              this.actionType = 1;           
+              this.navCtrl.push(PeopleSearchPage, {'callback': this.callbackFunction, 'actionType': this.actionType, 'pageTitle': "選擇人員", 'filterAlarmActions': this.alarmActions})
             }
           },
           {
             text: 'Mail-選擇部門',
             icon: !this.platform.is('ios') ? 'arrow-dropright-circle' : null,
             handler: () => {
-            this.mode = 'department';
-              this.navCtrl.push(DepartmentSelectPage, {'callback': this.callbackFunction, 'pageTitle': "選擇部門", 'filterDepartments': this.departments})
+              this.actionType = 1; 
+              this.navCtrl.push(DepartmentSelectPage, {'callback': this.callbackFunction, 'actionType': this.actionType, 'pageTitle': "選擇部門", 'filterAlarmActions': this.alarmActions})
             }
           },
           {
@@ -154,24 +220,24 @@ export class SubscribeConfigPage {
             text: 'MAPP-選擇群組',
             icon: !this.platform.is('ios') ? 'trash' : null,
             handler: () => {
-            this.mode = 'pgroup';
-              this.navCtrl.push(GroupSearchPage, {'callback': this.callbackFunction, 'pageTitle': "選擇群組", 'filterGroups': this.pgroups})
+            this.actionType = 4;
+              this.navCtrl.push(GroupSearchPage, {'callback': this.callbackFunction,'actionType': this.actionType, 'pageTitle': "選擇群組", 'filterAlarmActions': this.alarmActions})
             }
           },
           {
             text: 'MAPP-選擇人員',
             icon: !this.platform.is('ios') ? 'share' : null,
             handler: () => {
-            this.mode = 'pemployee';
-              this.navCtrl.push(PeopleSearchPage, {'callback': this.callbackFunction, 'pageTitle': "選擇人員", 'filterEmployees': this.pemployees})
+              this.actionType = 3; 
+              this.navCtrl.push(PeopleSearchPage, {'callback': this.callbackFunction,'actionType': this.actionType, 'pageTitle': "選擇人員", 'filterAlarmActions': this.alarmActions})
             }
           },
           {
             text: 'MAPP-輸入聊天室ID',
             icon: !this.platform.is('ios') ? 'arrow-dropright-circle' : null,
             handler: () => {
-            this.mode = 'mappgroup';
-              this.navCtrl.push(SubscribeMappgroupPage, {'callback': this.callbackFunction} )
+              this.actionType = 5; 
+              this.navCtrl.push(SubscribeMappgroupPage, {'callback': this.callbackFunction, 'actionType': this.actionType } )
             }
           },
           {

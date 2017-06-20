@@ -70,10 +70,12 @@ export class Api {
      let serverUrl: string = "";
      if (apiConnect === "CIM"){
          serverUrl = "http://c4c010685.cminl.oa/UMD/Services/UMDDataService.svc/";
-        //serverUrl = "http://c3c003309.cminl.oa/UMD/Services/UMDDataService.svc/";
+        // serverUrl = "http://c3c003309.cminl.oa/UMD/Services/UMDDataService.svc/";
      }else if (apiConnect === "MIS"){
       serverUrl = "http://ptnecimumd.cminl.oa/Services/UMDDataService.svc/";
      }
      return serverUrl + funcName;
   }
+
+  
 }

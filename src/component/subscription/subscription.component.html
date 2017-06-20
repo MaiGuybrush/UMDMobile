@@ -4,7 +4,7 @@
                  <h2>{{subscription.description}}</h2>
                  <p>{{subscription.alarmId}}<p>
              </ion-label>
-             <ion-checkbox color="danger"></ion-checkbox>
+             <ion-checkbox color="danger" [(ngModel)]="subscription.isChecked"></ion-checkbox>
           </ion-item>
           <ion-item-options side="right">
              <button ion-button (click)="editClick.emit(subscription)">

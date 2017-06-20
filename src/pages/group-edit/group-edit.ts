@@ -8,7 +8,7 @@ import { GroupsPage } from '../groups/groups';
 import { DepartmentSelectPage } from '../department-select/department-select';
 import { GroupProvider } from '../../providers/group-provider'
 import { AccountProvider } from '../../providers/account-provider'
-
+import { LoadingController } from 'ionic-angular';
 
 @Component({
   selector: 'page-group-edit',
@@ -24,15 +24,32 @@ export class GroupEditPage {
   isSuccess: boolean;
   groupName: string ="";
   description: string ="";
-  constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController,public GroupProvider: GroupProvider
-                                                                                                     ,public accountProvider: AccountProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController,
+              public GroupProvider: GroupProvider, public loading: LoadingController, public accountProvider: AccountProvider) {
+  }
+
+  ionViewDidLoad() {
+     let loader = this.loading.create({
+        content: 'Loading...',
+      });
+
+     loader.present();
           this.group = this.navParams.get('group');
           var me = this;
           if (this.group != null){
           this.groupName = this.group.groupName;
           this.description = this.group.description;
-          this.GroupProvider.getGroupEmployee(this.group.groupId).subscribe(m => me.oemployees = m);
+          this.GroupProvider.getGroupEmployee(this.group.groupId).subscribe(
+              m => {
+                    this.oemployees = m
+                    if(m) loader.dismiss();
+                    }
+              );
+          }else{
+            loader.dismiss();
           }
+
+    console.log('ionViewDidLoad SubscribeEditPage');
   }
 
   SearchClick()
@@ -56,7 +73,7 @@ export class GroupEditPage {
   {
     if(emptype ==="oemployee"){
      this.dempStr.push(this.oemployees[i].empId);
-     this.oemployees.splice(i, 1);   
+     this.oemployees.splice(i, 1);
    }else if (emptype ==="nemployee"){
      this.nemployees.splice(i, 1);
    }
@@ -64,19 +81,34 @@ export class GroupEditPage {
 
   done()
   {
+     let loader = this.loading.create({
+        content: '正在處理中...',
+      });
+
+     loader.present();
+
       this.nemployees.forEach(employee => {
             this.nempStr.push(employee.empId);    
       });
 
       if (this.group != null){
           this.GroupProvider.updateGroup(this.group.groupId,this.groupName,this.description,this.dempStr,this.nempStr,
-                                         this.accountProvider.getInxAccount().empNo).subscribe(m => this.isSuccess = m);
+                                         this.accountProvider.getInxAccount().empNo).subscribe(
+                                           m => {
+                                             if(m) loader.dismiss();
+                                             this.navCtrl.pop();
+                                            }
+                                           );
       }else
       {
           this.GroupProvider.addGroup(this.groupName,this.description,this.nempStr,
-                                      this.accountProvider.getInxAccount().empNo).subscribe(m => this.isSuccess = m);
+                                      this.accountProvider.getInxAccount().empNo).subscribe(                                           
+                                           m => {
+                                             if(m) loader.dismiss();
+                                             this.navCtrl.push(GroupsPage);
+                                            });
       }
-     this.navCtrl.pop();
+
   }
 
 }

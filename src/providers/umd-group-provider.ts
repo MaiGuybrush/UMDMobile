@@ -19,7 +19,7 @@ import { Observable } from 'rxjs/Rx'
 export class UmdGroupProvider implements GroupProvider {
 
   constructor(public http: Http) {
-    console.log('Hello Message Provider');
+    console.log('Hello Group Provider');
   }
 
 

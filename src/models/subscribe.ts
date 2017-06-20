@@ -1,4 +1,4 @@
-import { AlarmAction } from './alarm-action'
+// import { AlarmAction } from './alarm-action'
 
 export class Subscribe
 {
@@ -12,4 +12,5 @@ export class Subscribe
     // alarmActions: AlarmAction[];
     alarmId: string;
     description: string;
+    isChecked: boolean;
 }

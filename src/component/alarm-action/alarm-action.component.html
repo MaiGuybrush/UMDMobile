@@ -1,0 +1,12 @@
+    <ion-item>
+        <ion-label *ngIf="alarmAction.actionType != 5">
+            {{alarmAction.name}}
+        </ion-label>
+        <ion-label *ngIf="alarmAction.actionType === 5">
+            {{alarmAction.chatName}}
+        </ion-label>
+        <button ion-button color="light" item-right 
+                (click)="deleteClick.emit(alarmAction)">
+           <ion-icon name="remove"></ion-icon>
+        </button>
+    </ion-item>

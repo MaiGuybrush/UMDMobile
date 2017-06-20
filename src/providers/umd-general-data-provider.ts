@@ -8,7 +8,7 @@ import { InterceptedHttp} from '../app/intercepted-http'
 @Injectable()
 export class UmdGeneralDataProvider implements GeneralDataProvider {
     constructor(public http: Http) {
-    console.log('Hello Message Provider');
+    console.log('Hello General Data Provider');
   }
 
 

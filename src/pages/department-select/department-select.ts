@@ -3,7 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { Department } from '../../models/department'
 import { DepartmentProvider } from '../../providers/department-provider'
 import { Observable } from 'rxjs/Rx'
-// import { GeneralDataProvider } from '../../providers/general-data-provider'
+import { AlarmAction } from '../../models/alarm-action';
 
 /*
   Generated class for the DepartmentSelect page.
@@ -16,21 +16,31 @@ import { Observable } from 'rxjs/Rx'
   templateUrl: 'department-select.html'
 })
 export class DepartmentSelectPage {
-  // departments : string[] = [];
   departments : Department[] = [];
   filterDepartmentIDs : Set<string> = new Set<string>();
   pageTitle = "選擇部門";
   callback : (Department);
   selectedDepartment: Department= null;
   pattern : string;
+  selectedAlarmAction : AlarmAction = null;
+  alarmActions: AlarmAction[] = [];
+  actionType: number;
+  filterDepartments: Department[];
+  filterAlarmActions: AlarmAction[];
   constructor(public navCtrl: NavController, public navParams: NavParams, public provider: DepartmentProvider) 
   {
-
-    let filterDepartments: Department[] = navParams.get("filterDepartments");
-    if (filterDepartments)
+    this.filterDepartments = navParams.get("filterDepartments");
+    this.filterAlarmActions = navParams.get("filterAlarmActions");
+    this.actionType = navParams.get("actionType");
+    if (this.filterDepartments)
     {
-      filterDepartments.forEach(department => {
-        this.filterDepartmentIDs.add(department.deptId);    
+      this.filterDepartments.forEach(department => {
+        this.filterDepartmentIDs.add(department.deptId);
+      });
+    }else if (this.filterAlarmActions)
+    {
+      this.filterAlarmActions.forEach(alarmAction => {
+        if (alarmAction.actionType == this.actionType) {this.filterDepartmentIDs.add(alarmAction.actionValue);}
       });
     }
     
@@ -61,19 +71,6 @@ export class DepartmentSelectPage {
       });
   }
 
-  // getDepartments(owner: string, pattern?: string) : string[]
-  // {
-  //   let tempArray = this.provider.getDepartments().toArray()[0];
-  //   let output : string[] = [];
-  //   tempArray.forEach(department => {
-  //     if (!this.filterDepartmentIDs.has(department))
-  //     {
-  //       output.push(department);
-  //     }      
-  //   });
-  //   return output;
-  // }
-
   onInput($event)
   {
     var me = this;
@@ -83,7 +80,19 @@ export class DepartmentSelectPage {
 
   selectDepartment(department: Department)
   {
-    this.selectedDepartment = this.selectedDepartment === department ? null : department;
+    if (department != null)
+    { 
+      this.selectedDepartment = this.selectedDepartment === department ? null : department;
+      this.selectedAlarmAction = {
+        actionType: this.actionType, 
+        actionValue: department.deptId, 
+        chatName:"", 
+        enabled: true, 
+        name: department.deptName, 
+        mailEmpId:"",
+        isDept: true
+     };
+    }
   }
 
   ionViewDidLoad() {
@@ -96,9 +105,17 @@ export class DepartmentSelectPage {
 
     if(callback != null)
     {
-      callback(this.selectedDepartment).then(()=>{
-        this.navCtrl.pop();   
-      });
+      if (this.filterAlarmActions)
+      {
+        callback(this.selectedAlarmAction).then(()=>{
+          this.navCtrl.pop();   
+        });
+      }else if (this.filterDepartments)
+      {
+         callback(this.selectedDepartment).then(()=>{
+          this.navCtrl.pop();   
+         });
+      }
     }
   }
 

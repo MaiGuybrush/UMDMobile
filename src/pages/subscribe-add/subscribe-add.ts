@@ -4,8 +4,7 @@ import { SubscribeConfigPage } from '../subscribe-config/subscribe-config';
 import { SubscriptionProvider } from '../../providers/subscription-provider'
 import { Subscribe } from '../../models/subscribe';
 import { AccountProvider } from '../../providers/account-provider'
-// import { AlarmSubjectProvider } from '../../providers/alarm-subject-provider'
-// import { AlarmSubject } from '../../models/alarm-subject';
+import { LoadingController } from 'ionic-angular';
 
 /*
   Generated class for the SubscribeAdd page.
@@ -19,31 +18,44 @@ import { AccountProvider } from '../../providers/account-provider'
 })
 export class SubscribeAddPage {
 alarmtype: string;
-// alarmsubjects: AlarmSubject[] = [];
 nosubscriptions: Subscribe[] = [];
 pattern : string;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public provider: SubscriptionProvider  
-                                                                        , public accountProvider: AccountProvider) {
-    var me = this;
-    this.pattern="";
-    this.alarmtype = this.navParams.get('alarmtype');
-    this.provider.getNotSubscribed(this.accountProvider.getInxAccount().empNo,this.alarmtype,this.pattern).subscribe(
-         res => this.nosubscriptions = res
-       );  
+alarmIds: string[]=[];
+  constructor(public navCtrl: NavController, public navParams: NavParams, public provider: SubscriptionProvider,  
+                                             public loading: LoadingController,  public accountProvider: AccountProvider) {
   }
 
   ionViewDidLoad() {
+    this.pattern="";
+    this.alarmtype = this.navParams.get('alarmtype');
+    let loader = this.loading.create({
+           content: 'Loading...',
+        });
+
+    loader.present();
+    this.provider.getNotSubscribed(this.accountProvider.getInxAccount().empNo,this.alarmtype,this.pattern).subscribe(
+         res => {
+                   this.nosubscriptions = res
+                   if(res) loader.dismiss();
+                  }
+       );  
     console.log('ionViewDidLoad SubscribeAddPage');
   }
 
   gotoConfig(): void
   {
-      this.navCtrl.push(SubscribeConfigPage, {alarmtype:this.alarmtype});
+     for (let i=0; i<this.nosubscriptions.length; i++) {
+         if (this.nosubscriptions[i].isChecked== true)
+          {
+            this.alarmIds.push(this.nosubscriptions[i].alarmId);
+          }  
+     }
+
+     this.navCtrl.push(SubscribeConfigPage, {'alarmtype': this.alarmtype, 'alarmIds': this.alarmIds });
   }
 
   onInput($event)
   {
-    var me = this;
      this.provider.getNotSubscribed(this.accountProvider.getInxAccount().empNo,this.alarmtype,this.pattern).subscribe(
          res => this.nosubscriptions = res
        ); 
