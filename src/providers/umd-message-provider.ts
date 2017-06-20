@@ -15,11 +15,12 @@ import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 */
 @Injectable()
 export class UmdMessageProvider implements MessageProvider {
-     storage: any;
-     DB_NAME: string = '__ionicstorage';
+      storage: any;
+     DB_NAME: string = 'umd_Sorage';
      items = [];
+     message:Message[]=[];
 
-  constructor(platform: Platform,public http: Http, public sqlite: SQLite) {
+  constructor(public platform: Platform,public http: Http, public sqlite: SQLite) {
       sqlite.create({ name: this.DB_NAME, location: 'default' })
           .then((db: SQLiteObject) => {
               this.storage = db; 
@@ -27,9 +28,9 @@ export class UmdMessageProvider implements MessageProvider {
       });
   }
   protected tryInit() {
-        this.query('CREATE TABLE IF NOT EXISTS kv (key text primary key, value text)')
+        this.query('CREATE TABLE IF NOT EXISTS message (id text,occurDT text, alarmID text,eqptID text,alarmMessage text,alarmType text,description text,read text ,PRIMARY KEY(id))')
         .catch(err => {
-            console.error('Unable to create initial storage tables', err.tx, err.err);
+            console.error('Unable to create initial storage message', err.tx, err.err);
         });
     }
      /**
@@ -59,47 +60,48 @@ export class UmdMessageProvider implements MessageProvider {
     });
   }
 
-  /** GET the value in the database identified by the given key. */
-  get(key: string): Promise<any> {
-      return this.query('select key, value from kv where key = ? limit 1', [key])
-      .then(data => {
-          if (data.res.rows.length > 0) {
-              return data.res.rows.item(0).value;
-          }
-      });
-  }
 
-  /** SET the value in the database for the given key. */
-  set(key: string, value: string): Promise<any> {
-      console.log("set key:value="+key+":"+value);
-      return this.query('insert into kv(key, value) values (?, ?)', [key, value]);
-  }
-
-  /** REMOVE the value in the database for the given key. */
+ 
   remove(key: string): Promise<any> {
-      return this.query('delete from kv where key = ?', [key]);
-  }
-  getall(): Promise<any>{
-    return     this.query('select * from kv ')
-        .then(resultSet => {
-              console.log("getallresultSet.res.rows.length: "+resultSet.res.rows.length);
-            if(resultSet.res.rows.length > 0) {
-                      this.items = [];
-                      for(let i = 0; i < resultSet.res.rows.length; i++) {
-                        //  console.log("get key:value="+resultSet.res.rows.item(i).key+":"+ resultSet.res.rows.item(i).value);
-                          var row = resultSet.res.rows.item(i);
-                          this.items.push(row);
-                          
-                      }
-                        return   this.items;
-                  }
-        })
-  }
-
-  getMessage() : Observable<Message[]>
+        return this.query('delete from message where alarmID like ?', [key]);
+         //return this.query('delete from kv where key = ?', [key]);
+    }
+ 
+   getAllMessage(): Promise<Message[]>{
+    // id text,occurDT text, alarmID text,eqptID text,alarmMessage text,alarmType text,description text,read text
+     return this.query('select id,occurDT,alarmID ,eqptID,alarmMessage,description,alarmType from message order by occurDT asc  ')
+         .then(resultSet => {
+            //   console.log("getallresultSet: "+JSON.stringify(resultSet));
+              if(resultSet.res.rows.length > 0) {
+                     //   this.items = [];
+                       this.message=[];
+                        for(let i = 0; i < resultSet.res.rows.length; i++) {
+                           var row = resultSet.res.rows.item(i);
+                            this.message.push({
+                              "id": row.id,
+                              "occurDT": new Date(row.occurDT),
+                              "alarmID": row.alarmID,
+                              "description": row.description,
+                              "alarmMessage":row.alarmMessage,                             
+                              "alarmType": row.alarmType,
+                              "eqptID": row.eqptID ,   
+                              "read": row.read ,
+                                                        
+                            });
+                        }
+                        
+                   //      console.log('SqliteMessage:'+JSON.stringify(this.message));
+                         return   this.message;
+                    }
+          }) 
+        }
+  
+  
+ getMessage() : Observable<Message[]>
   {
-    //TODO: wait for implements
-    return Observable.from([[new Message()]]);
+     return  Observable.fromPromise(this.platform.ready()).map(m => 
+             Observable.fromPromise(this.getAllMessage())
+            ).concatAll();
   }
 
   getMessageFromUmd(beforeDT:Date) : Observable<Message[]> //UMD Service provide
@@ -110,7 +112,8 @@ export class UmdMessageProvider implements MessageProvider {
 
   saveMessage(message: Message)
   {
-    //TODO: wait for implements
+        console.log("set id, alarmid,message,time="+ message.id + ":"+ message.alarmID + ":"+ message.alarmMessage+":"+message.occurDT);
+        return this.query('insert into message(id,occurDT , alarmID ,eqptID ,alarmMessage ,alarmType ,description ,read ) values (?,?,?,?,?,?,?,?)', [message.id,message.occurDT,message.alarmID,message.eqptID,message.alarmMessage,message.alarmType,message.description,message.read]);
     
   }
 }

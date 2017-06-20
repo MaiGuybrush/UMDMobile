@@ -4,6 +4,7 @@ export class Message
     {
 
     }
+    id:string;
     description: string;
     alarmID: string;
     eqptID: string;

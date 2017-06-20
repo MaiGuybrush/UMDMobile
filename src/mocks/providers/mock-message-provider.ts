@@ -17,11 +17,15 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class MockMessageProvider implements MessageProvider {
 
-  constructor(public http: Http) {
+ constructor(public http: Http) {
+  }
+  getAllMessage(): Promise<any>{
+    return;
   }
   
   getMessage() : Observable<Message[]>
   {
+    console.log('mockMESSAGES:'+JSON.stringify(MESSAGES));
     return Observable.from([MESSAGES]);
   }
 
@@ -35,25 +39,25 @@ export class MockMessageProvider implements MessageProvider {
 
   }
 
-  set(key: string, value: string): Promise<any>
-  {
-      return undefined;
-  }
+  // set(key: string, value: string): Promise<any>
+  // {
+  //     return undefined;
+  // }
 
-  get(key: string): Promise<any> 
-  {
-      return undefined;
-  }
+  // get(key: string): Promise<any> 
+  // {
+  //     return undefined;
+  // }
 
   remove(key: string): Promise<any>
   {
       return undefined;
   }
 
-  getall(): Promise<any>
-  {
-      return undefined;
-  }
+  // getall(): Promise<any>
+  // {
+  //     return undefined;
+  // }
 
 
   // getItems(ev) {
