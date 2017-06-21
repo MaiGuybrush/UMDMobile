@@ -81,7 +81,7 @@ export class SubscribeConfigPage {
                    if (m === true) 
                    {
                      loader.dismiss();
-                     this.navCtrl.pop();
+                     this.navCtrl.setRoot(SubscribeEditPage, {'alarmtype': this.alarmtype});
                    }
                   }
                 );
@@ -98,7 +98,7 @@ export class SubscribeConfigPage {
                    if (m === true) 
                    {
                      loader.dismiss();
-                     this.navCtrl.push(SubscribeEditPage, {'alarmtype': this.alarmtype});
+                     this.navCtrl.setRoot(SubscribeEditPage, {'alarmtype': this.alarmtype});
                    }
                   }
                 );
@@ -112,7 +112,7 @@ export class SubscribeConfigPage {
                    if (m === true) 
                    {
                      loader.dismiss();
-                     this.navCtrl.push(SubscribeEditPage, {'alarmtype': this.alarmtype});
+                     this.navCtrl.setRoot(SubscribeEditPage, {'alarmtype': this.alarmtype});
                    }
                   }
                 );
@@ -159,7 +159,6 @@ export class SubscribeConfigPage {
                    }
                  }
                 }
-
   }
 
   doDelete(alarmAction: AlarmAction): void

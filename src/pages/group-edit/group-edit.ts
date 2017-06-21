@@ -105,7 +105,7 @@ export class GroupEditPage {
                                       this.accountProvider.getInxAccount().empNo).subscribe(                                           
                                            m => {
                                              if(m) loader.dismiss();
-                                             this.navCtrl.push(GroupsPage);
+                                             this.navCtrl.setRoot(GroupsPage);
                                             });
       }
 

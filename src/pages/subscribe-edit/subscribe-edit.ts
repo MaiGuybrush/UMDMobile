@@ -48,7 +48,7 @@ subscribeCancelResult : SubscribeCancelResult;
   
   gotoAdd(): void
   {
-      this.navCtrl.push(SubscribeAddPage,  {alarmtype: this.alarmtype});
+      this.navCtrl.push(SubscribeAddPage,  {'alarmtype': this.alarmtype});
   }
 
   gotoEdit(subscription: Subscribe): void
@@ -73,21 +73,17 @@ subscribeCancelResult : SubscribeCancelResult;
 
      this.provider.cancelSubscribeAlarm(this.alarmIds,this.accountProvider.getInxAccount().empNo).subscribe(
                   res =>{
-                         if (res.isSuccess === false)
-                         {
-                            for (let i= res.subResult.length-1 ; i>=0; i--) {
-                                if (res.subResult[i].isSuccess === true)
+                          for (let i= res.subResult.length-1 ; i>=0; i--) {
+                               if (res.subResult[i].isSuccess === true)
                                 {
                                    for (let j= this.subscriptions.length-1 ; j>=0; j--) {
                                        if (res.subResult[i].alarmId === this.subscriptions[j].alarmId) 
                                        this.subscriptions.splice(j,1);
                                    }
-                                }
-                                else if (res.subResult[i].isSuccess === false )
+                                }else if (res.subResult[i].isSuccess === false )
                                 {
                                    msg += msg ===""? res.subResult[i].message : "," + res.subResult[i].message;
                                 }
-                             }
                           }
                         loader.dismiss();
                         if (msg)
