@@ -8,4 +8,5 @@ import { Observable } from 'rxjs/Rx'
 */
 export abstract class EmployeeProvider  {
   abstract getEmployees(empID: string, pattern: string) : Observable<Employee[]>;
+  abstract updateEmployeeInfo(empId:string, deviceToken: string): Observable<boolean>;
 }

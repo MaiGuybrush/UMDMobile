@@ -135,7 +135,7 @@ import { MockAccountProvider } from '../mocks/providers/mock-account-provider'
             , {provide: EmployeeProvider, useClass: UmdEmployeeProvider}
             , {provide: DepartmentProvider, useClass: UmdDepartmentProvider}
             , {provide: GeneralDataProvider, useClass: UmdGeneralDataProvider}
-            , {provide: MessageProvider, useClass: UmdMessageProvider}
+            , {provide: MessageProvider, useClass: MockMessageProvider}
             , {provide: SubscriptionProvider, useClass: UmdSubscriptionProvider}
             , {provide: AlarmProvider, useClass: UmdAlarmProvider}
             , AppConfig

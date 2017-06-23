@@ -16,7 +16,6 @@ export abstract class MessageProvider {
   // abstract get(key: string): Promise<any> 
 
   abstract remove(key: string): Promise<any>
-
   // abstract getall(): Promise<any>
 }
 

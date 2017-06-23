@@ -36,7 +36,12 @@ export class MockMessageProvider implements MessageProvider {
 
   saveMessage(message: Message)
   {
-
+    MESSAGES.forEach(m => {
+      if (m.id == message.id)
+      {
+        m.read = true;
+      }
+    })
   }
 
   // set(key: string, value: string): Promise<any>

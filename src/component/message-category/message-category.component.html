@@ -1,3 +1,3 @@
     <ion-item (click)="pushPage()">
-        <ion-label>{{category == null || category == '' ? '(無)' : category}}</ion-label><ion-badge item-right>{{messages.length}}</ion-badge>
+        <ion-label>{{category == null || category == '' ? '(無)' : category}}</ion-label><ion-badge item-right>{{getUnreadCount()}}</ion-badge>
     </ion-item>

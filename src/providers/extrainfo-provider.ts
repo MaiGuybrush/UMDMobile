@@ -3,8 +3,8 @@ import { AppConfig } from '../providers/app-config'
 import { Injectable } from '@angular/core';
 import { InxAccount } from '../models/inx-account'
 import { AccountProvider } from './account-provider'
-// import { Api } from './api'
-// import { Http, Headers, RequestOptions } from '@angular/http'
+import { Api } from './api'
+import { Http, Headers, RequestOptions } from '@angular/http'
 declare var ExtraInfo: any;
 
 /*
@@ -17,9 +17,7 @@ declare var ExtraInfo: any;
 export class ExtraInfoProvider implements AccountProvider
 {
     private static account: InxAccount;
-    constructor(public appConfig: AppConfig, 
-                //   public http: Http
-                )
+    constructor(public appConfig: AppConfig)
     {
 
     }
@@ -52,20 +50,7 @@ export class ExtraInfoProvider implements AccountProvider
         })
     }
 
-    // updateUserInfo(empId:string, deviceToken: string): Observable<boolean>{
-    //  let headers = new Headers({ 'Content-Type': 'application/json' });
-    //  let options = new RequestOptions({ headers: headers });
 
-    //  let url = Api.getHttpUrl('UpdateUserInfo');
-
-    //  let body = {"EmpId": `${empId}`,"DeviceToken": `${deviceToken}`};
-    //  console.log('post start');
-     
-    //  return this.http.post(url, body, options).map(res => 
-    //                   Api.toCamel(res.json()).isSuccess
-    //                 );
-     
-    // }
   
     verifyWithAppID(): Observable<any> {
         var me: ExtraInfoProvider = this;

@@ -16,6 +16,23 @@ export class UmdEmployeeProvider implements EmployeeProvider {
      console.log('Hello Employee Provider');
   }
 
+  updateEmployeeInfo(empId:string, deviceToken: string): Observable<boolean>{
+      let headers = new Headers({ 'Content-Type': 'application/json' });
+      let options = new RequestOptions({ headers: headers });
+
+      let url = Api.getHttpUrl('UpdateUserInfo');
+
+      let body = {"EmpId": `${empId}`,"DeviceToken": `${deviceToken}`};
+      console.log('post start');
+      let response = this.http.post(url, body, options)
+      response.subscribe(m => {}, e => {
+        console.log("updateEmployeeInfo error! => " + e)});
+      return response.map(res => 
+                      Api.toCamel(res.json()).isSuccess
+                  );
+    
+  }
+
   getEmployees(empID: string, pattern: string) : Observable<Employee[]>
   {
     if (this.isSubSearch(empID, pattern))

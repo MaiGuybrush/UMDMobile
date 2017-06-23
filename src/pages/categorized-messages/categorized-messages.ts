@@ -33,15 +33,22 @@ export class CategorizedMessagesPage {
   // categorizedMessage : CategorizedMessages[]
   constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController, public provider: MessageProvider) 
   {
-    var me = this;
-    this.menu.enable(true, 'menu1');
-    this.provider.getMessage().subscribe(m => me.messages = m);
 
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad CategorizedMessagePage');
+    this.menu.enable(true, 'menu1');
   }
+
+  ionViewDidEnter() {
+    console.log('ionViewDidEnter CategorizedMessagePage');
+    var me = this;
+    this.provider.getMessage().subscribe(
+      m => me.messages = m
+      );
+  }
+
   getCategoryField() {
     switch(this.category)
     {

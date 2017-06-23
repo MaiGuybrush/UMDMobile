@@ -18,6 +18,11 @@ export class MockEmployeeProvider implements EmployeeProvider {
     console.log('Hello EmployeeProvider Provider');
   }
   
+  updateEmployeeInfo(empId:string, deviceToken: string): Observable<boolean>{
+    return Observable.from([true]);        
+  }
+
+
   getEmployees(empID: string, pattern: string) : Observable<Employee[]>
   {
     let comidPattern = new RegExp('^[a-z].*', "i");
