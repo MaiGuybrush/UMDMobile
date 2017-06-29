@@ -148,23 +148,23 @@ import { MockAccountProvider } from '../mocks/providers/mock-account-provider'
             , SQLite
             , SplashScreen
 //for web
-            , {provide: AccountProvider, useClass: MockAccountProvider}
-            , {
-                provide: Http,
-                useFactory: (backend: XHRBackend, options: RequestOptions, extraInfoProvider: ExtraInfoProvider) => {
-                  return new Http(backend, options);
-                },
-                deps: [XHRBackend, RequestOptions, ExtraInfoProvider]
-              }
-//for device/emulator
-            // , {provide: AccountProvider, useClass: ExtraInfoProvider}
+            // , {provide: AccountProvider, useClass: MockAccountProvider}
             // , {
             //     provide: Http,
             //     useFactory: (backend: XHRBackend, options: RequestOptions, extraInfoProvider: ExtraInfoProvider) => {
-            //       return new InterceptedHttp(backend, options, extraInfoProvider);
+            //       return new Http(backend, options);
             //     },
             //     deps: [XHRBackend, RequestOptions, ExtraInfoProvider]
             //   }
+//for device/emulator
+            , {provide: AccountProvider, useClass: ExtraInfoProvider}
+            , {
+                provide: Http,
+                useFactory: (backend: XHRBackend, options: RequestOptions, extraInfoProvider: ExtraInfoProvider) => {
+                  return new InterceptedHttp(backend, options, extraInfoProvider);
+                },
+                deps: [XHRBackend, RequestOptions, ExtraInfoProvider]
+              }
              ]
 })
 export class AppModule {}

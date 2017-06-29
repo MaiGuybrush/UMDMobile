@@ -29,10 +29,8 @@ export class MockMessageProvider implements MessageProvider {
     return Observable.from([MESSAGES]);
   }
 
-  getMessagebyPage(queryPage: number) : Observable<Message[]>
-  {
-    return Observable.from([MESSAGES]);
-  }
+  
+  
 
   getMessageFromUmd(beforeDT:Date) : Observable<Message[]> //UMD Service provide
   {
@@ -41,12 +39,18 @@ export class MockMessageProvider implements MessageProvider {
 
   saveMessage(message: Message)
   {
-    MESSAGES.forEach(m => {
+    let found = false;
+    MESSAGES.forEach((m, idx) => {
       if (m.id == message.id)
       {
-        m.read = true;
+        MESSAGES[idx] = message;
+        found = true;
       }
     })
+    if (!found)
+    {
+      MESSAGES.push(message);
+    }
   }
 
   // set(key: string, value: string): Promise<any>

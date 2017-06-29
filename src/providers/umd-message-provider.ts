@@ -142,6 +142,11 @@ export class UmdMessageProvider implements MessageProvider {
             ).concatAll();
   }
 
+  getMessageByPage(alarmType:string, page: number, pageSize: number) : Observable<Message[]>
+  {
+    return undefined;
+  }
+
   getMessageFromUmd(beforeDT:Date) : Observable<Message[]> //UMD Service provide
   {
     //TODO: wait for implements

@@ -7,6 +7,8 @@ export abstract class MessageProvider {
 
   abstract getMessage() : Observable<Message[]>
 
+  abstract getMessageByPage(alarmType:string, page: number, pageSize: number) : Observable<Message[]>
+
   abstract getMessageFromUmd(beforeDT:Date) : Observable<Message[]> //UMD Service provide
 
   abstract saveMessage(message: Message)

@@ -45,8 +45,9 @@ export class CategorizedMessagesPage {
     console.log('ionViewDidEnter CategorizedMessagePage');
     var me = this;
     this.provider.getMessage().subscribe(
-      m => me.messages = m
-      );
+      m => {
+        me.messages = [].concat(m);
+      });
   }
 
   getCategoryField() {
