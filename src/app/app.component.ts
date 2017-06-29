@@ -59,7 +59,9 @@ export class MyApp {
           ios: {
             alert: 'true',
             badge: true,
-            sound: 'false'
+            sound: 'false',
+            senderID: '834424631529',
+            gcmSandbox: "true"
           },
           windows: {}
         };
@@ -67,7 +69,7 @@ export class MyApp {
         pushObject.on('registration').subscribe((data: any) => {
           console.log("emp no -> " + this.accountprovider.getInxAccount().empNo + " device token -> " + data.registrationId);
           MyApp.fcmRegistrationId = data.registrationId;
-          //this.setDeviceToken(this.accountprovider.getInxAccount().empNo,data.registrationId);
+          this.employeeProvider.updateEmployeeInfo(this.accountprovider.getInxAccount().empNo,data.registrationId);
 
           //TODO - send device token to server
         });

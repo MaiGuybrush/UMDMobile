@@ -6,7 +6,7 @@
         <!--<ion-icon name="checkmark"></ion-icon>-->
       </button>
       <!--</ion-buttons><ion-title>Message</ion-title>-->
-    </ion-buttons><ion-title>{{alarmtype}}通知設定 </ion-title>
+    </ion-buttons><ion-title>其他通知設定</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -14,7 +14,7 @@
 <ion-content>
   <ion-list>
     <ion-item-group>
-      <ion-item-divider color="light">MAIL<button ion-button item-right (click)="openMenu(1)"><ion-icon name="add"></ion-icon> </button></ion-item-divider>
+      <ion-item-divider color="light"><ion-icon name="mail" color="yellow1" item-start></ion-icon>MAIL<button ion-button item-right (click)="openMenu(1)"><ion-icon name="add"></ion-icon> </button></ion-item-divider>
         <alarmActionSetting *ngFor="let alarmActionSetting of alarmActionSettings |filter:{settingType: 'M'};" [alarmActionSetting]="alarmActionSetting" [accountId]="accountId" (deleteClick)="doDeleteS($event)" ></alarmActionSetting>  
         <alarmAction *ngFor="let alarmAction of alarmActions |filter:{actionType: 1};" [alarmAction]="alarmAction" (deleteClick)="doDelete($event)" ></alarmAction>  
         <alarmAction *ngFor="let alarmAction of alarmActions |filter:{actionType: 2};" [alarmAction]="alarmAction" (deleteClick)="doDelete($event)" ></alarmAction>  
@@ -30,7 +30,7 @@
     </ion-item-group>
 
     <ion-item-group>
-      <ion-item-divider color="light">MAPP<button ion-button item-right (click)="openMenu(2)"><ion-icon name="add"></ion-icon> </button></ion-item-divider>
+      <ion-item-divider color="light">MAPP<button ion-button item-right (click)="openMenu(2)"><ion-icon name="add"></ion-icon></button></ion-item-divider>
         <alarmActionSetting *ngFor="let alarmActionSetting of alarmActionSettings |filter:{settingType: 'AP'};" [alarmActionSetting]="alarmActionSetting" [accountId]="accountId" (deleteClick)="doDeleteS($event)" ></alarmActionSetting>  
         <alarmActionSetting *ngFor="let alarmActionSetting of alarmActionSettings |filter:{settingType: 'AG'};" [alarmActionSetting]="alarmActionSetting" [accountId]="accountId" (deleteClick)="doDeleteS($event)" ></alarmActionSetting>  
         <alarmActionSetting *ngFor="let alarmActionSetting of alarmActionSettings |filter:{settingType: 'AC'};" [alarmActionSetting]="alarmActionSetting" [accountId]="accountId" (deleteClick)="doDeleteS($event)" ></alarmActionSetting>  
@@ -55,6 +55,6 @@
         <ion-item *ngFor="let alarmAction of alarmActions |filter:{actionType: 5};">{{alarmAction.chatName}}
           <button ion-button color="light" item-right  (click)="doDelete(alarmAction.actionType,'alarmActions', alarmAction.actionValue)"><ion-icon name="remove"></ion-icon></button>
         </ion-item>-->
-      </ion-item-group>
+    </ion-item-group>
   </ion-list>
 </ion-content>

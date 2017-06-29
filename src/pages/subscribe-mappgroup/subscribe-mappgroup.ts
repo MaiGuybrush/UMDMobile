@@ -17,6 +17,7 @@ export class SubscribeMappgroupPage {
   chatName: string;
   alarmAction: AlarmAction;
   actionType: number;
+  pageTitle = "輸入聊天室ID";
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
 

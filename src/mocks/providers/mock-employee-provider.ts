@@ -23,7 +23,7 @@ export class MockEmployeeProvider implements EmployeeProvider {
   }
 
 
-  getEmployees(empID: string, pattern: string) : Observable<Employee[]>
+  getEmployees(empID: string, pattern: string, queryPage: number) : Observable<Employee[]>
   {
     let comidPattern = new RegExp('^[a-z].*', "i");
     let empnoPattern = new RegExp('^[0-9].*');

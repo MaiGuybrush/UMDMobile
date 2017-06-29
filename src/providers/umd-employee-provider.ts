@@ -33,14 +33,14 @@ export class UmdEmployeeProvider implements EmployeeProvider {
     
   }
 
-  getEmployees(empID: string, pattern: string) : Observable<Employee[]>
+  getEmployees(empID: string, pattern: string, queryPage: number) : Observable<Employee[]>
   {
-    if (this.isSubSearch(empID, pattern))
-    {
-      return this.getEmployeeFromCache(pattern);
-    }
-    else
-    {
+    // if (this.isSubSearch(empID, pattern))
+    // {
+    //   return this.getEmployeeFromCache(pattern);
+    // }
+    // else
+    // {
       let headers = new Headers({ 'Content-Type': 'application/json' });
       let options = new RequestOptions({ headers: headers });
 
@@ -49,7 +49,7 @@ export class UmdEmployeeProvider implements EmployeeProvider {
   //     let url = 'http://tnvtwebapi.cminl.oa/NewWebApi/Agency/api/service/??????';
       let url = Api.getHttpUrl('GetEmployeeData');
 
-      let body = {"EmpId": `${empID}`, "Keyword": `${pattern}`, "QueryPage": 1};
+      let body = {"EmpId": `${empID}`, "Keyword": `${pattern}`, "QueryPage": queryPage};
 
       let err = "";
       console.log('post start');
@@ -63,7 +63,7 @@ export class UmdEmployeeProvider implements EmployeeProvider {
         me.prePattern = pattern;
       });
       return output;
-    }
+    // }
   }
 
   isSubSearch(newEmpId:string, newPattern:string) : boolean

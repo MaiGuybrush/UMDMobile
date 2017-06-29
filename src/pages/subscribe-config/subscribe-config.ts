@@ -15,6 +15,7 @@ import { AccountProvider } from '../../providers/account-provider'
 import { SubscriptionProvider } from '../../providers/subscription-provider'
 import { LoadingController } from 'ionic-angular';
 
+
 /*
   Generated class for the SubscribeConfig page.
 
@@ -40,39 +41,46 @@ export class SubscribeConfigPage {
   }
 
   ionViewDidLoad() {
-        let loader = this.loading.create({
-           content: 'Loading...',
-        });
 
-        loader.present();
           this.subscription = this.navParams.get('subscription');
           this.alarmtype = this.navParams.get('alarmtype');
           this.alarmIds = this.navParams.get('alarmIds');
           this.accountId = this.accountProvider.getInxAccount().empNo;
           if (this.subscription)
           {
+             let loader = this.loading.create({content: 'Loading...'});
+             loader.present();
              this.provider.getAlarmActionSetting(this.subscription.alarmId).subscribe(
                  res => {
                    this.alarmActionSettings = res
                    if(res) loader.dismiss();
                   }
              ); 
-          }else{
-            loader.dismiss();
           }
     console.log('ionViewDidLoad SubscribeConfigPage');
   }
 
   done(): void
   {
-     let loader = this.loading.create({
-        content: '正在處理中...',
-      });
-
-     loader.present();
-
-        if (this.subscription !=null && this.alarmActions != null)
+        if (this.alarmActions.length === 0)
         {
+          this.navCtrl.setRoot(SubscribeEditPage, {'alarmtype': this.alarmtype});
+          return;
+        }
+
+        if (this.subscription !=null)
+        {
+          this.editSubscriptionConfig();
+        }else if (this.alarmIds.length != 0)
+        {
+          this.addSubscriptionConfig();
+        }
+  }
+
+  editSubscriptionConfig():void
+  {
+          let loader = this.loading.create({content: 'Processing...'});
+          loader.present();
           this.provider.addAlarmAction(
             this.subscription.alarmId,this.accountProvider.getInxAccount().empNo,this.alarmActions)
               .subscribe(
@@ -85,8 +93,12 @@ export class SubscribeConfigPage {
                    }
                   }
                 );
-        }else if (this.alarmIds != null && this.alarmActions != null)
-        {
+  }
+
+  addSubscriptionConfig():void
+  {
+          let loader = this.loading.create({content: 'Processing...'});
+          loader.present();
           this.alarmActions.forEach(alarmAction => {
             if (alarmAction.actionType === 1 && alarmAction.isDept === false) //For SubscribeAlarm 發送對象工號, 或 &[部門代碼]
             {
@@ -118,11 +130,6 @@ export class SubscribeConfigPage {
                 );
             }
           });
-        
-        }else{
-          loader.dismiss();
-          this.navCtrl.push(SubscribeEditPage, {'alarmtype': this.alarmtype});
-        }
   }
 
   callbackFunction = (params) => 

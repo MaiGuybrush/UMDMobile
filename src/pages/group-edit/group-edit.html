@@ -22,8 +22,8 @@
 
     <ion-item-group>
       <ion-item-divider color="light">人員<button ion-button item-right (click)="SearchClick()"><ion-icon name="add"></ion-icon> </button></ion-item-divider>
-      <ion-item *ngFor="let oemployee of oemployees; let i = index;">{{oemployee.name}}<button ion-button color="light" item-right (click)="doDelete(i,'oemployee')"><ion-icon name="remove"></ion-icon></button></ion-item>
-      <ion-item *ngFor="let nemployee of nemployees; let i = index;">{{nemployee.name}}<button ion-button color="light" item-right (click)="doDelete(i,'nemployee')"><ion-icon name="remove"></ion-icon></button></ion-item>
+      <ion-item *ngFor="let oemployee of oemployees; let i = index;"><ion-icon name="person" color="blue1" item-start></ion-icon>{{oemployee.name}}<button ion-button color="light" item-right (click)="doDelete(i,'oemployee')"><ion-icon name="remove"></ion-icon></button></ion-item>
+      <ion-item *ngFor="let nemployee of nemployees; let i = index;"><ion-icon name="person" color="blue1" item-start></ion-icon>{{nemployee.name}}<button ion-button color="light" item-right (click)="doDelete(i,'nemployee')"><ion-icon name="remove"></ion-icon></button></ion-item>
     </ion-item-group>
   </ion-list>
 </ion-content>

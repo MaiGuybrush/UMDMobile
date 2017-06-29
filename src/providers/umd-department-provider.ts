@@ -13,15 +13,14 @@ export class UmdDepartmentProvider implements DepartmentProvider {
   }
 
 
-  getDepartments(pattern?: string) : Observable<Department[]>
+  getDepartments(pattern: string, queryPage: number) : Observable<Department[]>
   {
      let headers = new Headers({ 'Content-Type': 'application/json' });
      let options = new RequestOptions({ headers: headers });
 
      let url = Api.getHttpUrl('GetDepartmentData');
 
-     let body = {"Keyword": `${pattern}`};
-     let err = "";
+     let body = {"Keyword": `${pattern}`, "QueryPage": queryPage};
      console.log('post start');
      return this.http.post(url, body, options).map(res => 
                       Api.toCamel(res.json()).departmentList

@@ -7,6 +7,7 @@ import { GroupEditPage } from '../group-edit/group-edit'
 import { Observable } from 'rxjs/Rx'
 import { AccountProvider } from '../../providers/account-provider'
 import { LoadingController } from 'ionic-angular';
+import { AlertController } from 'ionic-angular';
 
 @Component({
   selector: 'page-groups',
@@ -14,8 +15,7 @@ import { LoadingController } from 'ionic-angular';
 })
 export class GroupsPage {
   groups : Group[];
-  isSuccess : boolean;
-  constructor(public navCtrl: NavController, public provider: GroupProvider,
+  constructor(public navCtrl: NavController, public provider: GroupProvider, public alertCtrl:AlertController, 
               public loading: LoadingController,  public accountProvider: AccountProvider) {
 
   } 
@@ -44,12 +44,33 @@ export class GroupsPage {
 
   doDelete(group: Group): void
   {
-   this.groups.splice(this.groups.indexOf(group), 1);
-   this.provider.deleteGroup(group.groupId ,this.accountProvider.getInxAccount().empNo).subscribe(
-          value => this.isSuccess = value,
-          () => console.log("deleteGroup" +this.isSuccess)
-      );
+  let alert = this.alertCtrl.create({
+    title: '刪除群組',
+    message: '群組:'+ group.groupName +'?',
+    buttons: [
+      {
+        text: 'Cancel',
+        handler: () => {
+          console.log('Cancel Group');
+        }
+      },
+      {
+        text: 'OK',
+        handler: () => {
+              this.provider.deleteGroup(group.groupId ,this.accountProvider.getInxAccount().empNo).subscribe(
+                     value => {
+                         if(value) this.groups.splice(this.groups.indexOf(group), 1);
+                         console.log("delete Group :" + value);
+                        }
+              );
+        }
+      }
+    ]
+  });
+  alert.present();
+
   }
+
 
   callbackFunction = () => 
   {

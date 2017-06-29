@@ -5,6 +5,7 @@ import { SubscriptionProvider } from '../../providers/subscription-provider'
 import { Subscribe } from '../../models/subscribe';
 import { AccountProvider } from '../../providers/account-provider'
 import { LoadingController } from 'ionic-angular';
+import { AlertController } from 'ionic-angular';
 
 /*
   Generated class for the SubscribeAdd page.
@@ -21,8 +22,8 @@ alarmtype: string;
 nosubscriptions: Subscribe[] = [];
 pattern : string;
 alarmIds: string[]=[];
-  constructor(public navCtrl: NavController, public navParams: NavParams, public provider: SubscriptionProvider,  
-                                             public loading: LoadingController,  public accountProvider: AccountProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public provider: SubscriptionProvider,
+              public alertCtrl:AlertController, public loading: LoadingController,  public accountProvider: AccountProvider) {
   }
 
   ionViewDidLoad() {
@@ -42,8 +43,9 @@ alarmIds: string[]=[];
     console.log('ionViewDidLoad SubscribeAddPage');
   }
 
-  gotoConfig(): void
+  checkAlarm():boolean
   {
+     this.alarmIds =[];
      for (let i=0; i<this.nosubscriptions.length; i++) {
          if (this.nosubscriptions[i].isChecked== true)
           {
@@ -51,7 +53,36 @@ alarmIds: string[]=[];
           }  
      }
 
-     this.navCtrl.push(SubscribeConfigPage, {'alarmtype': this.alarmtype, 'alarmIds': this.alarmIds });
+     if (this.alarmIds === null|| this.alarmIds.length ===0) { 
+        this.showAlert('請選擇至少一筆AlarmID');                        
+        return false;
+     }
+     return true;
+  }
+
+  showAlert(subTitle:string): void
+  {
+        let alert = this.alertCtrl.create({ title: '訊息', subTitle: subTitle,buttons: ['OK'] });
+        alert.present();
+  }
+
+  gotoConfig(): void
+  {
+     if (this.checkAlarm() === false) return;
+     //新增Mobile訂閱
+     let loader = this.loading.create({
+           content: 'Processing...',
+        });
+
+     loader.present();
+          this.provider.subscribeAlarm(this.alarmIds, 99, this.accountProvider.getInxAccount().empNo,'',this.accountProvider.getInxAccount().empNo)
+              .subscribe(                
+                m => {
+                      if (m === true) {
+                        loader.dismiss();
+                        this.navCtrl.push(SubscribeConfigPage, {'alarmtype': this.alarmtype, 'alarmIds': this.alarmIds });
+                        }
+                     });
   }
 
   onInput($event)

@@ -7,5 +7,5 @@ import { Observable } from 'rxjs/Rx'
   for more info on providers and Angular 2 DI.
 */
 export abstract class DepartmentProvider  {
-  abstract getDepartments(pattern: string) : Observable<Department[]>;
+  abstract getDepartments(pattern: string, queryPage: number) : Observable<Department[]>;
 }

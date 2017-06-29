@@ -31,8 +31,9 @@ export class PeopleSearchPage {
   actionType: number;
   filterEmployees: Employee[];
   filterAlarmActions: AlarmAction[];
-  constructor(public navCtrl: NavController, public navParams: NavParams, public provider: EmployeeProvider
-                                                                  , public accountProvider: AccountProvider) 
+  queryPage: number;
+  constructor(public navCtrl: NavController, public navParams: NavParams, public provider: EmployeeProvider,
+                                             public accountProvider: AccountProvider) 
   {
     this.searchControl = new FormControl();
     this.filterEmployees = navParams.get("filterEmployees");
@@ -51,8 +52,8 @@ export class PeopleSearchPage {
       });
     }
 
-    this.employees = [];    
-    this.pattern = "";
+    // this.employees = [];    
+    // this.pattern = "";
 
     let title: string = navParams.get("pageTitle");
     if (null != title && title.trim().length > 0)
@@ -75,13 +76,16 @@ export class PeopleSearchPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad PeopleSearchPage');
 //     this.setFilteredItems();
- 
+
         this.searchControl.valueChanges.debounceTime(700).subscribe(search => {
             this.searching = false;
             if (search.length > 0)
             {
               var me = this;
-              this.getEmployees().subscribe( m => me.employees = m);    
+              this.queryPage =1;
+              this.getEmployees().subscribe( m => {
+                me.employees = m
+              });    
             }
             else
             {
@@ -95,7 +99,8 @@ export class PeopleSearchPage {
   {
     var me = this;
     // let employees =this.provider.getEmployees(this.accountProvider.getInxAccount().empNo, this.pattern).subscribe(res => me.employees = res);
-    let employees =this.provider.getEmployees(this.accountProvider.getInxAccount().empNo, this.pattern);
+    let employees =this.provider.getEmployees(this.accountProvider.getInxAccount().empNo, this.pattern, this.queryPage);
+    if (employees!= null) this.queryPage +=1;
     return employees.map((x, idx) => {
         let output : Employee[] = [];
         x.forEach(employee => {
@@ -109,9 +114,22 @@ export class PeopleSearchPage {
 
   }
 
+  doInfinite(infiniteScroll) {
+    console.log('Begin async operation');
+
+      setTimeout(() => {
+       this.getEmployees().subscribe( m => {
+        this.employees = this.employees.concat(m);
+        console.log('Async operation has ended:' + this.employees.length);
+         infiniteScroll.complete();
+       });
+      }, 500);
+  }
+
   onSearchInput()
   {
     this.searching = true;
+    this.queryPage =1;
   }
   // onInput($event)
   // {

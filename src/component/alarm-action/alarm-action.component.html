@@ -1,5 +1,13 @@
     <ion-item>
-        <ion-label *ngIf="alarmAction.actionType != 5">
+        <ion-icon *ngIf="alarmAction.actionType === 1 && alarmAction.isDept === false" name="person" color="blue1" item-start></ion-icon>
+        <ion-icon *ngIf="alarmAction.actionType === 1 && alarmAction.isDept === true"  name="people" color="purple1" item-start></ion-icon>
+        <ion-icon *ngIf="alarmAction.actionType === 2 || alarmAction.actionType === 4" name="contacts" color="green1" item-start></ion-icon>
+        <ion-icon *ngIf="alarmAction.actionType === 3" name="person" color="blue1" item-start></ion-icon>
+        <ion-icon *ngIf="alarmAction.actionType === 5" name="chatbubbles" color="orange1" item-start></ion-icon>
+        <ion-label *ngIf="alarmAction.actionType === 1 && alarmAction.isDept === true">
+            {{alarmAction.actionValue}}
+        </ion-label>
+        <ion-label *ngIf="alarmAction.actionType !=5 && alarmAction.isDept === false">
             {{alarmAction.name}}
         </ion-label>
         <ion-label *ngIf="alarmAction.actionType === 5">

@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>{{pageTitle}}</ion-title>
+    <ion-title><ion-icon name="person" color="blue1"></ion-icon> {{pageTitle}}</ion-title>
     <ion-buttons end><button ion-button (click)="done()">Done</button></ion-buttons>
   </ion-navbar>
 
@@ -27,4 +27,10 @@
   <ion-list>
     <employee *ngFor="let employee of employees" [employee]="employee" [checked]="selectedEmployee == employee" (click)="selectEmployee(employee)"></employee>
   </ion-list>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

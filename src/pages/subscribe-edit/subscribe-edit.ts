@@ -30,16 +30,13 @@ subscribeCancelResult : SubscribeCancelResult;
   }
    
   ionViewDidLoad() {
-    let loader = this.loading.create({
-           content: 'Loading...',
-        });
-
+    let loader = this.loading.create({content: 'Loading...'});
     loader.present();
     this.alarmtype = this.navParams.get('alarmtype');
     this.provider.getSubscribed(this.accountProvider.getInxAccount().empNo,this.alarmtype,'').subscribe(
          res => {
            this.subscriptions = res
-           if(res) loader.dismiss();
+           loader.dismiss();
          }
     );   
 
@@ -56,21 +53,50 @@ subscribeCancelResult : SubscribeCancelResult;
       this.navCtrl.push(SubscribeConfigPage, {'subscription': subscription,'alarmtype': this.alarmtype});
   }
 
-  cancelAlarm(): void
+  checkAlarm():boolean
   {
-     let loader = this.loading.create({
-        content: '正在取消訂閱...',
-      });
-
-     loader.present();
-
      this.alarmIds =[];
-     let msg:string ="";
-
      this.subscriptions.forEach(subscription =>{
          if (subscription.isChecked === true)  this.alarmIds.push(subscription.alarmId);
      })
 
+     if (this.alarmIds === null|| this.alarmIds.length ===0) { 
+        this.showAlert('請選擇至少一筆AlarmID');                        
+        return false;
+     }
+     return true;
+  }
+
+  cancelConfirm():void
+  {
+
+  if (this.checkAlarm() === false) return;
+  let alert = this.alertCtrl.create({
+    title: '取消訂閱',
+    buttons: [
+      {
+        text: 'Cancel',
+        handler: () => {console.log('Not to Cancel Subscription');}
+        
+      },
+      {
+        text: 'OK',
+        handler: () => {this.cancelAlarm();}
+      }
+    ]
+  });
+  alert.present();
+  }
+
+  cancelAlarm():void
+  {
+     let loader = this.loading.create({
+        content: 'Processing...',
+      });
+
+     loader.present();
+
+     let msg:string ="";
      this.provider.cancelSubscribeAlarm(this.alarmIds,this.accountProvider.getInxAccount().empNo).subscribe(
                   res =>{
                           for (let i= res.subResult.length-1 ; i>=0; i--) {
@@ -86,21 +112,19 @@ subscribeCancelResult : SubscribeCancelResult;
                                 }
                           }
                         loader.dismiss();
-                        if (msg)
-                        {
-                         let alert = this.alertCtrl.create({
-                                     title: '訊息',
-                                     subTitle: msg,
-                                     buttons: ['OK']
-                                     });
-                         alert.present();
-                        }
+                        if (msg) this.showAlert(msg);
                       },
                   error => {
                     loader.dismiss();
                     console.log('Error: ', error);
                   }
      );  
+  }
+
+  showAlert(subTitle:string): void
+  {
+        let alert = this.alertCtrl.create({ title: '訊息', subTitle: subTitle,buttons: ['OK'] });
+        alert.present();
   }
 
 }

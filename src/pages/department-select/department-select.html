@@ -5,9 +5,8 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-
   <ion-navbar>
-    <ion-title>{{pageTitle}}</ion-title>
+    <ion-title><ion-icon name="people" color="purple1"></ion-icon> {{pageTitle}}</ion-title>
     <ion-buttons end><button ion-button (click)="done()">Done</button></ion-buttons>
   </ion-navbar>
 
@@ -18,10 +17,19 @@
   <ion-searchbar
     [(ngModel)]="pattern"
     [showCancelButton]="shouldShowCancel"
-    (ionInput)="onInput($event)"
-    (ionCancel)="onCancel($event)">
+    [formControl]="searchControl"
+    (ionInput)="onSearchInput()">
   </ion-searchbar>
+      <div *ngIf="searching" class="spinner-container">
+        <ion-spinner></ion-spinner>
+    </div>  
   <ion-list>
     <department *ngFor="let department of departments" [department]="department" [checked]="selectedDepartment == department" (click)="selectDepartment(department)"></department>
   </ion-list>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

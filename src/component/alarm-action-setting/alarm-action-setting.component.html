@@ -1,8 +1,20 @@
     <ion-item>
-        <ion-label *ngIf="alarmActionSetting.settingType ==='M'">
-            {{alarmActionSetting.mailRecipient}}
+        <ion-icon *ngIf="alarmActionSetting.settingType ==='M' && alarmActionSetting.mailName !='' " name="person" color="blue1" item-start></ion-icon>
+        <ion-icon *ngIf="alarmActionSetting.settingType ==='M' && alarmActionSetting.mailName ==='' " name="people" color="purple1" item-start></ion-icon>
+        <ion-icon *ngIf="alarmActionSetting.settingType ==='AP'" name="person" color="blue1" item-start></ion-icon>
+        <ion-icon *ngIf="alarmActionSetting.settingType ==='AG'" name="contacts" color="green1" item-start></ion-icon>
+        <ion-icon *ngIf="alarmActionSetting.settingType ==='AC'" name="chatbubbles" color="orange1" item-start></ion-icon>
+
+        <ion-label *ngIf="alarmActionSetting.settingType ==='M' && alarmActionSetting.mailName !='' ">
+             {{alarmActionSetting.mailName}}
         </ion-label>
-        <ion-label *ngIf="alarmActionSetting.settingType ==='AP' || alarmActionSetting.settingType ==='AG'">
+        <ion-label *ngIf="alarmActionSetting.settingType ==='M' && alarmActionSetting.mailName ==='' ">
+             {{alarmActionSetting.mailRecipient}}
+        </ion-label>
+        <ion-label *ngIf="alarmActionSetting.settingType ==='AP'">
+             {{alarmActionSetting.mAppRecipient}}
+        </ion-label>
+        <ion-label *ngIf="alarmActionSetting.settingType ==='AG'">
              {{alarmActionSetting.mAppRecipient}}
         </ion-label>
         <ion-label *ngIf="alarmActionSetting.settingType ==='AC'">

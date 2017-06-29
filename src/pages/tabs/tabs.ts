@@ -27,10 +27,8 @@ export class TabsPage {
   constructor(public platform: Platform, public alertCtrl: AlertController
     , public loading: LoadingController, public accountProvider: AccountProvider
     , public employeeProvider: EmployeeProvider) {
-  }
-
-  ionViewDidLoad() {
-    let loader = this.loading.create({
+        this.platform.ready().then((readySource) => {
+       let loader = this.loading.create({
       content: '正在取得使用者資訊...',
     });
 
@@ -60,6 +58,11 @@ export class TabsPage {
       });
       alert.present();
     });
+    });
+  }
+
+  ionViewDidLoad() {
+  
 
   }
   // ionViewCanEnter(): boolean
