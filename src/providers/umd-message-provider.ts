@@ -67,7 +67,7 @@ export class UmdMessageProvider implements MessageProvider {
          //return this.query('delete from kv where key = ?', [key]);
     }
  
-   getAllMessage(): Promise<Message[]>{
+  getAllMessage(): Promise<Message[]>{
     // id text,occurDT text, alarmID text,eqptID text,alarmMessage text,alarmType text,description text,read text
      return this.query('select id,occurDT,alarmID ,eqptID,alarmMessage,description,alarmType from message order by occurDT asc  ')
          .then(resultSet => {
@@ -95,6 +95,44 @@ export class UmdMessageProvider implements MessageProvider {
                     }
           }) 
         }
+
+  getMessagebyPagefromSQLite(queryPage: number): Promise<Message[]>{
+    // id text,occurDT text, alarmID text,eqptID text,alarmMessage text,alarmType text,description text,read text
+     return this.query('select id,occurDT,alarmID ,eqptID,alarmMessage,description,alarmType from message order by occurDT asc ' +
+                       'limit '+ (queryPage + (queryPage-1)*20) +' , ' + queryPage*20  )
+         .then(resultSet => {
+            //   console.log("getallresultSet: "+JSON.stringify(resultSet));
+              if(resultSet.res.rows.length > 0) {
+                     //   this.items = [];
+                       this.message=[];
+                        for(let i = 0; i < resultSet.res.rows.length; i++) {
+                           var row = resultSet.res.rows.item(i);
+                            this.message.push({
+                              "id": row.id,
+                              "occurDT": new Date(row.occurDT),
+                              "alarmID": row.alarmID,
+                              "description": row.description,
+                              "alarmMessage":row.alarmMessage,                             
+                              "alarmType": row.alarmType,
+                              "eqptID": row.eqptID ,   
+                              "read": row.read ,
+                                                        
+                            });
+                        }
+                        
+                   //      console.log('SqliteMessage:'+JSON.stringify(this.message));
+                         return   this.message;
+                    }
+          }) 
+        }
+
+  getMessagebyPage(queryPage: number) : Observable<Message[]>
+  {
+     return  Observable.fromPromise(this.platform.ready()).map(m => 
+             Observable.fromPromise(this.getMessagebyPagefromSQLite(queryPage))
+            ).concatAll();
+
+  }
   
   
  getMessage() : Observable<Message[]>

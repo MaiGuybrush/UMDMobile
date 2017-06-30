@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+// import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { SubscribeConfigPage } from '../subscribe-config/subscribe-config';
 import { SubscriptionProvider } from '../../providers/subscription-provider'
@@ -6,6 +7,7 @@ import { Subscribe } from '../../models/subscribe';
 import { AccountProvider } from '../../providers/account-provider'
 import { LoadingController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
+// import { Content } from 'ionic-angular';
 
 /*
   Generated class for the SubscribeAdd page.
@@ -18,6 +20,7 @@ import { AlertController } from 'ionic-angular';
   templateUrl: 'subscribe-add.html'
 })
 export class SubscribeAddPage {
+// @ViewChild(Content) content: Content;
 alarmtype: string;
 nosubscriptions: Subscribe[] = [];
 pattern : string;
@@ -42,6 +45,10 @@ alarmIds: string[]=[];
        );  
     console.log('ionViewDidLoad SubscribeAddPage');
   }
+
+  // ionViewDidEnter() {
+  //   this.content.scrollToBottom();
+  // }
 
   checkAlarm():boolean
   {
@@ -81,7 +88,11 @@ alarmIds: string[]=[];
                       if (m === true) {
                         loader.dismiss();
                         this.navCtrl.push(SubscribeConfigPage, {'alarmtype': this.alarmtype, 'alarmIds': this.alarmIds });
-                        }
+                      }else
+                      {
+                        
+                      }
+                      
                      });
   }
 

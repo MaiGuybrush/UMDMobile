@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild  } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { SubscribeAddPage } from '../subscribe-add/subscribe-add';
 import { SubscriptionProvider } from '../../providers/subscription-provider'
@@ -8,6 +8,7 @@ import { SubscribeConfigPage } from '../subscribe-config/subscribe-config';
 import { AccountProvider } from '../../providers/account-provider';
 import { AlertController } from 'ionic-angular';
 import { LoadingController } from 'ionic-angular';
+
 
 /*
   Generated class for the SubscribeEdit page.
@@ -20,6 +21,7 @@ import { LoadingController } from 'ionic-angular';
   templateUrl: 'subscribe-edit.html'
 })
 export class SubscribeEditPage {
+
 alarmtype: string;
 subscriptions: Subscribe[] = [];
 alarmIds: string[]=[];
@@ -42,6 +44,7 @@ subscribeCancelResult : SubscribeCancelResult;
 
     console.log('ionViewDidLoad SubscribeEditPage');
   }
+
   
   gotoAdd(): void
   {

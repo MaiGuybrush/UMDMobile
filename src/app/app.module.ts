@@ -12,6 +12,7 @@ import { MyApp } from './app.component'
 import { InterceptedHttp } from './intercepted-http'
 import { FilterPipe } from './filter.pipe.ts'
 import { GroupByPipe } from './groupby.pipe.ts'
+import { OrderByPipe } from './orderby.pipe.ts'
 import { AboutPage } from '../pages/about/about'
 import { AuthTestPage } from '../pages/auth-test/auth-test'
 import { ConfigPage } from '../pages/config/config'
@@ -72,6 +73,7 @@ import { MockAccountProvider } from '../mocks/providers/mock-account-provider'
     MyApp,
     FilterPipe,
     GroupByPipe,
+    OrderByPipe,
     AboutPage,
     AuthTestPage,
     ConfigPage,

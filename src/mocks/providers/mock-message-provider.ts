@@ -29,6 +29,11 @@ export class MockMessageProvider implements MessageProvider {
     return Observable.from([MESSAGES]);
   }
 
+  getMessagebyPage(queryPage: number) : Observable<Message[]>
+  {
+    return Observable.from([MESSAGES]);
+  }
+
   getMessageFromUmd(beforeDT:Date) : Observable<Message[]> //UMD Service provide
   {
     return Observable.from([MESSAGES]);

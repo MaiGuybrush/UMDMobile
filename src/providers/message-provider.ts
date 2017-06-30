@@ -17,5 +17,7 @@ export abstract class MessageProvider {
 
   abstract remove(key: string): Promise<any>
   // abstract getall(): Promise<any>
+
+  abstract getMessagebyPage(queryPage: number) : Observable<Message[]>
 }
 
