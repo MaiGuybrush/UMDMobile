@@ -1,6 +1,7 @@
 import { Message } from '../models/message';
 export const MESSAGES: Message[] = [
       {
+        rowid: 1,
         id:`123456789ASDFA`,
         description: `ZALL-CIM-RTQCS-AP_fail,RTQCS 運作異常 AP_fail _TFT4`,
         alarmID: 'ZALL-CIM-RTQCS-AP_fail',
@@ -11,6 +12,7 @@ export const MESSAGES: Message[] = [
         read: true
       },
       { 
+        rowid: 2,
         id:`123456789ASDFB`,
         description: 'RTQCS 運作異常 AP_fail _TFT3',
         alarmID: 'ATFT3-CIM-RTQCS-AP_fail',
@@ -41,6 +43,7 @@ export const MESSAGES: Message[] = [
         read: false
       },
       { 
+        rowid: 1,
         id:`123456789ASDFC`,
         description: 'STCO0200 alarm, code[0001]',
         alarmID: 'TFT3-PHOTO-EQP-alarm',
@@ -51,6 +54,7 @@ export const MESSAGES: Message[] = [
         read: false
       },
       {
+        rowid: 1,
         id:`123456789ASDFD`,
         description: 'alarm test test test',
         alarmID: 'ACF03-CIM-COMMON-test',
@@ -61,6 +65,7 @@ export const MESSAGES: Message[] = [
         read: false
       },
       {
+        rowid: 1,
         id:`123456789ASDFE`,
         description: 'STCO0200 alarm, code[0001]',
         alarmID: 'TFT3-PHOTO-EQP-alarm',
@@ -71,6 +76,7 @@ export const MESSAGES: Message[] = [
         read: false
       },
       {
+        rowid: 1,
         id:`123456789ASDFF`,
         description: 'STCO0200 alarm, code[0001]',
         alarmID: 'TFT3-PHOTO-EQP-alarm',
@@ -81,6 +87,7 @@ export const MESSAGES: Message[] = [
         read: false
       },
       {
+        rowid: 1,
         id:`123456789ASDFG`,
         description: 'STCO0200 alarm, code[0001]',
         alarmID: 'TFT3-PHOTO-EQP-alarm',
@@ -91,6 +98,7 @@ export const MESSAGES: Message[] = [
         read: false
       },
       {
+        rowid: 1,
         id:`123456789ASDFH`,
         description: 'STCO0200 alarm, code[0001]',
         alarmID: 'TFT3-PHOTO-EQP-alarm',
@@ -101,6 +109,7 @@ export const MESSAGES: Message[] = [
         read: false
       },
       {
+        rowid: 1,
         id:`123456789ASDFI`,
         description: 'STCO0200 alarm, code[0001]',
         alarmID: 'TFT3-PHOTO-EQP-alarm',

@@ -46,8 +46,8 @@
 
 
 <ion-content padding #content>
-  <ion-list>
-    <message-category *ngFor="let categoryGroup of messages | groupBy:getCategoryField()" [category]="categoryGroup.key" 
-    [messages]="categoryGroup.value" [navCtrl]="navCtrl"></message-category>
+  <ion-list *ngIf="messages">
+    <message-category *ngFor="let categoryGroup of messages | groupBy:getCategoryField()" [categoryType]="category" [category]="categoryGroup.key" 
+    [messages]="categoryGroup.value" [navCtrl]="navCtrl" (itemClicked)="pushPage($event)"></message-category>
   </ion-list>
 </ion-content>

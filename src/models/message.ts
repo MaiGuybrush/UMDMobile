@@ -4,6 +4,7 @@ export class Message
     {
 
     }
+    rowid: number;
     id:string;
     description: string;
     alarmID: string;

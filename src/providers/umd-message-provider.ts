@@ -6,6 +6,7 @@ import { Message } from '../models/message'
 import { MessageProvider } from './message-provider'
 import { Observable } from 'rxjs/Rx'
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
+import { MESSAGES } from '../mocks/MESSAGES'
 
 /*
   Generated class for the Message provider.
@@ -15,11 +16,12 @@ import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 */
 @Injectable()
 export class UmdMessageProvider implements MessageProvider {
-      storage: any;
+     storage: any;
      DB_NAME: string = 'umd_Sorage';
      items = [];
      message:Message[]=[];
-
+     debug = true;
+     pageSize = 20;
   constructor(public platform: Platform,public http: Http, public sqlite: SQLite) {
       sqlite.create({ name: this.DB_NAME, location: 'default' })
           .then((db: SQLiteObject) => {
@@ -28,10 +30,22 @@ export class UmdMessageProvider implements MessageProvider {
       });
   }
   protected tryInit() {
-        this.query('CREATE TABLE IF NOT EXISTS message (id text,occurDT text, alarmID text,eqptID text,alarmMessage text,alarmType text,description text,read text ,PRIMARY KEY(id))')
+        if (this.debug)
+        {
+          this.query('DROP TABLE IF EXISTS message').catch();
+        }
+        this.query(`CREATE TABLE IF NOT EXISTS message (id text, occurDT text, alarmID text,eqptID text
+                      , alarmMessage text,alarmType text,description text,read text)`)
         .catch(err => {
             console.error('Unable to create initial storage message', err.tx, err.err);
         });
+        if (this.debug)
+        {
+          MESSAGES.forEach(m => {
+            this.saveMessage(m);
+          })
+            
+        }
     }
      /**
      * Perform an arbitrary SQL operation on the database. Use this method
@@ -63,88 +77,71 @@ export class UmdMessageProvider implements MessageProvider {
 
  
   remove(key: string): Promise<any> {
-        return this.query('delete from message where alarmID like ?', [key]);
-         //return this.query('delete from kv where key = ?', [key]);
-    }
+      return this.query('delete from message where alarmID like ?', [key]);
+        //return this.query('delete from kv where key = ?', [key]);
+  }
  
-  getAllMessage(): Promise<Message[]>{
+   private loadMessage(condition: string, queryPageNo: number): Promise<Message[]>{
     // id text,occurDT text, alarmID text,eqptID text,alarmMessage text,alarmType text,description text,read text
-     return this.query('select id,occurDT,alarmID ,eqptID,alarmMessage,description,alarmType from message order by occurDT asc  ')
+    let limit = queryPageNo > 0 ? ` limit ${(queryPageNo - 1) * this.pageSize + 1}, ${(queryPageNo) * this.pageSize}` : '';
+     return this.query(`select rowid, id,occurDT,alarmID ,eqptID,alarmMessage,description,alarmType from message ${condition} order by occurDT asc 
+                        ${limit}` )
          .then(resultSet => {
             //   console.log("getallresultSet: "+JSON.stringify(resultSet));
-              if(resultSet.res.rows.length > 0) {
+            if(resultSet.res.rows.length > 0) {
                      //   this.items = [];
-                       this.message=[];
-                        for(let i = 0; i < resultSet.res.rows.length; i++) {
-                           var row = resultSet.res.rows.item(i);
-                            this.message.push({
-                              "id": row.id,
-                              "occurDT": new Date(row.occurDT),
-                              "alarmID": row.alarmID,
-                              "description": row.description,
-                              "alarmMessage":row.alarmMessage,                             
-                              "alarmType": row.alarmType,
-                              "eqptID": row.eqptID ,   
-                              "read": row.read ,
-                                                        
-                            });
-                        }
+              this.message=[];
+              for(let i = 0; i < resultSet.res.rows.length; i++) {
+                  var row = resultSet.res.rows.item(i);
+                  this.message.push({
+                    "id": row.id,
+                    "rowid": row.rowid,
+                    "occurDT": new Date(row.occurDT),
+                    "alarmID": row.alarmID,
+                    "description": row.description,
+                    "alarmMessage":row.alarmMessage,                             
+                    "alarmType": row.alarmType,
+                    "eqptID": row.eqptID ,   
+                    "read": row.read ,
+                                              
+                  });
+              }
                         
                    //      console.log('SqliteMessage:'+JSON.stringify(this.message));
                          return   this.message;
-                    }
+            }
+            else
+            {
+              return [];
+            }
           }) 
-        }
-
-  getMessagebyPagefromSQLite(queryPage: number): Promise<Message[]>{
-    // id text,occurDT text, alarmID text,eqptID text,alarmMessage text,alarmType text,description text,read text
-     return this.query('select id,occurDT,alarmID ,eqptID,alarmMessage,description,alarmType from message order by occurDT asc ' +
-                       'limit '+ (queryPage + (queryPage-1)*20) +' , ' + queryPage*20  )
-         .then(resultSet => {
-            //   console.log("getallresultSet: "+JSON.stringify(resultSet));
-              if(resultSet.res.rows.length > 0) {
-                     //   this.items = [];
-                       this.message=[];
-                        for(let i = 0; i < resultSet.res.rows.length; i++) {
-                           var row = resultSet.res.rows.item(i);
-                            this.message.push({
-                              "id": row.id,
-                              "occurDT": new Date(row.occurDT),
-                              "alarmID": row.alarmID,
-                              "description": row.description,
-                              "alarmMessage":row.alarmMessage,                             
-                              "alarmType": row.alarmType,
-                              "eqptID": row.eqptID ,   
-                              "read": row.read ,
-                                                        
-                            });
-                        }
-                        
-                   //      console.log('SqliteMessage:'+JSON.stringify(this.message));
-                         return   this.message;
-                    }
-          }) 
-        }
-
-  getMessagebyPage(queryPage: number) : Observable<Message[]>
-  {
-     return  Observable.fromPromise(this.platform.ready()).map(m => 
-             Observable.fromPromise(this.getMessagebyPagefromSQLite(queryPage))
-            ).concatAll();
-
   }
   
-  
- getMessage() : Observable<Message[]>
+  getUnreadMessage() : Observable<Message[]>
   {
      return  Observable.fromPromise(this.platform.ready()).map(m => 
-             Observable.fromPromise(this.getAllMessage())
-            ).concatAll();
+             Observable.fromPromise(this.loadMessage("WHERE read = '1'", -1))
+            ).concatAll();    
   }
 
-  getMessageByPage(alarmType:string, page: number, pageSize: number) : Observable<Message[]>
+  getMessage(page: number, alarmType:string, eqptID:string, alarmID:string) : Observable<Message[]>
   {
-    return undefined;
+     let condition = " WHERE 1=1 ";
+     if (alarmType)
+     {
+        condition += `AND alarmType = '${alarmType}'`;
+     }
+     if (eqptID)
+     {
+        condition += `AND eqptID = '${eqptID}'`;
+     }
+     if (alarmID)
+     {
+        condition += `AND alarmID = '${alarmID}'`;
+     }
+     return  Observable.fromPromise(this.platform.ready()).map(m => 
+             Observable.fromPromise(this.loadMessage(condition, page))
+            ).concatAll();
   }
 
   getMessageFromUmd(beforeDT:Date) : Observable<Message[]> //UMD Service provide
@@ -155,8 +152,30 @@ export class UmdMessageProvider implements MessageProvider {
 
   saveMessage(message: Message)
   {
-        console.log("set id, alarmid,message,time="+ message.id + ":"+ message.alarmID + ":"+ message.alarmMessage+":"+message.occurDT);
-        return this.query('insert into message(id,occurDT , alarmID ,eqptID ,alarmMessage ,alarmType ,description ,read ) values (?,?,?,?,?,?,?,?)', [message.id,message.occurDT,message.alarmID,message.eqptID,message.alarmMessage,message.alarmType,message.description,message.read]);
+      console.log("set id, alarmid,message,time="+ message.id + ":"+ message.alarmID + ":"+ message.alarmMessage+":"+message.occurDT);
+      this.query('insert into message(id,occurDT , alarmID ,eqptID ,alarmMessage ,alarmType ,description ,read ) values (?,?,?,?,?,?,?,?)'
+        , [message.id,message.occurDT,message.alarmID,message.eqptID,message.alarmMessage,message.alarmType,message.description,message.read])
+      .then( m => {
+          this.query('select last_insert_rowid() as rowid')
+          .then
+          {
+            res => {
+              message.rowid = res.rows.item[0].rowid;
+            }
+          };
+        })
+        .catch(e => {
+          console.log(e.message);
+        });
     
+  }
+
+  setMessageRead(message:Message[])
+  {
+          message.filter(f=>(!f.read))
+                 .map(m=>{
+                    console.log("update  message set read= 1 " + "where alarmID ="+m.alarmID +" and eqptID = " + m.eqptID + "and alarmType =" + m.alarmType +" and occurDT = "+m.occurDT +" and read= 1");
+                    return this.query('update  message set read = ? where rowid = ?', ['1',m.rowid]);
+                    })    
   }
 }

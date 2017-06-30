@@ -3,7 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { MenuController } from 'ionic-angular';
 import { MessageProvider } from '../../providers/message-provider';
 import { Message } from '../../models/message';
-// import { CategorizedMessages } from '../../models/categorized-messages';
+import { CategoryMethod } from '../../models/categorized-messages';
 import { MessagesPage } from '../messages/messages';
 import { AuthTestPage } from '../auth-test/auth-test';
 /*
@@ -12,13 +12,6 @@ import { AuthTestPage } from '../auth-test/auth-test';
   See http://ionicframework.com/docs/v2/components/#navigation for more info on
   Ionic pages and navigation.
 */
-
-export enum CategoryMethod
-{
-  ByAlarmID,
-  ByEquipment,
-  ByAlarmType
-}
 
 
 @Component({
@@ -44,7 +37,7 @@ export class CategorizedMessagesPage {
   ionViewDidEnter() {
     console.log('ionViewDidEnter CategorizedMessagePage');
     var me = this;
-    this.provider.getMessage().subscribe(
+    this.provider.getUnreadMessage().subscribe(
       m => {
         me.messages = [].concat(m);
       });
@@ -65,4 +58,12 @@ export class CategorizedMessagesPage {
   {
     this.navCtrl.push(AuthTestPage)    
   }
+
+  pushPage(event): void
+  {
+//        this.navCtrl.push(MessagesPage, {'messages': this.messages})
+      this.navCtrl.push(MessagesPage, {'categoryType': event.categoryType, 'categoryValue': event.category})
+  }
+
+
 }

@@ -23,14 +23,16 @@ export class MockMessageProvider implements MessageProvider {
     return;
   }
   
-  getMessage() : Observable<Message[]>
+  getUnreadMessage() : Observable<Message[]>
+  {
+    return Observable.from([MESSAGES]);    
+  }
+  
+  getMessage(page: number, alarmType:string, equipment:string, alarmID:string) : Observable<Message[]>
   {
     console.log('mockMESSAGES:'+JSON.stringify(MESSAGES));
     return Observable.from([MESSAGES]);
   }
-
-  
-  
 
   getMessageFromUmd(beforeDT:Date) : Observable<Message[]> //UMD Service provide
   {
@@ -52,7 +54,10 @@ export class MockMessageProvider implements MessageProvider {
       MESSAGES.push(message);
     }
   }
-
+  setMessageRead(messages: Message[])
+  {
+    
+  }
   // set(key: string, value: string): Promise<any>
   // {
   //     return undefined;

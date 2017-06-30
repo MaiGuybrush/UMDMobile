@@ -1,8 +1,16 @@
-import { Component, Input, OnInit, OnChanges} from '@angular/core';
+import { Component, Input, OnInit, OnChanges, EventEmitter, Output} from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { Observable } from 'rxjs/Rx'
 import { MessagesPage } from '../../pages/messages/messages'
 import { Message } from '../../models/message';
+
+export enum CategoryMethod
+{
+  ByAlarmID,
+  ByEquipment,
+  ByAlarmType
+}
+
 
 @Component({
     selector: 'message-category',
@@ -14,9 +22,13 @@ export class MessageCategoryComponent implements OnInit
     @Input()
     messages : Message[] = [];    
     @Input()
+    categoryType: CategoryMethod;
+    @Input()
     category: string;
     @Input()
     navCtrl: NavController;
+    @Output()
+    itemClicked = new EventEmitter();
     constructor()
     {
     }
@@ -29,12 +41,13 @@ export class MessageCategoryComponent implements OnInit
     {
         this.unreadCount = 0;
         var me = this;
+//        return Observable.from(this.messages).filter(m => !m.read).subscribe(m => me.unreadCount++)        
         return Observable.from(this.messages).filter(m => !m.read).subscribe(m => me.unreadCount++)        
     }
 
-    pushPage(): void
+    clickedHandler()
     {
-        this.navCtrl.push(MessagesPage, {'messages': this.messages})
+        this.itemClicked.emit({categoryType: this.categoryType, categoryValue: this.category});
     }
 
     getUnreadCount()

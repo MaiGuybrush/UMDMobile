@@ -136,10 +136,9 @@ export class MyApp {
       console.log("Push notification app open" + data.alarmID);
     } else {
       if (!data.additionalData.coldstart) {
-        //if user NOT using app and push notification comes
-        //TODO: Your logic on click of push notification directly
         this.messageProvider.saveMessage(m);
-        console.log("Push notification background " + data.alarmID);
+        console.log("Push notification background " + m.id);
+        window.location.replace("#/app/src/pages/meeeages/messages");         
       }
     }
   }

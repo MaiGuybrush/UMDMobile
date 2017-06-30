@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { MenuController } from 'ionic-angular';
-// import { MessageProvider } from '../../mocks/providers/message.provider'
+import { CategoryMethod } from '../../component/message-category/message-category.component'
+import { MessageProvider } from '../../providers/message-provider'
 import { Message } from '../../models/message';
 import { Observable } from 'rxjs/Rx'
 import { MessageProvider } from '../../providers/message-provider'
@@ -15,6 +16,21 @@ export class MessagesPage {
   queryPage: number;
   constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController,
               public provider: MessageProvider) {
+    let categoryMethod = this.navParams.get('categoryMethod');
+    let categoryValue = this.navParams.get('categoryValue');
+    switch(categoryMethod)
+    {
+    case CategoryMethod.ByAlarmType:
+        messageProvider.getMessage(1, categoryValue, undefined, undefined).subscribe(m => this.messages = m);
+    break;
+    case CategoryMethod.ByEquipment:
+        messageProvider.getMessage(1, undefined, categoryValue, undefined).subscribe(m => this.messages = m);
+    break;
+    case CategoryMethod.ByAlarmID:
+        messageProvider.getMessage(1, undefined, undefined, categoryValue).subscribe(m => this.messages = m);
+    break;
+    }
+              
   }
 
   ionViewDidLoad() {

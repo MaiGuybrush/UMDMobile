@@ -13,7 +13,7 @@ export class MessagesDetailPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController, public messageProvider: MessageProvider ) {
     this.msg = this.navParams.get('msg');
     this.msg.read = true;
-    messageProvider.saveMessage(this.msg);
+    messageProvider.setMessageRead([].concat(this.msg));
   }
 
 }
