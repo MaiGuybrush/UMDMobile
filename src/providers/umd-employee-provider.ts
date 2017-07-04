@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Platform } from "ionic-angular"
 import { Http, Headers, RequestOptions } from '@angular/http'
 import { Api } from './api'
 import { Observable } from 'rxjs/Rx';
@@ -12,7 +13,7 @@ export class UmdEmployeeProvider implements EmployeeProvider {
   prePattern: string = "";
   preEmpId: string = "";
   preResult: Employee[] = [];
-  constructor(public http: Http) {
+  constructor(public http: Http, public platform: Platform) {
      console.log('Hello Employee Provider');
   }
 
@@ -22,15 +23,27 @@ export class UmdEmployeeProvider implements EmployeeProvider {
 
       let url = Api.getHttpUrl('UpdateUserInfo');
 
-      let body = {"EmpId": `${empId}`,"DeviceToken": `${deviceToken}`};
-      console.log('post start');
-      let response = this.http.post(url, body, options)
-      response.subscribe(m => {}, e => {
-        console.log("updateEmployeeInfo error! => " + e)});
-      return response.map(res => 
-                      Api.toCamel(res.json()).isSuccess
-                  );
-    
+      let platform = undefined;
+      if (this.platform.is('ios'))
+      {
+        platform = 'ios';
+      }
+      if (this.platform.is('android'))
+      {
+        platform = 'android';
+      }
+      if (platform)
+      {
+        let body = {"EmpId": `${empId}`,"DeviceToken": `${deviceToken}`,"Platform": `${platform}`};
+        console.log('post start');
+        let response = this.http.post(url, body, options)
+        response.subscribe(m => {}, e => {
+          console.log("updateEmployeeInfo error! => " + e)});
+        return response.map(res => 
+                        Api.toCamel(res.json()).isSuccess
+                    );
+      }
+      return Observable.from([true]);
   }
 
   getEmployees(empID: string, pattern: string, queryPage: number) : Observable<Employee[]>

@@ -20,8 +20,8 @@ export class UmdMessageProvider implements MessageProvider {
      DB_NAME: string = 'umd_Sorage';
      items = [];
      message:Message[]=[];
-     debug = true;
-     pageSize = 20;
+     debug = false;
+     pageSize = 8;
   constructor(public platform: Platform,public http: Http, public sqlite: SQLite) {
       sqlite.create({ name: this.DB_NAME, location: 'default' })
           .then((db: SQLiteObject) => {
@@ -83,8 +83,8 @@ export class UmdMessageProvider implements MessageProvider {
  
    private loadMessage(condition: string, queryPageNo: number): Promise<Message[]>{
     // id text,occurDT text, alarmID text,eqptID text,alarmMessage text,alarmType text,description text,read text
-    let limit = queryPageNo > 0 ? ` limit ${(queryPageNo - 1) * this.pageSize + 1}, ${(queryPageNo) * this.pageSize}` : '';
-     return this.query(`select rowid, id,occurDT,alarmID ,eqptID,alarmMessage,description,alarmType from message ${condition} order by occurDT asc 
+    let limit = queryPageNo > 0 ? ` limit ${(queryPageNo - 1) * this.pageSize}, ${(queryPageNo) * this.pageSize}` : '';
+     return this.query(`select rowid, id,occurDT,alarmID ,eqptID,alarmMessage,description,alarmType,read from message ${condition} order by occurDT asc 
                         ${limit}` )
          .then(resultSet => {
             //   console.log("getallresultSet: "+JSON.stringify(resultSet));
@@ -121,6 +121,13 @@ export class UmdMessageProvider implements MessageProvider {
   {
      return  Observable.fromPromise(this.platform.ready()).map(m => 
              Observable.fromPromise(this.loadMessage("WHERE read = '1'", -1))
+            ).concatAll();    
+  }
+
+  getAllMessage() : Observable<Message[]>
+  {
+     return  Observable.fromPromise(this.platform.ready()).map(m => 
+             Observable.fromPromise(this.loadMessage("", -1))
             ).concatAll();    
   }
 

@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+import { LoadingController } from 'ionic-angular';
 import { MenuController } from 'ionic-angular';
 import { CategoryMethod } from '../../component/message-category/message-category.component'
 import { MessageProvider } from '../../providers/message-provider'
 import { Message } from '../../models/message';
 import { Observable } from 'rxjs/Rx'
-import { MessageProvider } from '../../providers/message-provider'
 
 @Component({
   selector: 'page-messages',
@@ -14,41 +14,54 @@ import { MessageProvider } from '../../providers/message-provider'
 export class MessagesPage {
   messages: Message[] = []
   queryPage: number;
+  categoryMethod: CategoryMethod;
+  categoryValue: string;
+
   constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController,
-              public provider: MessageProvider) {
-    let categoryMethod = this.navParams.get('categoryMethod');
-    let categoryValue = this.navParams.get('categoryValue');
-    switch(categoryMethod)
+              public messageProvider: MessageProvider, public loading: LoadingController) {
+    this.categoryMethod = this.navParams.get('categoryMethod');
+    this.categoryValue = this.navParams.get('categoryValue');
+    this.queryPage = 1;
+  }
+
+  queryMessageByPage(): Observable<Message[]>
+  {
+    switch(this.categoryMethod)
     {
     case CategoryMethod.ByAlarmType:
-        messageProvider.getMessage(1, categoryValue, undefined, undefined).subscribe(m => this.messages = m);
-    break;
+        return this.messageProvider.getMessage(this.queryPage, this.categoryValue, undefined, undefined);
     case CategoryMethod.ByEquipment:
-        messageProvider.getMessage(1, undefined, categoryValue, undefined).subscribe(m => this.messages = m);
-    break;
+        return this.messageProvider.getMessage(this.queryPage, undefined, this.categoryValue, undefined);
     case CategoryMethod.ByAlarmID:
-        messageProvider.getMessage(1, undefined, undefined, categoryValue).subscribe(m => this.messages = m);
-    break;
+        return this.messageProvider.getMessage(this.queryPage, undefined, undefined, this.categoryValue);
     }
-              
   }
 
   ionViewDidLoad() {
-       console.log('ionViewDidLoad MessagePage');
-       this.messages = this.navParams.get('messages');
-       this.queryPage = 2;
+    let loader = this.loading.create({
+      content: '正在載入訊息..',
+    });
+    this.queryMessageByPage().subscribe(m => {
+      this.appendMessage(m);
+      loader.dismiss();
+    });;
+  }
+
+  appendMessage(message: Message[])
+  {
+    this.messages = [].concat(this.messages).concat(message)
+    this.queryPage++;
   }
 
   doInfinite(infiniteScroll) {
     console.log('Begin async operation');
 
       setTimeout(() => {
-       this.provider.getMessagebyPage(this.queryPage).subscribe( m => {
-        this.messages = this.messages.concat(m);
-        this.queryPage += 1;
-        console.log('Async operation has ended:' + this.messages.length);
-         infiniteScroll.complete();
-       });
+        this.queryMessageByPage().subscribe(m => {
+            console.log('Async operation has ended:' + this.messages.length);
+            this.appendMessage(m);
+            infiniteScroll.complete();
+        });
       }, 500);
   }
 

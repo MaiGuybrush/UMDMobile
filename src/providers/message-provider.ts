@@ -10,6 +10,8 @@ export abstract class MessageProvider {
 
   abstract getMessageFromUmd(beforeDT:Date) : Observable<Message[]> //UMD Service provide
 
+  abstract getAllMessage() : Observable<Message[]>
+
   abstract setMessageRead(message:Message[])
 
   abstract saveMessage(message: Message)

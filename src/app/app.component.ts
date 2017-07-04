@@ -54,16 +54,17 @@ export class MyApp {
         me.pushInit();
         MyApp.pushObject.on('registration').subscribe((data: any) => {
           MyApp.fcmRegistrationId = data.registrationId;
-          this.employeeProvider.updateEmployeeInfo(m.comid, MyApp.fcmRegistrationId)
+          this.employeeProvider.updateEmployeeInfo(m.empNo, MyApp.fcmRegistrationId)
           .subscribe(m => 
           { 
             console.log("update user info successfully");
+            loader.dismiss();      
           },
           e => {
             console.log("update user info fail");
+            loader.dismiss();      
           },
           () => {
-            loader.dismiss();      
           });
         });
       }, e => {
@@ -105,9 +106,7 @@ export class MyApp {
       ios: {
         alert: 'true',
         badge: true,
-            sound: 'false',
-            senderID: '834424631529',
-            gcmSandbox: "true"
+        sound: 'true',
       },
       windows: {}
     };
@@ -121,7 +120,7 @@ export class MyApp {
 
   pushNotificationHandler(data: any) {
     let m: Message = new Message;
-    m.id = data.additionalData["google.message_id"];
+    m.id = '1234';//data.additionalData["google.message_id"];
     m.occurDT = data.additionalData.occurDT;
     m.alarmID = data.title;
     m.eqptID = data.additionalData.eqptID;
@@ -129,16 +128,29 @@ export class MyApp {
     m.alarmType = data.additionalData.alarmType;
     m.description = data.additionalData.description;
 
+    if(this.platform.is('ios')){        
+        MyApp.pushObject.finish().then(()=>{
+        console.log('Processing ios of push data is finished');
+      })
+    }
+
+
     //if user using app and push notification comes
     if (data.additionalData.foreground) {
       // if application open
       this.messageProvider.saveMessage(m);
       console.log("Push notification app open" + data.alarmID);
     } else {
-      if (!data.additionalData.coldstart) {
+      if (data.additionalData.coldstart) {
+        //if user NOT using app and push notification comes
+        //TODO: Your logic on click of push notification directly
         this.messageProvider.saveMessage(m);
-        console.log("Push notification background " + m.id);
-        window.location.replace("#/app/src/pages/meeeages/messages");         
+        console.log("Push notification background ");
+        
+      }else{
+        console.log("Tap Push notification bar background " );
+        window.location.replace("#/app/src/pages/meeeages/messages"); 
+
       }
     }
   }

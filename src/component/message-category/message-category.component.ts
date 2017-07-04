@@ -22,7 +22,7 @@ export class MessageCategoryComponent implements OnInit
     @Input()
     messages : Message[] = [];    
     @Input()
-    categoryType: CategoryMethod;
+    categoryMethod: CategoryMethod;
     @Input()
     category: string;
     @Input()
@@ -47,7 +47,7 @@ export class MessageCategoryComponent implements OnInit
 
     clickedHandler()
     {
-        this.itemClicked.emit({categoryType: this.categoryType, categoryValue: this.category});
+        this.itemClicked.emit({categoryMethod: this.categoryMethod, categoryValue: this.category});
     }
 
     getUnreadCount()

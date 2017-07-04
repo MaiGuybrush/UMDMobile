@@ -19,15 +19,17 @@ export class MockMessageProvider implements MessageProvider {
 
  constructor(public http: Http) {
   }
-  getAllMessage(): Promise<any>{
-    return;
-  }
   
   getUnreadMessage() : Observable<Message[]>
   {
     return Observable.from([MESSAGES]);    
   }
-  
+
+  getAllMessage() : Observable<Message[]>
+  {
+    return Observable.from([MESSAGES]);    
+  }
+
   getMessage(page: number, alarmType:string, equipment:string, alarmID:string) : Observable<Message[]>
   {
     console.log('mockMESSAGES:'+JSON.stringify(MESSAGES));

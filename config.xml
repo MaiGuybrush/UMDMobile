@@ -7,6 +7,7 @@
     <access origin="*" />
     <allow-navigation href="http://ionic.local/*" />
     <allow-navigation href="http://10.53.56.76:8100" />
+    <allow-navigation href="http://10.55.140.118:8100" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
@@ -64,7 +65,5 @@
     <plugin name="cordova-sqlite-storage" spec="^2.0.4" />
     <plugin name="de.appplant.cordova.plugin.local-notification" spec="^0.8.5" />
     <plugin name="ionic-plugin-keyboard" spec="~2.2.1" />
-    <plugin name="phonegap-plugin-push" spec="^1.10.4">
-        <variable name="SENDER_ID" value="834424631529" />
-    </plugin>
+    <plugin name="phonegap-plugin-push" spec="^2.0.0-rc5" />
 </widget>

@@ -3,7 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { MenuController } from 'ionic-angular';
 import { MessageProvider } from '../../providers/message-provider';
 import { Message } from '../../models/message';
-import { CategoryMethod } from '../../models/categorized-messages';
+import { CategoryMethod } from '../../component/message-category/message-category.component';
 import { MessagesPage } from '../messages/messages';
 import { AuthTestPage } from '../auth-test/auth-test';
 /*
@@ -37,7 +37,7 @@ export class CategorizedMessagesPage {
   ionViewDidEnter() {
     console.log('ionViewDidEnter CategorizedMessagePage');
     var me = this;
-    this.provider.getUnreadMessage().subscribe(
+    this.provider.getAllMessage().subscribe(
       m => {
         me.messages = [].concat(m);
       });
@@ -62,7 +62,7 @@ export class CategorizedMessagesPage {
   pushPage(event): void
   {
 //        this.navCtrl.push(MessagesPage, {'messages': this.messages})
-      this.navCtrl.push(MessagesPage, {'categoryType': event.categoryType, 'categoryValue': event.category})
+      this.navCtrl.push(MessagesPage, {'categoryMethod': event.categoryMethod, 'categoryValue': event.categoryValue})
   }
 
 

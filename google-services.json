@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "326170712857",
-    "firebase_url": "https://umdmobile-4f0ea.firebaseio.com",
-    "project_id": "umdmobile-4f0ea",
-    "storage_bucket": "umdmobile-4f0ea.appspot.com"
+    "project_number": "834424631529",
+    "firebase_url": "https://mynotificationtest-cf3f3.firebaseio.com",
+    "project_id": "mynotificationtest-cf3f3",
+    "storage_bucket": "mynotificationtest-cf3f3.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:326170712857:android:856fa4132b78adf3",
+        "mobilesdk_app_id": "1:834424631529:android:1794bfbe2bd2214b",
         "android_client_info": {
-          "package_name": "com.inx.app.umdmobile"
+          "package_name":  "com.inx.app.umdmobile"
         }
       },
       "oauth_client": [
         {
-          "client_id": "326170712857-3pohckjrinbupijpb5b8d87sg1d81ves.apps.googleusercontent.com",
+          "client_id": "834424631529-giltv5c7bn75gmte1qbejo54qc6lfmcd.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCxIhnyk0qK1lTbElcO80YWDV5tK9gXKa0"
+          "current_key": "AIzaSyAeAe1CpBjaz1upU8qP7heQT-fhXlbVfk4"
         }
       ],
       "services": {

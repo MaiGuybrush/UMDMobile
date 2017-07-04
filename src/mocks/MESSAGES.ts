@@ -23,6 +23,7 @@ export const MESSAGES: Message[] = [
         read: false
       },
       {
+        rowid: 2,
         id:`123456789ASDFA`,
         description: `RTQCS 運作異常 AP_fail _TFT4`,
         alarmID: 'KALL-CIM-RTQCS-AP_fail',
@@ -33,6 +34,7 @@ export const MESSAGES: Message[] = [
         read: true
       },
       { 
+        rowid: 2,
         id:`123456789ASDFB`,
         description: 'RTQCS 運作異常 AP_fail _TFT3',
         alarmID: 'OTFT3-CIM-RTQCS-AP_fail',
