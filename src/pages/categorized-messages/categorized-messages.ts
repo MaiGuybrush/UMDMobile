@@ -6,6 +6,7 @@ import { Message } from '../../models/message';
 import { CategoryMethod } from '../../component/message-category/message-category.component';
 import { MessagesPage } from '../messages/messages';
 import { AuthTestPage } from '../auth-test/auth-test';
+import { Subscription } from 'rxjs/Subscription';
 /*
   Generated class for the CategorizedMessage page.
 
@@ -23,6 +24,7 @@ export class CategorizedMessagesPage {
   activeMenu : string = "menu1";
   category : CategoryMethod = CategoryMethod.ByAlarmType;
   messages : Message[] = [];
+  subscription : Subscription;
   // categorizedMessage : CategorizedMessages[]
   constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController, public provider: MessageProvider) 
   {
@@ -41,8 +43,24 @@ export class CategorizedMessagesPage {
       m => {
         me.messages = [].concat(m);
       });
+    this.subscription = this.provider.getMessageNotifier().subscribe(m => {
+      me.messages.push(m);
+      me.messages = [].concat(me.messages);
+    });
   }
 
+  ionViewWillLeave() {
+    this.subscription.unsubscribe();
+  }
+
+  insertTestMessages()
+  {
+    this.provider.insertTestMessages().subscribe();
+    this.provider.getAllMessage().subscribe(
+      m => {
+       // this.messages = [].concat(m);
+      });
+  }
   getCategoryField() {
     switch(this.category)
     {

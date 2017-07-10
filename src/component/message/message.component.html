@@ -1,4 +1,4 @@
-    <ion-item (click)="pushMsgDetailPage()">
+    <ion-item (click)="pushMsgDetailPage()" (onLongPress)="deleteMessage()">
         <h2>{{msg.description}}</h2>
         <!--<ion-label>{{msg.description}}</ion-label>-->
         <p>{{msg.alarmMessage}}</p>

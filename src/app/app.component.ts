@@ -89,8 +89,6 @@ export class MyApp {
       //   alert.present();
       });
 
-
-
       // });
     }
 
@@ -119,7 +117,7 @@ export class MyApp {
   }
 
   pushNotificationHandler(data: any) {
-    let m: Message = new Message;
+    let m: Message = new Message();
     m.id = '1234';//data.additionalData["google.message_id"];
     m.occurDT = data.additionalData.occurDT;
     m.alarmID = data.title;
@@ -138,13 +136,14 @@ export class MyApp {
     //if user using app and push notification comes
     if (data.additionalData.foreground) {
       // if application open
-      this.messageProvider.saveMessage(m);
-      console.log("Push notification app open" + data.alarmID);
+      this.messageProvider.addMessage(m);
+
+      console.log("Push notification app open " + m.alarmID);
     } else {
       if (data.additionalData.coldstart) {
         //if user NOT using app and push notification comes
         //TODO: Your logic on click of push notification directly
-        this.messageProvider.saveMessage(m);
+        this.messageProvider.addMessage(m);
         console.log("Push notification background ");
         
       }else{

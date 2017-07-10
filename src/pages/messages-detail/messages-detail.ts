@@ -12,8 +12,9 @@ export class MessagesDetailPage {
   msg: Message
   constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController, public messageProvider: MessageProvider ) {
     this.msg = this.navParams.get('msg');
-    this.msg.read = true;
-    messageProvider.setMessageRead([].concat(this.msg));
   }
 
+  ionViewDidLoad() {
+    this.messageProvider.setMessageRead([this.msg]);
+  }
 }

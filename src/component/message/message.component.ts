@@ -1,6 +1,7 @@
-import { Component, Input} from '@angular/core';
+import { Component, Input, Output, EventEmitter} from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
+import { MessageProvider } from '../../providers/message-provider'
 import { MessagesDetailPage } from '../../pages/messages-detail/messages-detail'
 import { Message } from '../../models/message';
 
@@ -17,7 +18,13 @@ export class MessageComponent
     itemGroup: number;
     @Input()
     navCtrl: NavController;
-    constructor()
+    @Output()
+    itemLongPress = new EventEmitter();
+    constructor(public provider: MessageProvider, public loading: LoadingController)
+    {
+    }
+
+    deleteMessage(): void
     {
     }
 

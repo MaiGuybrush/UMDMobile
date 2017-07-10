@@ -38,6 +38,27 @@ export class MessagesPage {
     }
   }
 
+  onDelete(msg: Message)
+  {
+      let loader = this.loading.create({
+        content: '正在刪除...'
+      });
+      this.messageProvider.delete(msg.rowid).subscribe(m => {
+        this.messages.forEach((searchMsg, idx) => {
+          if (searchMsg.rowid == msg.rowid) 
+          {
+            this.messages.splice(idx, 1);
+          }
+        })
+        loader.dismiss();
+      }, e => {
+        console.log(`[messages.ts]delete message error! err="${e}"`);
+        loader.dismiss();
+      }, () => {
+        loader.dismiss();
+      });    
+  }
+
   ionViewDidLoad() {
     let loader = this.loading.create({
       content: '正在載入訊息..',

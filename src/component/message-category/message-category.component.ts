@@ -34,15 +34,18 @@ export class MessageCategoryComponent implements OnInit
     }
 
     ngOnInit() {
-        
+
     }
+
+
 
     ngOnChanges()
     {
-        this.unreadCount = 0;
-        var me = this;
-//        return Observable.from(this.messages).filter(m => !m.read).subscribe(m => me.unreadCount++)        
-        return Observable.from(this.messages).filter(m => !m.read).subscribe(m => me.unreadCount++)        
+        Observable.from(this.messages).count(
+          m => !m.read
+        ).subscribe(
+          m => this.unreadCount = m
+        );
     }
 
     clickedHandler()
