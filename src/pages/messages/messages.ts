@@ -13,6 +13,7 @@ import { Observable } from 'rxjs/Rx'
 })
 export class MessagesPage {
   messages: Message[] = []
+  todayMsgs: Message[] = []
   queryPage: number;
   categoryMethod: CategoryMethod;
   categoryValue: string;
@@ -43,9 +44,21 @@ export class MessagesPage {
     });
     this.queryMessageByPage().subscribe(m => {
       this.appendMessage(m);
+      this.filterDate();
       loader.dismiss();
     });;
   }
+
+  filterDate()
+  {
+    let today = new Date(Date.now());
+    for (let i=this.messages.length-1; i>=0;i--) {
+        if (this.messages[i].occurDT.getMonth() === today.getMonth() && this.messages[i].occurDT.getDate() === today.getDate()){
+              this.todayMsgs = this.todayMsgs.concat(this.messages[i]);
+              this.messages.splice(i,1); 
+        }
+    }
+  } 
 
   appendMessage(message: Message[])
   {
@@ -60,6 +73,7 @@ export class MessagesPage {
         this.queryMessageByPage().subscribe(m => {
             console.log('Async operation has ended:' + this.messages.length);
             this.appendMessage(m);
+            this.filterDate();
             infiniteScroll.complete();
         });
       }, 500);

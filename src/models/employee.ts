@@ -7,4 +7,5 @@ export class Employee
     adId: string;
     empId: string;
     name: string;
+    deptFullName: string;
 }

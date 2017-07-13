@@ -8,7 +8,7 @@ export const MESSAGES: Message[] = [
         alarmMessage: 'ZALL RTQCS TFT4 發生 PreInfo 運作異常，通報時間 20 分鐘 ，最後時間 : 201...',
         alarmType: 'RTQCS',
         eqptID: '',
-        occurDT: new Date('2017-01-02T11:00:01Z'),
+        occurDT: new Date('2017-07-13T11:00:01Z'),
         read: true
       },
       { 
@@ -19,7 +19,7 @@ export const MESSAGES: Message[] = [
         alarmMessage: 'RTQCS TFT3 發生 PreInfo Archive 運作異常，通報時間 20 分鐘 ，最後...',
         alarmType: 'RTQCS',
         eqptID: '',
-        occurDT: new Date('2017-01-02T11:30:01Z'),
+        occurDT: new Date('2017-07-13T11:30:01Z'),
         read: false
       },
       {

@@ -14,7 +14,9 @@
     <button ion-fab color="danger" mini (click)="cancelConfirm()" ><ion-icon name="close"></ion-icon></button>
   </ion-fab>
 
-<ion-list>
+<!--<ion-list>-->
+  <ion-grid>
   <subscription *ngFor="let subscription of subscriptions" [subscription]="subscription" (editClick)="gotoEdit($event)" ></subscription>
-</ion-list>
+  </ion-grid>
+<!--</ion-list>-->
 </ion-content>

@@ -12,20 +12,26 @@
         <ion-icon name="search" role="img" class="icon"></ion-icon>
       </span><div class="button-effect"></div></button>
     </ion-buttons>
-    <ion-input type="search" placeholder="search.."></ion-input>
-    
+     <ion-input type="search" placeholder="search.."></ion-input> 
   </ion-navbar>
 
   <!--<ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>-->
   
   <ion-list>
-        <!--<ion-list-header>Today</ion-list-header>-->
-    <message *ngFor="let m of messages | orderBy: {property: 'occurDT', direction: -1}" [msg]="m" [navCtrl]="navCtrl"></message>
+    <ion-item-group>
+      <ion-item-divider color="light" >Today</ion-item-divider>
+      <message *ngFor="let m of todayMsgs | orderBy: {property: 'occurDT', direction: -1}" [msg]="m" [itemGroup]=1  [navCtrl]="navCtrl" ></message>
+    </ion-item-group>
+    <ion-item-group>
+      <ion-item-divider color="light" >更多訊息</ion-item-divider>
+      <message *ngFor="let m of messages | orderBy: {property: 'occurDT', direction: -1}" [msg]="m" [itemGroup]=2 [navCtrl]="navCtrl" ></message>
+    </ion-item-group>
   </ion-list>
+  
   <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
     <ion-infinite-scroll-content
       loadingSpinner="bubbles"
-      loadingText="Loading more data...">
+      loadingText="Loading more data...">+
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
 </ion-content>

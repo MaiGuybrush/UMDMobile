@@ -30,11 +30,14 @@ $colors: (
   light:      #f4f4f4,
   dark:       #222,
   yellow1:     #ffdd00,
+  yellow2:  #fff2e6,
   green1:      #59b75b,
   blue1: #99bbff,
   blue2: #6b82b2,
   purple1:#766bb2,
-  orange1:	#ffaa99
+  orange1:	#ffaa99,
+  red1: #f97777,
+  red2: #AC212F
 
 );
 
@@ -78,8 +81,12 @@ $colors: (
 @import "ionic.ionicons";
 
 
+
 // Fonts
 // --------------------------------------------------
 
 @import "roboto";
 @import "noto-sans";
+
+@import "icomoon";
+

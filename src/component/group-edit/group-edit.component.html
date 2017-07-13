@@ -1,4 +1,4 @@
-     <ion-item-sliding>
+     <!--<ion-item-sliding>
           <ion-item>
              <h2>{{group.groupName}}</h2>
              <p>{{group.description}}</p>
@@ -7,8 +7,20 @@
              <button ion-button (click)="editClick.emit(group)">
                 <ion-icon name="create"></ion-icon> 修改
              </button>
-             <button ion-button color="danger" (click)="deleteClick.emit(group)">
+             <button ion-button color="danger"  (click)="deleteClick.emit(group)">
                 <ion-icon name="trash"></ion-icon> 刪除
              </button>
           </ion-item-options>
+    </ion-item-sliding>-->
+    <ion-item-sliding>
+          <!-- <ion-item (tap)="editClick.emit(group)" (press)="deleteClick.emit(group)"" -->
+          <ion-item (ionSwipe)="deleteClick.emit(group)">
+             <ion-label>
+                <h2>{{group.groupName}}</h2>
+                <p>{{group.description}}</p>
+             </ion-label>
+          </ion-item>
+              <ion-item-options>
+    <button ion-button expandable (click)="deleteClick.emit(group)">Delete</button>
+  </ion-item-options>
     </ion-item-sliding>

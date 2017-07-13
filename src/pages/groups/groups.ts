@@ -74,6 +74,7 @@ export class GroupsPage {
 
   callbackFunction = () => 
   {
+     
       this.provider.getGroups(this.accountProvider.getInxAccount().empNo,'').subscribe(
           value => this.groups = value,
           error => this.groups = [],

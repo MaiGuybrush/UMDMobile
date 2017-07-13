@@ -33,65 +33,65 @@ export class MyApp {
     public static fcmRegistrationId: string;
     constructor(public http: Http, public platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public alertCtrl: AlertController
         , public loading: LoadingController, public accountProvider: AccountProvider
-        , public employeeProvider: EmployeeProvider, public messageProvider: MessageProvider, private push: Push, public accountprovider: AccountProvider) {
-        platform.ready().then(() => {
-            // Okay, so the platform is ready and our plugins are available.
-            // Here you can do any higher level native things you might need.
-            statusBar.styleDefault();
-            splashScreen.hide();
-            // Okay, so the platform is ready and our plugins are available.
-            // Here you can do any higher level native things you might need.
+        , public employeeProvider: EmployeeProvider, public messageProvider: MessageProvider, private push: Push) {
+      //   platform.ready().then(() => {
+      //       // Okay, so the platform is ready and our plugins are available.
+      //       // Here you can do any higher level native things you might need.
+      //       statusBar.styleDefault();
+      //       splashScreen.hide();
+      //       // Okay, so the platform is ready and our plugins are available.
+      //       // Here you can do any higher level native things you might need.
 
 
-      let loader = this.loading.create({
-        content: '正在取得使用者資訊...',
-      });
+      // let loader = this.loading.create({
+      //   content: '正在取得使用者資訊...',
+      // });
 
-      loader.present();
+      // loader.present();
       var me = this;
       this.accountProvider.getUserInfo().subscribe(m => {
         console.log("get user [" + `${m.comid}` + "] logged in.");
         me.pushInit();
-        MyApp.pushObject.on('registration').subscribe((data: any) => {
-          MyApp.fcmRegistrationId = data.registrationId;
-          this.employeeProvider.updateEmployeeInfo(m.empNo, MyApp.fcmRegistrationId)
-          .subscribe(m => 
-          { 
-            console.log("update user info successfully");
-            loader.dismiss();      
-          },
-          e => {
-            console.log("update user info fail");
-            loader.dismiss();      
-          },
-          () => {
-          });
-        });
-      }, e => {
-        loader.dismiss()
-        let alert = this.alertCtrl.create({
-          title: '無法取得使用者資訊',
-          subTitle: '請確認是否安裝INX App Store!',
-          buttons: [{
-            text: '結束',
-            role: 'cancel',
-            handler: () => {
-              if (me.platform.is("ios"))
-              {
-              }
-              else
-              {
-                me.platform.exitApp();
-              }
-            }
-          }]
-        });
-        alert.present();
+      //   MyApp.pushObject.on('registration').subscribe((data: any) => {
+      //     MyApp.fcmRegistrationId = data.registrationId;
+      //     this.employeeProvider.updateEmployeeInfo(m.empNo, MyApp.fcmRegistrationId)
+      //     .subscribe(m => 
+      //     { 
+      //       console.log("update user info successfully");
+      //       loader.dismiss();      
+      //     },
+      //     e => {
+      //       console.log("update user info fail");
+      //       loader.dismiss();      
+      //     },
+      //     () => {
+      //     });
+      //   });
+      // }, e => {
+      //   loader.dismiss()
+      //   let alert = this.alertCtrl.create({
+      //     title: '無法取得使用者資訊',
+      //     subTitle: '請確認是否安裝INX App Store!',
+      //     buttons: [{
+      //       text: '結束',
+      //       role: 'cancel',
+      //       handler: () => {
+      //         if (me.platform.is("ios"))
+      //         {
+      //         }
+      //         else
+      //         {
+      //           me.platform.exitApp();
+      //         }
+      //       }
+      //     }]
+      //   });
+      //   alert.present();
       });
 
 
 
-      });
+      // });
     }
 
   pushInit()

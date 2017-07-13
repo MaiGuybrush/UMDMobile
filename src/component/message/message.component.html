@@ -1,10 +1,7 @@
-    <!--<ion-item text-wrap>-->
     <ion-item (click)="pushMsgDetailPage()">
         <h2>{{msg.description}}</h2>
         <!--<ion-label>{{msg.description}}</ion-label>-->
         <p>{{msg.alarmMessage}}</p>
         <!--<ion-badge item-right>NEW</ion-badge>-->
-        <!--<ion-badge item-right>{{msg.occurDT | date:'shortTime'}}</ion-badge>-->
-        <ion-badge item-right>{{msg.occurDT | date:'yyyy-MM-dd HH:mm:ss'}}</ion-badge>
-        <!--<ion-badge item-right>{{msg.occurDT | }}</ion-badge>-->
+        <ion-badge color="red2" item-end>{{msg.occurDT | date: getDateFormat()}}</ion-badge> 
     </ion-item>

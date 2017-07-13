@@ -1,6 +1,10 @@
     <button ion-item>
         <ion-icon [name]="!checked ? '' : 'checkmark'" item-left></ion-icon>
-        <ion-label>{{employee.empId}}</ion-label>
+        <ion-label>
+            <h2>{{employee.name}}/{{employee.adId}}/{{employee.empId}}</h2>
+            <p>{{employee.deptFullName}}</p>
+        </ion-label>
+        <!--<ion-label>{{employee.empId}}</ion-label>
         <ion-label>{{employee.name}}</ion-label>
-        <ion-label>{{employee.adId}}</ion-label>
+        <ion-label>{{employee.adId}}</ion-label>-->
     </button>

@@ -17,44 +17,18 @@
       <ion-item-divider color="light"><ion-icon name="mail" color="yellow1" item-start></ion-icon>MAIL<button ion-button item-right (click)="openMenu(1)"><ion-icon name="add"></ion-icon> </button></ion-item-divider>
         <alarmActionSetting *ngFor="let alarmActionSetting of alarmActionSettings |filter:{settingType: 'M'};" [alarmActionSetting]="alarmActionSetting" [accountId]="accountId" (deleteClick)="doDeleteS($event)" ></alarmActionSetting>  
         <alarmAction *ngFor="let alarmAction of alarmActions |filter:{actionType: 1};" [alarmAction]="alarmAction" (deleteClick)="doDelete($event)" ></alarmAction>  
-        <alarmAction *ngFor="let alarmAction of alarmActions |filter:{actionType: 2};" [alarmAction]="alarmAction" (deleteClick)="doDelete($event)" ></alarmAction>  
-        <!--<ion-item *ngFor="let alarmActionSetting of alarmActionSettings |filter:{settingType: 'M'};">{{alarmActionSetting.mailRecipient}}
-          <button *ngIf="alarmActionSetting.clmEmpId == accountId" ion-button color="light" item-right  (click)="doDelete(alarmActionSetting.settingType,'alarmActionSettings', alarmActionSetting.mailRecipient)"><ion-icon name="remove"></ion-icon></button>
-        </ion-item>
-        <ion-item *ngFor="let alarmAction of alarmActions |filter:{actionType: 1};">{{alarmAction.name}}
-          <button ion-button color="light" item-right  (click)="doDelete(alarmAction.actionType,'alarmActions', alarmAction.actionValue)"><ion-icon name="remove"></ion-icon></button>
-        </ion-item>
-        <ion-item *ngFor="let alarmAction of alarmActions |filter:{actionType: 2};">{{alarmAction.name}}
-          <button ion-button color="light" item-right  (click)="doDelete(alarmAction.actionType,'alarmActions', alarmAction.actionValue)"><ion-icon name="remove"></ion-icon></button>
-        </ion-item>-->
+        <alarmAction *ngFor="let alarmAction of alarmActions |filter:{actionType: 2};" [alarmAction]="alarmAction" (deleteClick)="doDelete($event)" ></alarmAction>
     </ion-item-group>
 
     <ion-item-group>
-      <ion-item-divider color="light">MAPP<button ion-button item-right (click)="openMenu(2)"><ion-icon name="add"></ion-icon></button></ion-item-divider>
+      <ion-item-divider color="light"><img src="assets/img/inxMapp.png" width="30px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MAPP
+        <button ion-button item-right (click)="openMenu(2)"><ion-icon name="add"></ion-icon></button></ion-item-divider>
         <alarmActionSetting *ngFor="let alarmActionSetting of alarmActionSettings |filter:{settingType: 'AP'};" [alarmActionSetting]="alarmActionSetting" [accountId]="accountId" (deleteClick)="doDeleteS($event)" ></alarmActionSetting>  
         <alarmActionSetting *ngFor="let alarmActionSetting of alarmActionSettings |filter:{settingType: 'AG'};" [alarmActionSetting]="alarmActionSetting" [accountId]="accountId" (deleteClick)="doDeleteS($event)" ></alarmActionSetting>  
         <alarmActionSetting *ngFor="let alarmActionSetting of alarmActionSettings |filter:{settingType: 'AC'};" [alarmActionSetting]="alarmActionSetting" [accountId]="accountId" (deleteClick)="doDeleteS($event)" ></alarmActionSetting>  
         <alarmAction *ngFor="let alarmAction of alarmActions |filter:{actionType: 3};" [alarmAction]="alarmAction" (deleteClick)="doDelete($event)" ></alarmAction>  
         <alarmAction *ngFor="let alarmAction of alarmActions |filter:{actionType: 4};" [alarmAction]="alarmAction" (deleteClick)="doDelete($event)" ></alarmAction>
         <alarmAction *ngFor="let alarmAction of alarmActions |filter:{actionType: 5};" [alarmAction]="alarmAction" (deleteClick)="doDelete($event)" ></alarmAction>
-        <!--<ion-item *ngFor="let alarmActionSetting of alarmActionSettings |filter: {settingType: 'AP'};">{{alarmActionSetting.mAppRecipient}}
-          <button *ngIf="alarmActionSetting.clmEmpId == accountId" ion-button color="light" item-right  (click)="doDelete(alarmActionSetting.settingType,'alarmActionSettings', alarmActionSetting.mAppChatSn)"><ion-icon name="remove"></ion-icon></button>
-        </ion-item>
-        <ion-item *ngFor="let alarmActionSetting of alarmActionSettings |filter: {settingType: 'AG'};">{{alarmActionSetting.mAppRecipient}}
-          <button *ngIf="alarmActionSetting.clmEmpId == accountId" ion-button color="light" item-right  (click)="doDelete(alarmActionSetting.settingType,'alarmActionSettings', alarmActionSetting.mAppChatSn)"><ion-icon name="remove"></ion-icon></button>
-        </ion-item>
-        <ion-item *ngFor="let alarmActionSetting of alarmActionSettings |filter: {settingType: 'AC'};">{{alarmActionSetting.mAppChatName}}
-          <button *ngIf="alarmActionSetting.clmEmpId == accountId" ion-button color="light" item-right  (click)="doDelete(alarmActionSetting.settingType,'alarmActionSettings', alarmActionSetting.mAppChatSn)"><ion-icon name="remove"></ion-icon></button>
-        </ion-item>
-        <ion-item *ngFor="let alarmAction of alarmActions |filter:{actionType: 3};">{{alarmAction.name}}
-          <button ion-button color="light" item-right  (click)="doDelete(alarmAction.actionType,'alarmActions', alarmAction.actionValue)"><ion-icon name="remove"></ion-icon></button>
-        </ion-item>
-        <ion-item *ngFor="let alarmAction of alarmActions |filter:{actionType: 4};">{{alarmAction.name}}
-          <button ion-button color="light" item-right  (click)="doDelete(alarmAction.actionType,'alarmActions', alarmAction.actionValue)"><ion-icon name="remove"></ion-icon></button>
-        </ion-item>
-        <ion-item *ngFor="let alarmAction of alarmActions |filter:{actionType: 5};">{{alarmAction.chatName}}
-          <button ion-button color="light" item-right  (click)="doDelete(alarmAction.actionType,'alarmActions', alarmAction.actionValue)"><ion-icon name="remove"></ion-icon></button>
-        </ion-item>-->
     </ion-item-group>
   </ion-list>
 </ion-content>
