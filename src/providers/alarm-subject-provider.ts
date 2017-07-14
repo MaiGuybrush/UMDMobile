@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { AlarmSubject } from '../models/alarm-subject';
 
 import { Observable } from 'rxjs/Rx';

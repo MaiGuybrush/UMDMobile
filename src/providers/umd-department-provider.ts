@@ -4,7 +4,6 @@ import { Api } from './api'
 import { Observable } from 'rxjs/Rx';
 import { Department } from '../models/department';
 import { DepartmentProvider } from './department-provider'
-import { InterceptedHttp} from '../app/intercepted-http'
 
 @Injectable()
 export class UmdDepartmentProvider implements DepartmentProvider {

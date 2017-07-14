@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core'
-import { Http } from '@angular/http'
 import { Observable } from 'rxjs/Rx'
-import { Api } from '../../providers/api'
 import { MessageProvider } from '../../providers/message-provider'
 import { Message } from '../../models/message'
 import { MESSAGES } from '../MESSAGES'
@@ -18,7 +16,7 @@ import 'rxjs/add/operator/map';
 export class MockMessageProvider implements MessageProvider {
   pageSize = 8;
   
-  constructor(public http: Http) {
+  constructor() {
   }
 
   getUnreadMessageCount(groupBy:string) : Observable<{ groupItem: string; count: number; }[]>

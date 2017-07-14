@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 import { EmployeeProvider } from '../../providers/employee-provider'
 import { Employee } from '../../models/employee'
 import { EMPLOYEES } from '../EMPLOYEES'
@@ -14,7 +13,7 @@ import { Observable } from 'rxjs/Rx'
 @Injectable()
 export class MockEmployeeProvider implements EmployeeProvider {
 
-  constructor(public http: Http) {
+  constructor() {
     console.log('Hello EmployeeProvider Provider');
   }
   

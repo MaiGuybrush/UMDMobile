@@ -4,9 +4,7 @@ import { Api } from './api'
 import { Observable } from 'rxjs/Rx';
 import { Subscribe } from '../models/subscribe';
 import { SubscribeCancelResult } from '../models/subscribe-cancel-result';
-import { AlarmActionSetting } from '../models/alarm-action-setting';
 import { SubscriptionProvider } from './subscription-provider';
-import { InterceptedHttp} from '../app/intercepted-http'
 
 @Injectable()
 export class UmdSubscriptionProvider implements SubscriptionProvider {

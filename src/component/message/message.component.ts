@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter} from '@angular/core';
+import { Component, Input, Output} from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
 import { MessageProvider } from '../../providers/message-provider'
@@ -18,10 +18,8 @@ export class MessageComponent
     itemGroup: number;
     @Input()
     navCtrl: NavController;
-    @Output()
-    itemLongPress = new EventEmitter();
     archived: boolean = false;
-    constructor(public provider: MessageProvider, public loading: LoadingController)
+    constructor(public provider: MessageProvider)
     {
 
     }
@@ -32,7 +30,8 @@ export class MessageComponent
       if (this.itemGroup === 1)
       {
          dateFormat = "shortTime"
-      }else
+      }
+      else
       {
          dateFormat = "yyyy-MM-dd HH:mm:ss"
       }
@@ -49,11 +48,6 @@ export class MessageComponent
     {
       var me = this;
       this.provider.restore(this.msg).subscribe(m => me.archived = false);
-      }else
-      {
-         dateFormat = "yyyy-MM-dd HH:mm:ss"
-      }
-      return dateFormat;
     }
 
     pushMsgDetailPage(): void

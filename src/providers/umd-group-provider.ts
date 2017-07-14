@@ -5,7 +5,6 @@ import { Group } from '../models/group'
 import { Employee } from '../models/employee';
 import { GroupProvider } from './group-provider'
 import { GroupDetail } from '../models/group-detail';
-import { InterceptedHttp} from '../app/intercepted-http'
 import { Observable } from 'rxjs/Rx'
 
 /*

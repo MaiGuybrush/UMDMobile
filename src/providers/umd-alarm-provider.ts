@@ -5,7 +5,6 @@ import { Observable } from 'rxjs/Rx';
 import { AlarmAction } from '../models/alarm-action';
 import { AlarmActionSetting } from '../models/alarm-action-setting';
 import { AlarmProvider } from './alarm-provider'
-import { InterceptedHttp} from '../app/intercepted-http'
 
 @Injectable()
 export class UmdAlarmProvider implements AlarmProvider {

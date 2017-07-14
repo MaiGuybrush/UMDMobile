@@ -3,7 +3,6 @@ import { Http, Headers, RequestOptions } from '@angular/http'
 import { Api } from './api'
 import { Observable } from 'rxjs/Rx';
 import { GeneralDataProvider } from './general-data-provider'
-import { InterceptedHttp} from '../app/intercepted-http'
 
 @Injectable()
 export class UmdGeneralDataProvider implements GeneralDataProvider {

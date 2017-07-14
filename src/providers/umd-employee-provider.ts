@@ -5,7 +5,6 @@ import { Api } from './api'
 import { Observable } from 'rxjs/Rx';
 import { Employee } from '../models/employee';
 import { EmployeeProvider } from './employee-provider'
-import { InterceptedHttp} from '../app/intercepted-http'
 
 @Injectable()
 export class UmdEmployeeProvider implements EmployeeProvider {

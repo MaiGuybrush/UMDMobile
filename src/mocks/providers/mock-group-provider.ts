@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import { Api } from '../../providers/api';
 import { Group } from '../../models/group';
 import { GROUPS } from '../GROUPS'
 import { Employee } from '../../models/employee';
-import { GroupDetail } from '../../models/group-detail';
 import { GROUPDETAILS } from '../GROUP-DETAILS'
 import { GroupProvider } from '../../providers/group-provider'
 import { Observable } from 'rxjs/Rx'
@@ -19,7 +16,7 @@ import 'rxjs/add/operator/map';
 */
 @Injectable()
 export class MockGroupProvider implements GroupProvider {
-  constructor(public http: Http) {
+  constructor() {
   }
   
   getGroups(owner: string, pattern?: string) : Observable<Group[]>
