@@ -23,7 +23,8 @@ export class CategorizedMessagesPage {
   categoryMethod = CategoryMethod
   activeMenu : string = "menu1";
   category : CategoryMethod = CategoryMethod.ByAlarmType;
-  messages : Message[] = [];
+  // messages : Message[] = [];
+  unreadMessageCount: { groupItem:string, count: number }[]
   subscription : Subscription;
   // categorizedMessage : CategorizedMessages[]
   constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController, public provider: MessageProvider) 
@@ -34,19 +35,46 @@ export class CategorizedMessagesPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad CategorizedMessagePage');
     this.menu.enable(true, 'menu1');
+    var me = this;
+    this.subscription = this.provider.getMessageNotifier().subscribe(m => {
+      let found = false;
+      for (let i = 0; i < this.unreadMessageCount.length; i++) {
+        let msg = this.unreadMessageCount[i];
+        if (msg.groupItem == m[this.getCategoryField()])
+        {
+          msg.count ++;
+          found = true;
+          break;
+        } 
+      }
+      if (!found)
+      {
+        this.unreadMessageCount.push({
+          groupItem: m[this.getCategoryField()], 
+          count: 1
+        });
+      }
+
+      me.unreadMessageCount = [].concat(this.unreadMessageCount);
+      // this.messages.push(m);
+      // this.messages = [].concat(this.messages);
+    });
   }
 
   ionViewDidEnter() {
     console.log('ionViewDidEnter CategorizedMessagePage');
+
+    // this.provider.getAllMessage().subscribe(
+    //   m => {
+    //     this.messages = [].concat(m);
+    //   });
     var me = this;
-    this.provider.getAllMessage().subscribe(
+    this.provider.getUnreadMessageCount(this.getCategoryField()).subscribe(
       m => {
-        me.messages = [].concat(m);
-      });
-    this.subscription = this.provider.getMessageNotifier().subscribe(m => {
-      me.messages.push(m);
-      me.messages = [].concat(me.messages);
-    });
+        me.unreadMessageCount = m;
+      }
+    );
+    
   }
 
   ionViewWillLeave() {
@@ -56,10 +84,6 @@ export class CategorizedMessagesPage {
   insertTestMessages()
   {
     this.provider.insertTestMessages().subscribe();
-    this.provider.getAllMessage().subscribe(
-      m => {
-       // this.messages = [].concat(m);
-      });
   }
   getCategoryField() {
     switch(this.category)

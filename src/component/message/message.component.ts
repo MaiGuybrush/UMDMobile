@@ -20,12 +20,10 @@ export class MessageComponent
     navCtrl: NavController;
     @Output()
     itemLongPress = new EventEmitter();
+    archived: boolean = false;
     constructor(public provider: MessageProvider, public loading: LoadingController)
     {
-    }
 
-    deleteMessage(): void
-    {
     }
 
     getDateFormat(): string
@@ -34,6 +32,23 @@ export class MessageComponent
       if (this.itemGroup === 1)
       {
          dateFormat = "shortTime"
+      }else
+      {
+         dateFormat = "yyyy-MM-dd HH:mm:ss"
+      }
+      return dateFormat;
+    }
+    
+    archiveMessage(): void
+    {
+      var me = this;
+      this.provider.archive(this.msg).subscribe(m => me.archived = true);
+    }
+
+    restoreMessage(): void
+    {
+      var me = this;
+      this.provider.restore(this.msg).subscribe(m => me.archived = false);
       }else
       {
          dateFormat = "yyyy-MM-dd HH:mm:ss"

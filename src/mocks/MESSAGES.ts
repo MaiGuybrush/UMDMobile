@@ -1,4 +1,6 @@
 import { Message } from '../models/message';
+export const ARCHIVE_MESSAGES: Message[] = [
+]
 export const MESSAGES: Message[] = [
       {
         rowid: 1,
@@ -23,7 +25,7 @@ export const MESSAGES: Message[] = [
         read: false
       },
       {
-        rowid: 2,
+        rowid: 3,
         id:`123456789ASDFA`,
         description: `RTQCS 運作異常 AP_fail _TFT4`,
         alarmID: 'KALL-CIM-RTQCS-AP_fail',
@@ -34,7 +36,7 @@ export const MESSAGES: Message[] = [
         read: true
       },
       { 
-        rowid: 2,
+        rowid: 4,
         id:`123456789ASDFB`,
         description: 'RTQCS 運作異常 AP_fail _TFT3',
         alarmID: 'OTFT3-CIM-RTQCS-AP_fail',
@@ -45,7 +47,7 @@ export const MESSAGES: Message[] = [
         read: false
       },
       { 
-        rowid: 1,
+        rowid: 5,
         id:`123456789ASDFC`,
         description: 'STCO0200 alarm, code[0001]',
         alarmID: 'TFT3-PHOTO-EQP-alarm',
@@ -56,7 +58,7 @@ export const MESSAGES: Message[] = [
         read: false
       },
       {
-        rowid: 1,
+        rowid: 6,
         id:`123456789ASDFD`,
         description: 'alarm test test test',
         alarmID: 'ACF03-CIM-COMMON-test',
@@ -67,7 +69,7 @@ export const MESSAGES: Message[] = [
         read: false
       },
       {
-        rowid: 1,
+        rowid: 7,
         id:`123456789ASDFE`,
         description: 'STCO0200 alarm, code[0001]',
         alarmID: 'TFT3-PHOTO-EQP-alarm',
@@ -78,7 +80,7 @@ export const MESSAGES: Message[] = [
         read: false
       },
       {
-        rowid: 1,
+        rowid: 8,
         id:`123456789ASDFF`,
         description: 'STCO0200 alarm, code[0001]',
         alarmID: 'TFT3-PHOTO-EQP-alarm',
@@ -89,7 +91,7 @@ export const MESSAGES: Message[] = [
         read: false
       },
       {
-        rowid: 1,
+        rowid: 9,
         id:`123456789ASDFG`,
         description: 'STCO0200 alarm, code[0001]',
         alarmID: 'TFT3-PHOTO-EQP-alarm',
@@ -100,7 +102,7 @@ export const MESSAGES: Message[] = [
         read: false
       },
       {
-        rowid: 1,
+        rowid: 10,
         id:`123456789ASDFH`,
         description: 'STCO0200 alarm, code[0001]',
         alarmID: 'TFT3-PHOTO-EQP-alarm',
@@ -111,7 +113,7 @@ export const MESSAGES: Message[] = [
         read: false
       },
       {
-        rowid: 1,
+        rowid: 11,
         id:`123456789ASDFI`,
         description: 'STCO0200 alarm, code[0001]',
         alarmID: 'TFT3-PHOTO-EQP-alarm',

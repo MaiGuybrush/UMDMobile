@@ -15,5 +15,5 @@ export class Message
     // alarmTime: string;  //多
     occurDT: Date;  
     read: boolean;
-    
+    archived?: boolean = false;
 }

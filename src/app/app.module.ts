@@ -27,6 +27,7 @@ import { SubscribeEditPage } from '../pages/subscribe-edit/subscribe-edit'
 import { SubscribeConfigPage } from '../pages/subscribe-config/subscribe-config'
 import { SubscribeMappgroupPage } from '../pages/subscribe-mappgroup/subscribe-mappgroup'
 import { TabsPage } from '../pages/tabs/tabs'
+import { InitPage } from '../pages/init/init'
 import { PeopleSearchPage } from '../pages/people-search/people-search'
 import { GroupSearchPage } from '../pages/group-search/group-search'
 import { DepartmentSelectPage } from '../pages/department-select/department-select'
@@ -102,7 +103,8 @@ import { MockAccountProvider } from '../mocks/providers/mock-account-provider'
     ConfigPage,
     TabsPage,
     DepartmentComponent,
-    NosubscriptionComponent
+    NosubscriptionComponent,
+    InitPage
   ],
   imports: [
     IonicModule.forRoot(MyApp),
@@ -129,7 +131,8 @@ import { MockAccountProvider } from '../mocks/providers/mock-account-provider'
     GroupSearchPage,
     DepartmentSelectPage,
     ConfigPage,
-    TabsPage
+    TabsPage,
+    InitPage
   ],
   providers: [
               {provide: ErrorHandler, useClass: IonicErrorHandler} 
@@ -137,7 +140,6 @@ import { MockAccountProvider } from '../mocks/providers/mock-account-provider'
             , {provide: EmployeeProvider, useClass: UmdEmployeeProvider}
             , {provide: DepartmentProvider, useClass: UmdDepartmentProvider}
             , {provide: GeneralDataProvider, useClass: UmdGeneralDataProvider}
-            , {provide: MessageProvider, useClass: MockMessageProvider}
             , {provide: SubscriptionProvider, useClass: UmdSubscriptionProvider}
             , {provide: AlarmProvider, useClass: UmdAlarmProvider}
             , AppConfig
@@ -148,23 +150,25 @@ import { MockAccountProvider } from '../mocks/providers/mock-account-provider'
             , SQLite
             , SplashScreen
 //for web
-            , {provide: AccountProvider, useClass: MockAccountProvider}
-            , {
-                provide: Http,
-                useFactory: (backend: XHRBackend, options: RequestOptions, extraInfoProvider: ExtraInfoProvider) => {
-                  return new Http(backend, options);
-                },
-                deps: [XHRBackend, RequestOptions, ExtraInfoProvider]
-              }
-//for device/emulator
-            // , {provide: AccountProvider, useClass: ExtraInfoProvider}
+            // , {provide: AccountProvider, useClass: MockAccountProvider}
             // , {
             //     provide: Http,
             //     useFactory: (backend: XHRBackend, options: RequestOptions, extraInfoProvider: ExtraInfoProvider) => {
-            //       return new InterceptedHttp(backend, options, extraInfoProvider);
+            //       return new Http(backend, options);
             //     },
             //     deps: [XHRBackend, RequestOptions, ExtraInfoProvider]
             //   }
-             ]
+            // , {provide: MessageProvider, useClass: MockMessageProvider}
+//for device/emulator
+            , {provide: AccountProvider, useClass: ExtraInfoProvider}
+            , {
+                provide: Http,
+                useFactory: (backend: XHRBackend, options: RequestOptions, extraInfoProvider: ExtraInfoProvider) => {
+                  return new InterceptedHttp(backend, options, extraInfoProvider);
+                },
+                deps: [XHRBackend, RequestOptions, ExtraInfoProvider]
+              }
+            , {provide: MessageProvider, useClass: UmdMessageProvider}
+            ]
 })
 export class AppModule {}

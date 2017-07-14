@@ -16,22 +16,27 @@ import 'rxjs/add/operator/map';
 */
 @Injectable()
 export class MockMessageProvider implements MessageProvider {
-
- constructor(public http: Http) {
-  }
+  pageSize = 8;
   
-  getUnreadMessage(alarmType:string, eqptID:string, alarmID:string) : Observable<Message[]>
+  constructor(public http: Http) {
+  }
+
+  getUnreadMessageCount(groupBy:string) : Observable<{ groupItem: string; count: number; }[]>
   {
-    return Observable.from([MESSAGES]).map(m => {
-      let output:Message[] = [];
-      m.forEach(msg => {
-        if (msg.read)
-        {
-          output.push(msg);
-        }
-      })
-      return output;
-    });    
+    const groupedObj = MESSAGES.filter(m => !m.archived && !m.read).reduce((prev, cur)=> {
+      if(!prev[cur[groupBy]]) {
+        prev[cur[groupBy]] = [cur];
+      } else {
+        prev[cur[groupBy]].push(cur);
+      }
+      return prev;
+    }, {});
+    let map = Object.keys(groupedObj).map(key => ({ key, value: groupedObj[key] }));
+    let output:{ groupItem: string; count: number; }[] = [];
+    map.forEach(m => {
+      output.push({ groupItem: m.key, count: m.value.length });
+    })
+    return Observable.from([output]);
   }
 
   getAllMessage() : Observable<Message[]>
@@ -47,8 +52,23 @@ export class MockMessageProvider implements MessageProvider {
 
   getMessage(page: number, alarmType:string, equipment:string, alarmID:string) : Observable<Message[]>
   {
-    console.log('mockMESSAGES:'+JSON.stringify(MESSAGES));
-    return Observable.from([MESSAGES]);
+    let output = MESSAGES.slice((page - 1) * this.pageSize, page * this.pageSize)
+    return Observable.from(
+      [output.filter(m => {
+      if (m.archived) {
+        return false;
+      }
+      if (alarmType && alarmType != m.alarmType) {
+        return false;
+      }
+      if (equipment && equipment != m.eqptID) {
+        return false;
+      }
+      if (alarmID && alarmID != m.alarmID) {
+        return false;
+      }
+      return true;
+    })]);
   }
 
   getMessageFromUmd(beforeDT:Date) : Observable<Message[]> //UMD Service provide
@@ -61,18 +81,6 @@ export class MockMessageProvider implements MessageProvider {
   }
   addMessage(message: Message): Observable<Message>
   {
-    // let found = false;
-    // MESSAGES.forEach((m, idx) => {
-    //   if (m.id == message.id)
-    //   {
-    //     MESSAGES[idx] = message;
-    //     found = true;
-    //   }
-    // })
-    // if (!found)
-    // {
-    //   MESSAGES.push(message);
-    // }
     return undefined;
   }
   setMessageRead(messages: Message[]): Observable<Message[]>
@@ -82,39 +90,40 @@ export class MockMessageProvider implements MessageProvider {
     });
     return Observable.from([messages]);
   }
-  // set(key: string, value: string): Promise<any>
-  // {
-  //     return undefined;
-  // }
-
-  // get(key: string): Promise<any> 
-  // {
-  //     return undefined;
-  // }
 
   delete(key: number): Observable<any>
   {
       return undefined;
   }
 
-  // getall(): Promise<any>
-  // {
-  //     return undefined;
-  // }
+  archive(message: Message): Observable<any>
+  {
+    for (let i = 0; i < MESSAGES.length; i++)
+    {
+      if (MESSAGES[i].rowid == message.rowid)
+      {
+        MESSAGES[i].archived = true;
+        break;
+      }
+    }
+    return Observable.from([{}]);
+  }
 
+  restore(message: Message): Observable<any>
+  {
+    for (let i = 0; i < MESSAGES.length; i++)
+    {
+      if (MESSAGES[i].rowid == message.rowid)
+      {
+        MESSAGES[i].archived = false;
+        break;
+      }
+    }
+    return Observable.from([{}]);
+  }
+  init(): Observable<any>
+  {
+    return Observable.from([]);
+  }
 
-  // getItems(ev) {
-  //   // Reset items back to all of the items
-  //   this.getMessage();
-
-  //   // set val to the value of the ev target
-  //   var val = ev.target.value;
-
-  //   // if the value is an empty string don't filter the items
-  //   if (val && val.trim() != '') {
-  //     this.items = this.items.filter((item) => {
-  //       return (item.toLowerCase().indexOf(val.toLowerCase()) > -1);
-  //     })
-  //   }
-  // }
 }

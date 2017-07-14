@@ -6,6 +6,7 @@ import { StatusBar } from '@ionic-native/status-bar'
 import { SplashScreen } from '@ionic-native/splash-screen'
 import { Push, PushObject, PushOptions } from '@ionic-native/push';
 import { DetailsPage } from "../pages/details/details"
+import { InitPage } from "../pages/init/init"
 import { TabsPage } from '../pages/tabs/tabs'
 //import { PeopleSearchPage } from '../pages/people-search/people-search'
 import { GroupSearchPage } from '../pages/group-search/group-search'
@@ -25,133 +26,19 @@ declare var window;
     templateUrl: 'app.html'
 })
 export class MyApp {
-    @ViewChild(Nav) nav: Nav;
-    rootPage = TabsPage;
-    public static user: InxAccount;
-    topic: string;
-    public static pushObject: PushObject;
-    public static fcmRegistrationId: string;
-    constructor(public http: Http, public platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public alertCtrl: AlertController
-        , public loading: LoadingController, public accountProvider: AccountProvider
-        , public employeeProvider: EmployeeProvider, public messageProvider: MessageProvider, private push: Push) {
-      //   platform.ready().then(() => {
-      //       // Okay, so the platform is ready and our plugins are available.
-      //       // Here you can do any higher level native things you might need.
-      //       statusBar.styleDefault();
-      //       splashScreen.hide();
-      //       // Okay, so the platform is ready and our plugins are available.
-      //       // Here you can do any higher level native things you might need.
-
-
-      // let loader = this.loading.create({
-      //   content: '正在取得使用者資訊...',
-      // });
-
-      // loader.present();
-      var me = this;
-      this.accountProvider.getUserInfo().subscribe(m => {
-        console.log("get user [" + `${m.comid}` + "] logged in.");
-        me.pushInit();
-      //   MyApp.pushObject.on('registration').subscribe((data: any) => {
-      //     MyApp.fcmRegistrationId = data.registrationId;
-      //     this.employeeProvider.updateEmployeeInfo(m.empNo, MyApp.fcmRegistrationId)
-      //     .subscribe(m => 
-      //     { 
-      //       console.log("update user info successfully");
-      //       loader.dismiss();      
-      //     },
-      //     e => {
-      //       console.log("update user info fail");
-      //       loader.dismiss();      
-      //     },
-      //     () => {
-      //     });
-      //   });
-      // }, e => {
-      //   loader.dismiss()
-      //   let alert = this.alertCtrl.create({
-      //     title: '無法取得使用者資訊',
-      //     subTitle: '請確認是否安裝INX App Store!',
-      //     buttons: [{
-      //       text: '結束',
-      //       role: 'cancel',
-      //       handler: () => {
-      //         if (me.platform.is("ios"))
-      //         {
-      //         }
-      //         else
-      //         {
-      //           me.platform.exitApp();
-      //         }
-      //       }
-      //     }]
-      //   });
-      //   alert.present();
-      });
-
-      // });
-    }
-
-  pushInit()
-  {
-    var me = this;
-    const options: PushOptions = {
-
-      android: {
-        senderID: '834424631529',
-        //    topics: ['sample-topic','dally-topic']
-      },
-      ios: {
-        alert: 'true',
-        badge: true,
-        sound: 'true',
-      },
-      windows: {}
-    };
-    MyApp.pushObject = this.push.init(options);
-    MyApp.pushObject.on('notification').subscribe((data: any) => {
-      me.pushNotificationHandler(data);
+  @ViewChild(Nav) nav: Nav;
+  rootPage = InitPage;
+  constructor(public http: Http, public platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen
+      , public loading: LoadingController, public accountProvider: AccountProvider
+      , public employeeProvider: EmployeeProvider, public messageProvider: MessageProvider, private push: Push) {
+    platform.ready().then(() => {
+      // Okay, so the platform is ready and our plugins are available.
+      // Here you can do any higher level native things you might need.
+      statusBar.styleDefault();
+      splashScreen.hide();
+      // Okay, so the platform is ready and our plugins are available.
+      // Here you can do any higher level native things you might need.
     });
-    MyApp.pushObject.on('error').subscribe(error => console.error('Error with Push plugin', error));
-    
-  }
-
-  pushNotificationHandler(data: any) {
-    let m: Message = new Message();
-    m.id = '1234';//data.additionalData["google.message_id"];
-    m.occurDT = data.additionalData.occurDT;
-    m.alarmID = data.title;
-    m.eqptID = data.additionalData.eqptID;
-    m.alarmMessage = data.message;
-    m.alarmType = data.additionalData.alarmType;
-    m.description = data.additionalData.description;
-
-    if(this.platform.is('ios')){        
-        MyApp.pushObject.finish().then(()=>{
-        console.log('Processing ios of push data is finished');
-      })
-    }
-
-
-    //if user using app and push notification comes
-    if (data.additionalData.foreground) {
-      // if application open
-      this.messageProvider.addMessage(m);
-
-      console.log("Push notification app open " + m.alarmID);
-    } else {
-      if (data.additionalData.coldstart) {
-        //if user NOT using app and push notification comes
-        //TODO: Your logic on click of push notification directly
-        this.messageProvider.addMessage(m);
-        console.log("Push notification background ");
-        
-      }else{
-        console.log("Tap Push notification bar background " );
-        window.location.replace("#/app/src/pages/meeeages/messages"); 
-
-      }
-    }
   }
 
     // setDeviceToken(empId:string, DeviceToken: string) : Observable<string>

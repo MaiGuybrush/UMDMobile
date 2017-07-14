@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Rx'
 
 export abstract class MessageProvider {
 
-  abstract getUnreadMessage(alarmType:string, eqptID:string, alarmID:string) : Observable<Message[]>
+  abstract getUnreadMessageCount(groupBy:string) : Observable<{ groupItem: string; count: number; }[]>
 
   abstract getMessage(page: number, alarmType:string, equipment:string, alarmID:string) : Observable<Message[]> 
 
@@ -21,5 +21,11 @@ export abstract class MessageProvider {
   abstract delete(key: number): Observable<any>
 
   abstract getMessageNotifier(): Observable<Message>
+
+  abstract archive(message: Message): Observable<any>
+
+  abstract restore(message: Message): Observable<any>
+
+  abstract init(): Observable<any>;
 }
 

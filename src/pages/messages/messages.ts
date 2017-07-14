@@ -30,11 +30,11 @@ export class MessagesPage {
     switch(this.categoryMethod)
     {
     case CategoryMethod.ByAlarmType:
-        return this.messageProvider.getMessage(this.queryPage, this.categoryValue, undefined, undefined);
+        return this.messageProvider.getMessage(this.queryPage++, this.categoryValue, undefined, undefined);
     case CategoryMethod.ByEquipment:
-        return this.messageProvider.getMessage(this.queryPage, undefined, this.categoryValue, undefined);
+        return this.messageProvider.getMessage(this.queryPage++, undefined, this.categoryValue, undefined);
     case CategoryMethod.ByAlarmID:
-        return this.messageProvider.getMessage(this.queryPage, undefined, undefined, this.categoryValue);
+        return this.messageProvider.getMessage(this.queryPage++, undefined, undefined, this.categoryValue);
     }
   }
 
@@ -84,7 +84,6 @@ export class MessagesPage {
   appendMessage(message: Message[])
   {
     this.messages = [].concat(this.messages).concat(message)
-    this.queryPage++;
   }
 
   doInfinite(infiniteScroll) {

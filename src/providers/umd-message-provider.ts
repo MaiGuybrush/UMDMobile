@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core'
 import { Platform } from 'ionic-angular'
+import { LoadingController } from 'ionic-angular';
 import { Http } from '@angular/http'
 import { Api } from './api'
 import { Message } from '../models/message'
@@ -16,48 +17,91 @@ import { MESSAGES } from '../mocks/MESSAGES'
 */
 @Injectable()
 export class UmdMessageProvider implements MessageProvider {
-  storage: any;
-  DB_NAME: string = 'umd_Storage_v001';
+  sqliteObject: SQLiteObject;
+  static dbName: string = 'umd_storage_004';
+  static dbVersion: number = 1;
   items = [];
   message: Message[]=[];
   pageSize = 8;
   private static messageObserver:any; 
+
   public static messageNotifier: Observable<Message> = Observable.create(observer => {
     UmdMessageProvider.messageObserver = observer;
   });
-  constructor(public platform: Platform,public http: Http, public sqlite: SQLite) {
+  constructor(public platform: Platform,public http: Http, public sqlite: SQLite
+              , public loading: LoadingController) {
 
   }
 
-  
-  private getDB(): Observable<SQLiteObject>
-  {
-    if (!this.storage)
-    {
-      let db = Observable.fromPromise(
-        this.sqlite.create({ name: this.DB_NAME, location: 'default' }));
+  public init(): Observable<any> {
+      let db = Observable.fromPromise(this.platform.ready()).map(m => 
+      {
+        Observable.fromPromise(
+          this.sqlite.deleteDatabase({ name: "umd_Storage_v001", location: 'default' })
+        )
+        Observable.fromPromise(
+          this.sqlite.deleteDatabase({ name: "umd_Storage_002", location: 'default' })
+        )
+        Observable.fromPromise(
+          this.sqlite.deleteDatabase({ name: "umd_Storage_003", location: 'default' })
+        )
+        return Observable.fromPromise(
+          this.sqlite.create({ name: UmdMessageProvider.dbName, location: 'default' })
+        )
+      }).concatAll();
       db.subscribe(m => {
         console.log("db initialized.");
       },
       e => {
         console.log(`db initialized fail. err=[${e}]`);
       });
-
-      let output = db.map(m => {
-        this.storage = m;
-        return this.tryInit(m);
-      }).concatAll();
-
+    
+    return db.map( db => {
+      let output = this.createTables(db);
+      this.sqliteObject = db;
       output.subscribe(m => {
       }, e => {
         console.log(`table initialized fail! err=[${e}]`)
       })
       return output;
+    }).concatAll();
+        // .subscribe(undefined, 
+        // err => {
+        //     console.error(`Unable to create initial storage message, err="${err}"`);
+        // });
+
+  }
+
+
+  private getDB(): Observable<SQLiteObject>
+  {
+    if (!this.sqliteObject)
+    {
+        return Observable.fromPromise(
+          this.sqlite.create({ name: UmdMessageProvider.dbName, location: 'default' })
+        )
     }
     else
     {
-      return Observable.from([this.storage]);
+      return Observable.from([this.sqliteObject]);
     }
+  }
+
+  private isColumnExist(table:string, column:string, db: SQLiteObject): Observable<boolean>
+  {
+    return Observable.fromPromise(db.executeSql("PRAGMA table_info("+ table +")",[])).map(
+        res => {
+          if(res.rows.length > 0) {
+            for(let i = 0; i < res.rows.length; i++) {
+              if (res.rows.item(i).name == column)
+              {
+                return true;
+              }
+            }
+          }
+          return false;
+        }
+      );
   }
 
   public insertTestMessages(): Observable<Message[]>
@@ -71,16 +115,68 @@ export class UmdMessageProvider implements MessageProvider {
       // })
   }
 
-  protected tryInit(db: SQLiteObject): Observable<SQLiteObject> {
-    return Observable.fromPromise(
-        db.executeSql("CREATE TABLE IF NOT EXISTS message (id text, occurDT text, alarmID text,eqptID text " +
-                  ", alarmMessage text,alarmType text,description text,read integer)", []))
-        .map(m => db);
-        // .subscribe(undefined, 
-        // err => {
-        //     console.error(`Unable to create initial storage message, err="${err}"`);
-        // });
+  protected checkVersionAndUpdate(db: SQLiteObject): Observable<SQLiteObject>
+  {
+    let sql = "SELECT version FROM schema_version;";
+    return Observable.from(db.executeSql(sql, [])).map(res =>
+      { 
+        if (res.rows.length > 0)
+        {
+          let currentVersion = res.rows.item(0).version;
+          return this.schemaUpdate(db, currentVersion)
+        }
+        else
+        {
+          return Observable.from(db.executeSql(`INSERT INTO schema_version values (?);`, [0]))
+          .map(m => this.schemaUpdate(db, 0)).concatAll();          
+        }          
+      }
+    ).concatAll();
+  }
 
+  protected schemaUpdate(db: SQLiteObject, fromVersion:number): Observable<SQLiteObject>
+  {
+    let output;
+    if (!fromVersion)
+    {
+      fromVersion = 0
+    }
+    if (fromVersion < 1)
+    {
+      let sql = "ALTER TABLE message ADD COLUMN IF NOT EXIST archived integer default 0";
+      let stepOutput = Observable.fromPromise(db.executeSql(sql, [])).map(m => db);
+      stepOutput.subscribe( e => {
+        console.error(`Unable to create initial storage message, err=${e}, sql=${sql}`);
+      });
+      output = output ? output.map(m => stepOutput) : stepOutput;
+    }
+    let updateVersion = db.executeSql('UPDATE schema_version SET version = ?', [UmdMessageProvider.dbVersion])
+    output = output ? output.map(m => updateVersion).concatAll() : updateVersion;
+    // if (!output)
+    // {
+    //   return Observable.create(observer => {
+    //     observer.next(db);
+    //     observer.complete();
+    //   })
+    // }
+    return output;
+  }
+
+  
+  createTables(db: SQLiteObject): Observable<SQLiteObject>
+  {
+    return Observable.fromPromise(
+      db.transaction(tx => {
+        tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS message (id text, occurDT text, 
+          alarmID text,eqptID text , alarmMessage text,alarmType text,
+          description text, read integer default 0, archived integer default 0)`, []);
+        let res = tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS schema_version (version integer)`, []);
+      })
+      ).map( m =>
+        this.checkVersionAndUpdate(db)
+      ).concatAll();
   }
 
   delete(key: number): Observable<any> {
@@ -90,6 +186,7 @@ export class UmdMessageProvider implements MessageProvider {
     ).concatAll();
   }
  
+
    private loadMessage(condition: string, queryPageNo: number): Observable<Message[]>{
     // id text,occurDT text, alarmID text,eqptID text,alarmMessage text,alarmType text,description text,read text
     let limit = queryPageNo > 0 ? ` limit ${(queryPageNo - 1) * this.pageSize}, ${(queryPageNo) * this.pageSize}` : '';
@@ -164,20 +261,20 @@ export class UmdMessageProvider implements MessageProvider {
     //       }) 
   }
   
-  composeCondition(alarmType:string, eqptID:string, alarmID:string)
+  composeCondition(alarmType:string, eqptID:string, alarmID:string, archived?:boolean)
   {
-     let condition = " WHERE 1=1 ";
+     let condition = " WHERE 1=1 AND archived = " + (archived ? 1 : 0).toString();
      if (alarmType)
      {
-        condition += `AND alarmType = '${alarmType}'`;
+        condition += ` AND alarmType = '${alarmType}'`;
      }
      if (eqptID)
      {
-        condition += `AND eqptID = '${eqptID}'`;
+        condition += ` AND eqptID = '${eqptID}'`;
      }
      if (alarmID)
      {
-        condition += `AND alarmID = '${alarmID}'`;
+        condition += ` AND alarmID = '${alarmID}'`;
      }
      return condition;
   }
@@ -189,21 +286,31 @@ export class UmdMessageProvider implements MessageProvider {
             ).concatAll();    
   }
 
-
-  getUnreadMessage(alarmType:string, eqptID:string, alarmID:string) : Observable<Message[]>
+  getUnreadMessageCount(groupBy:string) : Observable<[{ groupItem: string; count: number; }]>
   {
-    let condition = this.composeCondition(alarmType, eqptID, alarmID);
-     return  Observable.fromPromise(this.platform.ready()).map(m => 
-             this.loadMessage("WHERE read = 0 and " + condition, -1)
-            ).concatAll();    
+    let sql = `SELECT c.groupItem, u.messageCount from (SELECT DISTINCT ${groupBy} as groupItem from message) as c left join 
+    (SELECT ${groupBy} as groupItem, count(*) as messageCount from message WHERE read = 0 group by ${groupBy}) as u 
+    on c.groupItem == u.groupItem order by u.messageCount, c.groupItem`;
+     return this.getDB().map(m => 
+      Observable.fromPromise(m.executeSql(sql, [])).map(
+        res => {
+          let output: { groupItem: string; count: number; }[] = [];
+          if(res.rows.length > 0) {
+            for(let i = 0; i < res.rows.length; i++) {
+              let row = res.rows.item(i);
+              output.push({ groupItem: row.groupItem, count:+ row.messageCount })
+            }  
+          }
+          return output;
+        }
+      )
+    ).concatAll();    
   }
 
   getMessage(page: number, alarmType:string, eqptID:string, alarmID:string) : Observable<Message[]>
   {
     let condition = this.composeCondition(alarmType, eqptID, alarmID);
-    return  Observable.fromPromise(this.platform.ready()).map(m => 
-      this.loadMessage(condition, page)
-    ).concatAll();
+    return this.loadMessage(condition, page);
   }
 
   getMessageFromUmd(beforeDT:Date) : Observable<Message[]> //UMD Service provide
@@ -224,8 +331,9 @@ export class UmdMessageProvider implements MessageProvider {
     {
       console.log("set id, alarmid,message,time="+ message.id + ":"+ message.alarmID + ":"+ message.alarmMessage+":"+message.occurDT);
 
-      return Observable.fromPromise(db.executeSql('insert into message(id,occurDT , alarmID ,eqptID ,alarmMessage ,alarmType ,description ,read ) values (?,?,?,?,?,?,?,?)'
-        , [message.id,message.occurDT,message.alarmID,message.eqptID,message.alarmMessage,message.alarmType,message.description,message.read ? 1 : 0]))
+      return Observable.fromPromise(db.executeSql('insert into message(id,occurDT , alarmID ,eqptID ,alarmMessage ,alarmType ,description ,read) values (?,?,?,?,?,?,?,?)'
+        , [message.id,message.occurDT,message.alarmID,message.eqptID,message.alarmMessage
+          ,message.alarmType,message.description,message.read ? 1 : 0]))
       .map( 
         m => {
           msg.rowid = m.insertId;
@@ -258,4 +366,18 @@ export class UmdMessageProvider implements MessageProvider {
     })
     return output;
   }
+
+  archive(message: Message): Observable<any>  
+  {
+    return this.getDB().map(m => 
+      Observable.fromPromise(m.executeSql("update message set archived = ? where rowid = ?", [1, message.rowid]))
+    ).concatAll();
+  }
+
+  restore(message: Message): Observable<any>
+  {
+    return this.getDB().map(m => 
+      Observable.fromPromise(m.executeSql("update message set archived = ? where rowid = ?", [0, message.rowid]))
+    ).concatAll();    
+  }  
 }

@@ -35,7 +35,7 @@ export class MockAccountProvider implements AccountProvider
             MockAccountProvider.account = MockAccountProvider.sharon;
             observer.next(MockAccountProvider.account);
             observer.complete();
-            }, 5000);
+            }, 1000);
         });
     }
 

@@ -12,7 +12,7 @@ import { Observable } from 'rxjs/Rx';
   for more info on providers and Angular 2 DI.
 */
 @Injectable()
-export class MockAlarmSubjectProvider implements MockAlarmSubjectProvider{
+export class MockAlarmSubjectProvider implements AlarmSubjectProvider{
  
   getAlarmSubjects() : Observable<AlarmSubject[]>
   {

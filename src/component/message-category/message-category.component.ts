@@ -18,9 +18,10 @@ export enum CategoryMethod
 })
 export class MessageCategoryComponent implements OnInit
 {
-    unreadCount: number;
     @Input()
-    messages : Message[] = [];    
+    unreadCount: number;
+    // @Input()
+    // messages : Message[] = [];    
     @Input()
     categoryMethod: CategoryMethod;
     @Input()
@@ -41,11 +42,11 @@ export class MessageCategoryComponent implements OnInit
 
     ngOnChanges()
     {
-        Observable.from(this.messages).count(
-          m => !m.read
-        ).subscribe(
-          m => this.unreadCount = m
-        );
+        // Observable.from(this.messages).count(
+        //   m => !m.read
+        // ).subscribe(
+        //   m => this.unreadCount = m
+        // );
     }
 
     clickedHandler()

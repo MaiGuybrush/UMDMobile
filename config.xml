@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.inx.app.umdmobile" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>UmdMobile</name>
-    <description>An awesome Ionic/Cordova app.</description>
+    <description>Inx UMD Mobile. by CIM.</description>
     <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
     <content src="index.html" />
     <access origin="*" />
@@ -9,6 +9,7 @@
     <allow-navigation href="http://10.53.56.76:8100" />
     <allow-navigation href="http://10.55.140.118:8100" />
     <allow-navigation href="http://10.55.140.109:8100" />
+    <allow-navigation href="http://10.55.140.101:8100" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
