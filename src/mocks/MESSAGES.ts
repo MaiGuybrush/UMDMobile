@@ -10,7 +10,7 @@ export const MESSAGES: Message[] = [
         alarmMessage: 'ZALL RTQCS TFT4 發生 PreInfo 運作異常，通報時間 20 分鐘 ，最後時間 : 201...',
         alarmType: 'RTQCS',
         eqptID: '',
-        occurDT: new Date('2017-07-13T11:00:01Z'),
+        occurDT: new Date('2017-07-25T11:00:01Z'),
         read: true
       },
       { 
@@ -21,7 +21,7 @@ export const MESSAGES: Message[] = [
         alarmMessage: 'RTQCS TFT3 發生 PreInfo Archive 運作異常，通報時間 20 分鐘 ，最後...',
         alarmType: 'RTQCS',
         eqptID: '',
-        occurDT: new Date('2017-07-13T11:30:01Z'),
+        occurDT: new Date('2017-07-25T11:30:01Z'),
         read: false
       },
       {
@@ -32,8 +32,8 @@ export const MESSAGES: Message[] = [
         alarmMessage: 'KALL RTQCS TFT4 發生 PreInfo 運作異常，通報時間 20 分鐘 ，最後時間 : 201...',
         alarmType: 'RTQCS',
         eqptID: '',
-        occurDT: new Date('2017-01-02T12:00:01Z'),
-        read: true
+        occurDT: new Date('2017-07-02T12:00:01Z'),
+        read: false
       },
       { 
         rowid: 4,
@@ -43,7 +43,7 @@ export const MESSAGES: Message[] = [
         alarmMessage: 'RTQCS TFT3 發生 PreInfo Archive 運作異常，通報時間 20 分鐘 ，最後...',
         alarmType: 'RTQCS',
         eqptID: '',
-        occurDT: new Date('2017-01-02T10:30:01Z'),
+        occurDT: new Date('2017-07-06T10:30:01Z'),
         read: false
       },
       { 
@@ -52,9 +52,9 @@ export const MESSAGES: Message[] = [
         description: 'STCO0200 alarm, code[0001]',
         alarmID: 'TFT3-PHOTO-EQP-alarm',
         alarmMessage: 'EQ alarm',
-        alarmType: 'EQPT',
+        alarmType: 'RTQCS',
         eqptID: 'STCO0100',
-        occurDT: new Date('2017-01-02T11:45:01Z'),
+        occurDT: new Date('2017-07-04T11:45:01Z'),
         read: false
       },
       {
@@ -122,5 +122,16 @@ export const MESSAGES: Message[] = [
         eqptID: 'STCO0100',
         occurDT: new Date('2017-01-02T11:45:01Z'),
         read: false
+      },
+      { 
+        rowid: 12,
+        id:`123456789ASDFV`,
+        description: 'RTQCS 運作異常 AP_fail _TFT5',
+        alarmID: 'OTFT55-CIM-RTQCS-AP_fail',
+        alarmMessage: 'RTQCS TFT5 發生 PreInfo Archive 運作異常，通報時間 20 分鐘 ，最後...',
+        alarmType: 'RTQCS',
+        eqptID: '',
+        occurDT: new Date('2017-07-05T10:15:01Z'),
+        read: true
       }
 ];

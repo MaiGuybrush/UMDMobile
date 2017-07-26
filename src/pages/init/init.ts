@@ -28,13 +28,14 @@ export class InitPage {
   topic: string;
   static pushObject: PushObject;
   loader: Loading;
-  registrationId: string;
+  // registrationId: string;
   constructor(public platform: Platform, public navCtrl: NavController, public navParams: NavParams
               , public loading: LoadingController, public alertCtrl: AlertController, public accountProvider: AccountProvider
               , public employeeProvider: EmployeeProvider, public messageProvider: MessageProvider, public push: Push) {
   }
 
   ionViewDidLoad() {
+    // this.navCtrl.setRoot(TabsPage);
     this.platform.ready().then(() => {    
       this.loader = this.loading.create();
       this.loader.present();
@@ -43,7 +44,8 @@ export class InitPage {
       this.getUserInfo().subscribe(m => {
         var user = m;
         this.getRegistrationInfo().subscribe(m => {
-          this.updateUserInfo(user, this.registrationId)
+          this.updateUserInfo(user, m.registrationId)
+          // this.updateUserInfo(user, this.registrationId)
           .subscribe(m => {
             this.initDB().subscribe(m => { 
                 this.loader.dismiss();
@@ -85,7 +87,9 @@ export class InitPage {
   {
     this.loader.setContent("取得使用者資訊...");
     return this.accountProvider.getUserInfo().map(m => {
-      console.log("get user [" + `${m.comid}` + "] logged in.");      
+      console.log("get user [" + `${m.comid}` + "] logged in.");  
+      // console.log("get accessToken [" + `${m.accessToken}` + "] logged in.");      
+      // console.log("get refreshToken [" + `${m.refreshToken}` + "] logged in.");      
       return m;
     });
   }

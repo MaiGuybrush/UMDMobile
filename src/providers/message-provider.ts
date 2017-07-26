@@ -6,7 +6,7 @@ export abstract class MessageProvider {
 
   abstract getUnreadMessageCount(groupBy:string) : Observable<{ groupItem: string; count: number; }[]>
 
-  abstract getMessage(page: number, alarmType:string, equipment:string, alarmID:string) : Observable<Message[]> 
+  abstract getMessage(page: number, alarmType:string, equipment:string, alarmID:string, pattern:string) : Observable<Message[]> 
 
   abstract getMessageFromUmd(beforeDT:Date) : Observable<Message[]> //UMD Service provide
 

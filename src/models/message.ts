@@ -16,4 +16,5 @@ export class Message
     occurDT: Date;  
     read: boolean;
     archived?: boolean = false;
+    sameDate?: boolean =false;
 }

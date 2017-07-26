@@ -13,8 +13,7 @@
           </ion-item-options>
     </ion-item-sliding>-->
     <ion-item-sliding>
-          <!-- <ion-item (tap)="editClick.emit(group)" (press)="deleteClick.emit(group)"" -->
-          <ion-item (ionSwipe)="deleteClick.emit(group)">
+          <ion-item (tap)="editClick.emit(group)" (press)="deleteClick.emit(group)">
              <ion-label>
                 <h2>{{group.groupName}}</h2>
                 <p>{{group.description}}</p>

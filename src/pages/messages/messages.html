@@ -5,27 +5,32 @@
     </ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content   class="list-avatar-page">
-  <ion-navbar>
+<ion-content >
+  <ion-searchbar
+    [(ngModel)]="pattern"
+    [showCancelButton]="shouldShowCancel"
+    [formControl]="searchControl"
+    (ionInput)="onSearchInput()">
+  </ion-searchbar>
+    <div *ngIf="searching" class="spinner-container">
+        <ion-spinner></ion-spinner>
+    </div>  
+  <!-- <ion-navbar>
     <ion-buttons start="">
       <button color="danger" icon-only="" ion-button="" class="disable-hover bar-button bar-button-default "><span class="button-inner">
         <ion-icon name="search" role="img" class="icon"></ion-icon>
       </span><div class="button-effect"></div></button>
     </ion-buttons>
      <ion-input type="search" placeholder="search.."></ion-input> 
-  </ion-navbar>
+  </ion-navbar> -->
 
   <!--<ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>-->
-  
+   <ion-fab bottom right>
+    <button ion-fab color="orange1" mini (click)="scrollToTop()" ><ion-icon name="arrow-up"></ion-icon></button>
+  </ion-fab> 
+
   <ion-list>
-    <ion-item-group>
-      <ion-item-divider color="light" >Today</ion-item-divider>
-      <message *ngFor="let m of todayMsgs | orderBy: {property: 'occurDT', direction: -1}" [msg]="m" [itemGroup]=1  [navCtrl]="navCtrl" ></message>
-    </ion-item-group>
-    <ion-item-group>
-      <ion-item-divider color="light" >更多訊息</ion-item-divider>
-      <message *ngFor="let m of messages | orderBy: {property: 'occurDT', direction: -1}" [msg]="m" [itemGroup]=2 [navCtrl]="navCtrl" ></message>
-    </ion-item-group>
+      <message *ngFor="let m of messages | orderBy: {property: 'occurDT', direction: -1}" [msg]="m" [showDate]= "getMsgDate(m)" [navCtrl]="navCtrl" ></message>
   </ion-list>
   
   <ion-infinite-scroll (ionInfinite)="doInfinite($event)">

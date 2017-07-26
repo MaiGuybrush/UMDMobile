@@ -108,6 +108,7 @@ export class UmdMessageProvider implements MessageProvider {
   {
       // let output = Observable.create(observer => {
       // let messages = [];
+      console.log('insertTestMessages' + MESSAGES.length)
         return Observable.range(0, MESSAGES.length).map( i =>
           this.addMessage(MESSAGES[i])
         ).concatAll().toArray();
@@ -190,13 +191,14 @@ export class UmdMessageProvider implements MessageProvider {
    private loadMessage(condition: string, queryPageNo: number): Observable<Message[]>{
     // id text,occurDT text, alarmID text,eqptID text,alarmMessage text,alarmType text,description text,read text
     let limit = queryPageNo > 0 ? ` limit ${(queryPageNo - 1) * this.pageSize}, ${(queryPageNo) * this.pageSize}` : '';
+    //  console.log("limit: "+ limit);
     let output = Observable.create( observer => {
       this.getDB().subscribe(db =>
       {
         Observable.fromPromise(db.executeSql("select rowid, id, occurDT, alarmID, eqptID, alarmMessage, " + 
                     `description,alarmType,read from message ${condition} order by occurDT desc ${limit}`, []))
         .subscribe(res => {
-            //   console.log("getallresultSet: "+JSON.stringify(resultSet));
+              // console.log("getallresultSet: "+JSON.stringify(res));
           let messages: Message[] = [];
 
           if(res.rows.length > 0) {
@@ -261,7 +263,7 @@ export class UmdMessageProvider implements MessageProvider {
     //       }) 
   }
   
-  composeCondition(alarmType:string, eqptID:string, alarmID:string, archived?:boolean)
+  composeCondition(alarmType:string, eqptID:string, alarmID:string, pattern:string, archived?:boolean)
   {
      let condition = " WHERE 1=1 AND archived = " + (archived ? 1 : 0).toString();
      if (alarmType)
@@ -275,6 +277,10 @@ export class UmdMessageProvider implements MessageProvider {
      if (alarmID)
      {
         condition += ` AND alarmID = '${alarmID}'`;
+     }
+     if (pattern)
+     {
+        condition += ` AND ( alarmMessage LIKE '%${pattern}%' OR description LIKE '%${pattern}%' ) `;
      }
      return condition;
   }
@@ -307,9 +313,9 @@ export class UmdMessageProvider implements MessageProvider {
     ).concatAll();    
   }
 
-  getMessage(page: number, alarmType:string, eqptID:string, alarmID:string) : Observable<Message[]>
+  getMessage(page: number, alarmType:string, eqptID:string, alarmID:string, pattern: string) : Observable<Message[]>
   {
-    let condition = this.composeCondition(alarmType, eqptID, alarmID);
+    let condition = this.composeCondition(alarmType, eqptID, alarmID, pattern);
     return this.loadMessage(condition, page);
   }
 
