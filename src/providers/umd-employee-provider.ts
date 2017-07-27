@@ -36,8 +36,8 @@ export class UmdEmployeeProvider implements EmployeeProvider {
         let body = {"EmpId": `${empId}`,"DeviceToken": `${deviceToken}`,"Platform": `${platform}`};
         console.log('post start');
         let response = this.http.post(url, body, options)
-        response.subscribe(m => {}, e => {
-          console.log("updateEmployeeInfo error! => " + e)});
+        // response.subscribe(m => {}, e => {
+        //   console.log("updateEmployeeInfo error! => " + e)});
         return response.map(res => 
                         Api.toCamel(res.json()).isSuccess
                     );
@@ -63,7 +63,6 @@ export class UmdEmployeeProvider implements EmployeeProvider {
 
       let body = {"EmpId": `${empID}`, "Keyword": `${pattern}`, "QueryPage": queryPage};
 
-      let err = "";
       console.log('post start');
       let output = this.http.post(url, body, options).map(res => 
                         Api.toCamel(res.json()).employeeList

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core'
 import { NavController } from 'ionic-angular'
 import { SubscribeEditPage } from '../subscribe-edit/subscribe-edit'
-import { SubscribeAddPage } from '../subscribe-add/subscribe-add'
 import { GeneralDataProvider } from '../../providers/general-data-provider'
 import { LoadingController } from 'ionic-angular';
 

@@ -1,4 +1,4 @@
-import { Component, ViewChild  } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { SubscribeAddPage } from '../subscribe-add/subscribe-add';
 import { SubscriptionProvider } from '../../providers/subscription-provider'

@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { AlarmAction } from '../models/alarm-action';
 import { AlarmActionSetting } from '../models/alarm-action-setting';
 

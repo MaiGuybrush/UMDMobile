@@ -1,6 +1,5 @@
 import { Subscribe } from '../models/subscribe';
 import { SubscribeCancelResult } from '../models/subscribe-cancel-result';
-import { AlarmActionSetting } from '../models/alarm-action-setting';
 import { Observable } from 'rxjs/Rx'
 
 /*

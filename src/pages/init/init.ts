@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Rx';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Platform, AlertController } from "ionic-angular"
 import { LoadingController, Loading } from 'ionic-angular';
-import { Push, PushObject, PushOptions, RegistrationEventResponse } from '@ionic-native/push';
+import { Push, PushObject, PushOptions } from '@ionic-native/push';
 import { AccountProvider } from '../../providers/account-provider'
 import { InxAccount } from '../../models/inx-account'
 import { EmployeeProvider } from '../../providers/employee-provider'
@@ -28,26 +28,50 @@ export class InitPage {
   topic: string;
   static pushObject: PushObject;
   loader: Loading;
-  // registrationId: string;
+  url: string;
   constructor(public platform: Platform, public navCtrl: NavController, public navParams: NavParams
               , public loading: LoadingController, public alertCtrl: AlertController, public accountProvider: AccountProvider
               , public employeeProvider: EmployeeProvider, public messageProvider: MessageProvider, public push: Push) {
   }
 
   ionViewDidLoad() {
-    // this.navCtrl.setRoot(TabsPage);
-    this.platform.ready().then(() => {    
+    if (this.platform.is("ios")){
+      setTimeout(function() {
+        window.handleOpenURL = (url) => {
+          console.log("received url: " + url);
+        }, 0  
+      });
+    }
+    else 
+    {
+      window.handleOpenURL = (url) => {
+        console.log("received url: " + url);
+      }           
+     }
+    this.initialize();
+  }
+
+  initialize()
+  {
+    this.platform.ready().then(() => { 
+      this.push.hasPermission()
+      .then((res: any) => {
+        if (res.isEnabled) {
+          console.log('We have permission to send push notifications');
+        } else {
+          console.log('We do not have permission to send push notifications');
+        }
+      });
       this.loader = this.loading.create();
       this.loader.present();
-      var me = this;
       
       this.getUserInfo().subscribe(m => {
         var user = m;
         this.getRegistrationInfo().subscribe(m => {
           this.updateUserInfo(user, m.registrationId)
-          // this.updateUserInfo(user, this.registrationId)
           .subscribe(m => {
             this.initDB().subscribe(m => { 
+                console.log("execute initDB subscribe..")
                 this.loader.dismiss();
                 this.navCtrl.setRoot(TabsPage);
               },
@@ -75,6 +99,7 @@ export class InitPage {
           this.alert("取得使用者資訊失敗", "請確認是否安裝INX App Store!");
       })        
     });
+    
   }
 
   initDB(): Observable<any>
@@ -87,9 +112,7 @@ export class InitPage {
   {
     this.loader.setContent("取得使用者資訊...");
     return this.accountProvider.getUserInfo().map(m => {
-      console.log("get user [" + `${m.comid}` + "] logged in.");  
-      // console.log("get accessToken [" + `${m.accessToken}` + "] logged in.");      
-      // console.log("get refreshToken [" + `${m.refreshToken}` + "] logged in.");      
+      console.log("get user [" + `${m.comid}` + "] logged in.");      
       return m;
     });
   }
@@ -167,7 +190,7 @@ export class InitPage {
 
   pushNotificationHandler(data: any) {
     let m = new Message();
-    m.id = '1234';//data.additionalData["google.message_id"];
+    m.id = data.additionalData["google.message_id"];
     m.occurDT = data.additionalData.occurDT;
     m.alarmID = data.title;
     m.eqptID = data.additionalData.eqptID;
@@ -202,5 +225,14 @@ export class InitPage {
       }
     }
   }
+  
+  setUrl(event)
+  {
+    this.url = event.target.value;
+  }
 
+  openUrl(event)
+  {
+    window.open(this.url);
+  }
 }

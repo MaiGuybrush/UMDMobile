@@ -15,8 +15,36 @@ export class InterceptedHttp extends Http {
   }
   post(url: string, body: any, options?: RequestOptionsArgs): Observable<Response>
   {
-      return super.post(url, body, options);
+    let token = this.token;
+    var me = this;
+    if (!options) {
+      // let's make option object
+      options = {headers: new Headers()};
+    }
+    options.headers.set('Authorization', `Bearer ${token}`);
+    //return super.request(url, options).catch(this.catchAuthError(this));
+    return super.post(url, body, options)
+    .catch(initialError => {
+        if (initialError && initialError.status === 401) {
+            // token might be expired, try to refresh token
+            return me
+              .refreshToken()
+              //Use flatMap instead of map
+              .mergeMap((token: string) => {
+                    if (token != null && token != "") {
+                      // retry with new token
+                      me.token = token;
+                      return this.post(url, body, options);
+                    }
+                    return Observable.throw(initialError);
+                });
+        }
+        else {
+            return Observable.throw(initialError);
+        }
+    });  
   }
+
   request(url: string|Request, options?: RequestOptionsArgs): Observable<Response> {
     let token = this.token;
     var me = this;
@@ -34,25 +62,25 @@ export class InterceptedHttp extends Http {
     }
     //return super.request(url, options).catch(this.catchAuthError(this));
     return super.request(url, options)
-            .catch(initialError => {
-                if (initialError && initialError.status === 401) {
-                    // token might be expired, try to refresh token
-                    return me
-                          .refreshToken()
-                          //Use flatMap instead of map
-                          .mergeMap((token: string) => {
-                                if (token != null && token != "") {
-                                  // retry with new token
-                                  me.token = token;
-                                  return this.request(url, options);
-                                }
-                                return Observable.throw(initialError);
-                           });
-                }
-                else {
-                    return Observable.throw(initialError);
-                }
-            });  
+    .catch(initialError => {
+        if (initialError && initialError.status === 401) {
+            // token might be expired, try to refresh token
+            return me
+                  .refreshToken()
+                  //Use flatMap instead of map
+                  .mergeMap((token: string) => {
+                        if (token != null && token != "") {
+                          // retry with new token
+                          me.token = token;
+                          return this.request(url, options);
+                        }
+                        return Observable.throw(initialError);
+                    });
+        }
+        else {
+            return Observable.throw(initialError);
+        }
+    });  
   }
 
 }

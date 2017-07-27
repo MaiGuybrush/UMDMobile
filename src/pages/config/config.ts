@@ -1,10 +1,5 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { GroupSearchPage } from '../group-search/group-search';
-import { Group } from '../../models/group';
-import { Employee } from '../../models/employee';
-import { PeopleSearchPage } from '../people-search/people-search';
-import { DepartmentSelectPage } from '../department-select/department-select';
 /*
   Generated class for the Config page.
 

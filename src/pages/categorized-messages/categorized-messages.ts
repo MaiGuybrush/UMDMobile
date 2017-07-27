@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { MenuController } from 'ionic-angular';
 import { MessageProvider } from '../../providers/message-provider';
-import { Message } from '../../models/message';
 import { CategoryMethod } from '../../component/message-category/message-category.component';
 import { MessagesPage } from '../messages/messages';
 import { AuthTestPage } from '../auth-test/auth-test';
@@ -83,7 +82,7 @@ export class CategorizedMessagesPage {
 
   insertTestMessages()
   {
-    this.provider.insertTestMessages().subscribe();
+    this.provider.insertTestMessages();
   }
   getCategoryField() {
     switch(this.category)

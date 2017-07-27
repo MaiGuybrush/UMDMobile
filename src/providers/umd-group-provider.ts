@@ -4,7 +4,6 @@ import { Api } from './api'
 import { Group } from '../models/group'
 import { Employee } from '../models/employee';
 import { GroupProvider } from './group-provider'
-import { GroupDetail } from '../models/group-detail';
 import { Observable } from 'rxjs/Rx'
 
 /*
@@ -35,7 +34,6 @@ export class UmdGroupProvider implements GroupProvider {
 
      let body = {"EmpId": `${empId}`, "Keyword": `${pattern}`};
     //  let output = [];
-     let err = "";
      console.log('post start');
      return this.http.post(url, body, options).map(res => 
                       Api.toCamel(res.json()).groupDataList
@@ -50,7 +48,6 @@ export class UmdGroupProvider implements GroupProvider {
      let url = Api.getHttpUrl('GetGroupDetailData');
 
      let body = {"GroupId": `${groupId}`};
-     let err = "";
      console.log('post start');
      
      return this.http.post(url, body, options).map(res => 
@@ -84,7 +81,6 @@ export class UmdGroupProvider implements GroupProvider {
 
      let body = {"GroupId": groupId,"GroupName": `${groupName}`,"Description": `${description}`,
                  "LeftGroupUsers": leftGroupUsers,"NewGroupUsers": newGroupUsers,"EmpId": `${empId}`};
-     let err = "";
      console.log('post start');
      
      return this.http.post(url, body, options).map(res => 

@@ -42,10 +42,9 @@ export class MockMessageProvider implements MessageProvider {
     return Observable.from([MESSAGES]);    
   }
 
-  insertTestMessages(): Observable<Message[]>
+  insertTestMessages()
   {
-    return undefined;
-
+      
   }
 
   getMessage(page: number, alarmType:string, equipment:string, alarmID:string) : Observable<Message[]>

@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
-import { MyApp } from '../../app/app.component';
+import { NavController } from 'ionic-angular';
 import { GroupProvider } from '../../providers/group-provider'
 import { Group } from '../../models/group'
 import { GroupEditPage } from '../group-edit/group-edit'
-import { Observable } from 'rxjs/Rx'
 import { AccountProvider } from '../../providers/account-provider'
 import { LoadingController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';

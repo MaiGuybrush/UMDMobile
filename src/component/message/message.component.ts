@@ -1,5 +1,5 @@
-import { Component, Input, Output} from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { Component, Input} from '@angular/core';
+import { NavController } from 'ionic-angular';
 
 import { MessageProvider } from '../../providers/message-provider'
 import { MessagesDetailPage } from '../../pages/messages-detail/messages-detail'

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Observable'
 import { LoadingController } from 'ionic-angular';
-import { Push, PushObject, PushOptions } from '@ionic-native/push';
+import { Push } from '@ionic-native/push';
 
 //import { AuthTestPage } from '../auth-test/auth.test';
 import { CategorizedMessagesPage } from '../categorized-messages/categorized-messages';
@@ -11,10 +11,8 @@ import { ConfigPage } from '../config/config';
 import { AccountProvider } from '../../providers/account-provider'
 import { EmployeeProvider } from '../../providers/employee-provider'
 import { MessageProvider } from '../../providers/message-provider'
-import { Platform, Nav, AlertController } from "ionic-angular"
+import { Platform, AlertController } from "ionic-angular"
 import { InxAccount } from '../../models/inx-account'
-import { Message } from '../../models/message'
-import { MyApp } from '../../app/app.component'
 
 declare var window;
 

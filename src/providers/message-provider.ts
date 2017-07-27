@@ -16,7 +16,7 @@ export abstract class MessageProvider {
 
   abstract addMessage(message: Message): Observable<Message>
 
-  abstract insertTestMessages() : Observable<any>
+  abstract insertTestMessages()
   
   abstract delete(key: number): Observable<any>
 

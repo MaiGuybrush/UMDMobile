@@ -1,8 +1,4 @@
-import { Component, Input, OnInit, OnChanges, EventEmitter, Output} from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
-import { Observable } from 'rxjs/Rx'
-import { MessagesPage } from '../../pages/messages/messages'
-import { Message } from '../../models/message';
+import { Component, Input, OnInit, EventEmitter, Output} from '@angular/core';
 
 export enum CategoryMethod
 {
@@ -26,8 +22,6 @@ export class MessageCategoryComponent implements OnInit
     categoryMethod: CategoryMethod;
     @Input()
     category: string;
-    @Input()
-    navCtrl: NavController;
     @Output()
     itemClicked = new EventEmitter();
     constructor()

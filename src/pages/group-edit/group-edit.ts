@@ -5,7 +5,6 @@ import { Group } from '../../models/group';
 import { Employee } from '../../models/employee';
 import { PeopleSearchPage } from '../people-search/people-search';
 import { GroupsPage } from '../groups/groups';
-import { DepartmentSelectPage } from '../department-select/department-select';
 import { GroupProvider } from '../../providers/group-provider'
 import { AccountProvider } from '../../providers/account-provider'
 import { LoadingController } from 'ionic-angular';
@@ -35,7 +34,6 @@ export class GroupEditPage {
 
      loader.present();
           this.group = this.navParams.get('group');
-          var me = this;
           if (this.group != null){
           this.groupName = this.group.groupName;
           this.description = this.group.description;

@@ -1,5 +1,4 @@
 import { Component, Input} from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
 import { Employee } from '../../models/employee';
 
 @Component({

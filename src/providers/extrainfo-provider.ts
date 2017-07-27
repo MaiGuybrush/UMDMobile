@@ -3,8 +3,6 @@ import { AppConfig } from '../providers/app-config'
 import { Injectable } from '@angular/core';
 import { InxAccount } from '../models/inx-account'
 import { AccountProvider } from './account-provider'
-import { Api } from './api'
-import { Http, Headers, RequestOptions } from '@angular/http'
 declare var ExtraInfo: any;
 
 /*

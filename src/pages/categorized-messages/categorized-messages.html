@@ -52,6 +52,6 @@
   <ion-list *ngIf="unreadMessageCount">
     <message-category *ngFor="let unreadCount of unreadMessageCount | orderBy: {property: 'groupItem', direction: -1}" 
     [categoryMethod]="category" [category]="unreadCount.groupItem" 
-     [unreadCount]="unreadCount.count" [navCtrl]="navCtrl" (itemClicked)="pushPage($event)"></message-category>
+     [unreadCount]="unreadCount.count" (itemClicked)="pushPage($event)"></message-category>
   </ion-list>
 </ion-content>

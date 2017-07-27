@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { InxAccount } from '../models/inx-account';
 import { Observable } from 'rxjs/Observable'
 
