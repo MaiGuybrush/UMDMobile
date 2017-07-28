@@ -12,7 +12,7 @@ export abstract class MessageProvider {
 
   abstract getAllMessage() : Observable<Message[]>
 
-  abstract setMessageRead(message:Message[]): Observable<Message[]>
+  abstract setMessageRead(message:Message[]): Observable<boolean>
 
   abstract addMessage(message: Message): Observable<Message>
 

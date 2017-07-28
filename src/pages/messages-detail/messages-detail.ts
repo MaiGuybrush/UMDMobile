@@ -15,6 +15,14 @@ export class MessagesDetailPage {
   }
 
   ionViewDidLoad() {
-    this.messageProvider.setMessageRead([this.msg]);
+    var me = this;
+    this.messageProvider.setMessageRead([this.msg]).subscribe(
+      m => {
+        me.msg.read = true;        
+      },
+      e => {
+        console.log("setMessageRead error, e=/" + e.stringify() + "/.")
+      }
+    );
   }
 }

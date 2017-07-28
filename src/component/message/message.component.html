@@ -1,6 +1,6 @@
 <ion-item-group >
      <ion-item-divider *ngIf="!sameDate">{{showDate}}</ion-item-divider>
-      <ion-item-sliding >
+      <ion-item-sliding *ngIf="!msg.archived">
         <ion-item (click)="pushMsgDetailPage()" (onLongPress)="deleteMessage()">
         <ion-label>
             <ion-icon *ngIf="!msg.read" name="information-circle" color="red1" ></ion-icon>
@@ -13,7 +13,7 @@
         <ion-item-options slide="right" (ionSwipe)="archiveMessage()">
         </ion-item-options>
       </ion-item-sliding>
-    <ion-item *ngIf="archived">
+    <ion-item *ngIf="msg.archived">
         訊息已刪除<button ion-button (click)="restoreMessage()">復原</button>
     </ion-item>
 </ion-item-group>

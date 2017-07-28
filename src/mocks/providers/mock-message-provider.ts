@@ -80,12 +80,12 @@ export class MockMessageProvider implements MessageProvider {
   {
     return undefined;
   }
-  setMessageRead(messages: Message[]): Observable<Message[]>
+  setMessageRead(messages: Message[]): Observable<any>
   {
     messages.forEach(m => {
       m.read = true;
     });
-    return Observable.from([messages]);
+    return Observable.from([true]);
   }
 
   delete(key: number): Observable<any>

@@ -1,6 +1,6 @@
 emulator -avd Nexus_4_API_22
 
 adb install -r D:\Projects\ionic\UmdMobile\platforms\android\build\outputs\apk\android-release.apk
-adb shell am start -n com.inx.app.umdmobile/com.inx.app.umdmobile.MainActivity
+adb shell am start -n com.inx.umdmobile/com.inx.umdmobile.MainActivity
 
 

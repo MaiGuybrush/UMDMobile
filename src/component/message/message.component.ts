@@ -20,7 +20,6 @@ export class MessageComponent
     @Input()
     showDate: string;
  
-    archived: boolean = false;
     sameDate: boolean;
     // read: boolean = false;
     constructor(public provider: MessageProvider)
@@ -71,13 +70,27 @@ export class MessageComponent
     archiveMessage(): void
     {
       var me = this;
-      this.provider.archive(this.msg).subscribe(m => me.archived = true);
+      this.provider.archive(this.msg).subscribe(
+        m => {
+          me.msg.archived = true;
+        },
+        e => {
+          console.log("archiveMessage error, e=/" + e.stringify() + "/.")
+        }
+      );
     }
 
     restoreMessage(): void
     {
       var me = this;
-      this.provider.restore(this.msg).subscribe(m => me.archived = false);
+      this.provider.restore(this.msg).subscribe(
+        m => {
+          me.msg.archived = false;
+        },
+        e => {
+          console.log("restoreMessage error, e=/" + e.stringify() + "/.")
+        }       
+      );
     }
 
     pushMsgDetailPage(): void

@@ -51,7 +51,7 @@
     <preference name="SplashShowOnlyFirstTime" value="false" />
     <preference name="SplashScreen" value="screen" />
     <preference name="SplashScreenDelay" value="3000" />
-    <preference name="AndroidLaunchMode" value="singleTask" /> <!-- 避免app 重複開啟在瀏覽器 -->
+    <preference name="AndroidLaunchMode" value="singleTask" />
     <feature name="StatusBar">
         <param name="ios-package" onload="true" value="CDVStatusBar" />
     </feature>
