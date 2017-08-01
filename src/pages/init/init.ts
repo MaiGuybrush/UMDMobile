@@ -10,7 +10,7 @@ import { EmployeeProvider } from '../../providers/employee-provider'
 import { MessageProvider } from '../../providers/message-provider';
 import { Message } from '../../models/message'
 import { TabsPage } from '../tabs/tabs'
-
+import { UniqueDeviceID } from '@ionic-native/unique-device-id';
 declare var window;
 
 /**
@@ -31,7 +31,7 @@ export class InitPage {
   url: string;
   constructor(public platform: Platform, public navCtrl: NavController, public navParams: NavParams
               , public loading: LoadingController, public alertCtrl: AlertController, public accountProvider: AccountProvider
-              , public employeeProvider: EmployeeProvider, public messageProvider: MessageProvider, public push: Push) {
+              , public employeeProvider: EmployeeProvider, public messageProvider: MessageProvider, public push: Push,public uniqueDeviceID:UniqueDeviceID) {
   }
 
   ionViewDidLoad() {
@@ -67,31 +67,36 @@ export class InitPage {
       
       this.getUserInfo().subscribe(m => {
         var user = m;
-        this.getRegistrationInfo().subscribe(m => {
-          this.updateUserInfo(user, m.registrationId)
-          .subscribe(m => {
-            this.initDB().subscribe(m => { 
-                console.log("execute initDB subscribe..")
-                this.loader.dismiss();
-                this.navCtrl.setRoot(TabsPage);
+         this.getUniqueDeviceID().then(
+          uuid=>{
+            this.getRegistrationInfo().subscribe(m => {
+              this.updateUserInfo(user, m.registrationId,uuid)
+              .subscribe(m => {
+                this.initDB().subscribe(m => { 
+                    console.log("execute initDB subscribe..")
+                    this.loader.dismiss();
+                    this.navCtrl.setRoot(TabsPage);
+                  },
+                e => {
+                  this.loader.dismiss();
+                  console.log(`initDB fail, ${e}`);
+                  this.alert("初始化失敗", "請連絡開發小組(514-32628)。");
+                })
               },
-            e => {
-              this.loader.dismiss();
-              console.log(`initDB fail, ${e}`);
-              this.alert("初始化失敗", "請連絡開發小組(514-32628)。");
-            })
-          },
-          e => {
-            this.loader.dismiss();
-            console.log(`updateUserInfo fail, ${e}`);
-            this.alert("初始化失敗", "請連絡開發小組(514-32628)。");
-          });      
+              e => {
+                this.loader.dismiss();
+                console.log(`updateUserInfo fail, ${e}`);
+                this.alert("初始化失敗", "請連絡開發小組(514-32628)。");
+              });      
         }, e =>
         {
           this.loader.dismiss();
             console.log(`getRegistrationInfo fail, ${e}`);
             this.alert("初始化失敗", "請連絡開發小組(514-32628)。");
         })
+          }
+        );
+      
       }, e =>
       {
         this.loader.dismiss();
@@ -132,16 +137,30 @@ export class InitPage {
     // }});
   }
 
-  updateUserInfo(user: InxAccount, registrationId: string): Observable<any>
+  updateUserInfo(user: InxAccount, registrationId: string, uuid:string): Observable<any>
   {
       this.loader.setContent("更新使用者資訊...");
       if (window.cordova)
       {          
         console.log("update user registrationId [" + `${registrationId}` + "].");
-        return this.employeeProvider.updateEmployeeInfo(user.empNo, registrationId)
+        console.log("update user uuid [" + `${uuid}` + "].");
+        return this.employeeProvider.updateEmployeeInfo(user.empNo, registrationId,uuid)
       }
       return Observable.from([true]);
   }
+  getUniqueDeviceID(): any 
+  {
+    return this.platform.ready().then(() => 
+     { 
+     return  this.uniqueDeviceID.get()
+        .then((uuid: any) => 
+        {
+          console.log("get uuid [" + `${uuid}` + "].")
+          return uuid;
+        })
+      .catch((error: any) => console.log("get uuid error [" + `${error}` + "]."));
+    })
+  };
 
   alert(title:string, subTitle:string)
   {

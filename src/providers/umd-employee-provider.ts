@@ -16,7 +16,7 @@ export class UmdEmployeeProvider implements EmployeeProvider {
      console.log('Hello Employee Provider');
   }
 
-  updateEmployeeInfo(empId:string, deviceToken: string): Observable<boolean>{
+  updateEmployeeInfo(empId:string, deviceToken: string,uuid:string ): Observable<boolean>{
       let headers = new Headers({ 'Content-Type': 'application/json' });
       let options = new RequestOptions({ headers: headers });
 
@@ -33,7 +33,8 @@ export class UmdEmployeeProvider implements EmployeeProvider {
       }
       if (platform)
       {
-        let body = {"EmpId": `${empId}`,"DeviceToken": `${deviceToken}`,"Platform": `${platform}`};
+       // let body = {"EmpId": `${empId}`,"DeviceToken": `${deviceToken}`,"Platform": `${platform}`,"UuId": `${uuid}`};
+        let body = {"EmpId": `${empId}`,"DeviceId": `${uuid}`,"DeviceToken": `${deviceToken}`,"Platform": `${platform}`};
         console.log('post start');
         let response = this.http.post(url, body, options)
         // response.subscribe(m => {}, e => {

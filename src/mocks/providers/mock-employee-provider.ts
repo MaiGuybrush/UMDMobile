@@ -17,7 +17,7 @@ export class MockEmployeeProvider implements EmployeeProvider {
     console.log('Hello EmployeeProvider Provider');
   }
   
-  updateEmployeeInfo(empId:string, deviceToken: string): Observable<boolean>{
+  updateEmployeeInfo(empId:string, deviceToken: string,uuId:string): Observable<boolean>{
     return Observable.from([true]);        
   }
 

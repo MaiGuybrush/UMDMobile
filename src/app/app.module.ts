@@ -67,7 +67,7 @@ import { MockGeneralDataProvider } from '../mocks/providers/mock-general-data-pr
 import { MockMessageProvider } from '../mocks/providers/mock-message-provider'
 import { MockSubscriptionProvider } from '../mocks/providers/mock-subscription-provider'
 import { MockAccountProvider } from '../mocks/providers/mock-account-provider'
-
+import { UniqueDeviceID } from '@ionic-native/unique-device-id';
 @NgModule({
   declarations: [
     MyApp,
@@ -148,6 +148,7 @@ import { MockAccountProvider } from '../mocks/providers/mock-account-provider'
             , StatusBar
             , SQLite
             , SplashScreen
+            , UniqueDeviceID
 //for web
             // , {provide: AccountProvider, useClass: MockAccountProvider}
             // , {
