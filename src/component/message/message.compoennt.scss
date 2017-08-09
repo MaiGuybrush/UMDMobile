@@ -1,0 +1,42 @@
+
+.item-divider-md
+{
+    border-bottom: none;
+}
+
+ion-item-divider ion-label
+{
+    margin: auto;
+    text-align: center;
+}
+
+.date-divider
+{
+  display: inline-block;
+  border-radius: 5px;
+  padding: 3px 3px 1px 3px;
+  background-color: lightgray;
+  color: black;
+  font-size: 12px;
+}
+
+ion-icon + div.item-inner
+{
+    margin-left: 10px;
+} 
+
+.alarm-item1
+{
+    font-size: 16px;
+}
+
+.alarm-item2
+{
+    font-size: 12px;
+    color: gray;
+}
+
+.alarm-time
+{
+    font-size: 12px;
+}

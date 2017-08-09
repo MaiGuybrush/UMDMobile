@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { MenuController } from 'ionic-angular';
 import { MessageProvider } from '../../providers/message-provider';
@@ -6,6 +6,7 @@ import { CategoryMethod } from '../../component/message-category/message-categor
 import { MessagesPage } from '../messages/messages';
 import { AuthTestPage } from '../auth-test/auth-test';
 import { Subscription } from 'rxjs/Subscription';
+import { LoadingController, Loading } from 'ionic-angular';
 /*
   Generated class for the CategorizedMessage page.
 
@@ -21,12 +22,14 @@ import { Subscription } from 'rxjs/Subscription';
 export class CategorizedMessagesPage {
   categoryMethod = CategoryMethod
   activeMenu : string = "menu1";
+  loader: Loading;
   category : CategoryMethod = CategoryMethod.ByAlarmType;
   // messages : Message[] = [];
   unreadMessageCount: { groupItem:string, count: number }[]
   subscription : Subscription;
   // categorizedMessage : CategorizedMessages[]
-  constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController, public provider: MessageProvider) 
+  constructor(private ref: ChangeDetectorRef, public navCtrl: NavController, public navParams: NavParams
+    , public loading: LoadingController, public menu: MenuController, public provider: MessageProvider) 
   {
 
   }
@@ -34,12 +37,28 @@ export class CategorizedMessagesPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad CategorizedMessagePage');
     this.menu.enable(true, 'menu1');
-    var me = this;
+  }
+
+  ionViewDidEnter() {
+    console.log('ionViewDidEnter CategorizedMessagePage');
+    this.loadByCategory();
+    // this.provider.getAllMessage().subscribe(
+    //   m => {
+    //     this.messages = [].concat(m);
+    //   });
+        var me = this;
     this.subscription = this.provider.getMessageNotifier().subscribe(m => {
+      if (m.readCount > 0) //>0 表示不是新訊息
+      {
+        return;
+      }
+      me.loader = me.loading.create();
+      me.loader.present();
+
       let found = false;
-      for (let i = 0; i < this.unreadMessageCount.length; i++) {
-        let msg = this.unreadMessageCount[i];
-        if (msg.groupItem == m[this.getCategoryField()])
+      for (let i = 0; i < me.unreadMessageCount.length; i++) {
+        let msg = me.unreadMessageCount[i];
+        if (msg.groupItem == m[me.getCategoryField()])
         {
           msg.count ++;
           found = true;
@@ -48,32 +67,18 @@ export class CategorizedMessagesPage {
       }
       if (!found)
       {
-        this.unreadMessageCount.push({
-          groupItem: m[this.getCategoryField()], 
+        me.unreadMessageCount.push({
+          groupItem: m[me.getCategoryField()], 
           count: 1
         });
       }
 
-      me.unreadMessageCount = [].concat(this.unreadMessageCount);
-      // this.messages.push(m);
-      // this.messages = [].concat(this.messages);
+      me.unreadMessageCount = [].concat(me.unreadMessageCount);
+      me.loader.dismiss();
+      // me.messages.push(m);
+      // me.messages = [].concat(me.messages);
     });
-  }
 
-  ionViewDidEnter() {
-    console.log('ionViewDidEnter CategorizedMessagePage');
-
-    // this.provider.getAllMessage().subscribe(
-    //   m => {
-    //     this.messages = [].concat(m);
-    //   });
-    var me = this;
-    this.provider.getUnreadMessageCount(this.getCategoryField()).subscribe(
-      m => {
-        me.unreadMessageCount = m;
-      }
-    );
-    
   }
 
   ionViewWillLeave() {
@@ -84,6 +89,7 @@ export class CategorizedMessagesPage {
   {
     this.provider.insertTestMessages();
   }
+
   getCategoryField() {
     switch(this.category)
     {
@@ -95,6 +101,7 @@ export class CategorizedMessagesPage {
           return 'alarmType';
     }
   }
+  
   authTest()
   {
     this.navCtrl.push(AuthTestPage)    
@@ -106,5 +113,26 @@ export class CategorizedMessagesPage {
       this.navCtrl.push(MessagesPage, {'categoryMethod': event.categoryMethod, 'categoryValue': event.categoryValue})
   }
 
+  loadByCategory()
+  {
+    this.loader = this.loading.create();
+    this.loader.present();
+    var me = this;
+    this.provider.getUnreadMessageCount(this.getCategoryField()).subscribe(
+      m => {
+        me.unreadMessageCount = m;
+      }, 
+      e => {}, 
+      () => {
+        me.loader.dismiss();
+      }
+    );
 
+  }
+
+  changeCategory(categoryMethod: CategoryMethod)
+  {
+    this.category = categoryMethod;
+    this.loadByCategory();
+  }
 }

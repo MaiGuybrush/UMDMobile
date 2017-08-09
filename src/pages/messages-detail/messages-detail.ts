@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { MenuController } from 'ionic-angular';
 import { MessageProvider } from '../../providers/message-provider'
+import { PushProvider } from '../../providers/push-provider'
+import { AccountProvider } from '../../providers/account-provider'
 // import { MessageProvider } from '../../mocks/providers/message.provider'
 import { Message } from '../../models/message';
 @Component({
@@ -10,7 +12,8 @@ import { Message } from '../../models/message';
 })
 export class MessagesDetailPage {
   msg: Message
-  constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController, public messageProvider: MessageProvider ) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController
+    , public messageProvider: MessageProvider, public pushProvider: PushProvider, public accountProvider: AccountProvider ) {
     this.msg = this.navParams.get('msg');
   }
 
@@ -18,7 +21,8 @@ export class MessagesDetailPage {
     var me = this;
     this.messageProvider.setMessageRead([this.msg]).subscribe(
       m => {
-        me.msg.read = true;        
+        me.msg.read = true; 
+        this.pushProvider.pushReadNotification(this.msg, this.accountProvider.getInxAccount().name).subscribe();
       },
       e => {
         console.log("setMessageRead error, e=/" + e.stringify() + "/.")

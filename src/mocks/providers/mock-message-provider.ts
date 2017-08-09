@@ -47,7 +47,7 @@ export class MockMessageProvider implements MessageProvider {
       
   }
 
-  getMessage(page: number, alarmType:string, equipment:string, alarmID:string) : Observable<Message[]>
+  getMessages(page: number, alarmType:string, equipment:string, alarmID:string) : Observable<Message[]>
   {
     let output = MESSAGES.slice((page - 1) * this.pageSize, page * this.pageSize)
     return Observable.from(
@@ -80,6 +80,24 @@ export class MockMessageProvider implements MessageProvider {
   {
     return undefined;
   }
+
+  updateReadCount(id: string, employeeName: string) : Observable<any>
+  {
+    for (let i = 0; i < MESSAGES.length; i++)
+    {
+      if (MESSAGES[i].id == id)
+      {
+        let message = MESSAGES[i];
+        message.readCount++;
+        message.readNameList = message.readNameList + employeeName;
+        break;
+      }
+    }
+    
+    return Observable.from([true]);
+    
+  }
+  
   setMessageRead(messages: Message[]): Observable<any>
   {
     messages.forEach(m => {

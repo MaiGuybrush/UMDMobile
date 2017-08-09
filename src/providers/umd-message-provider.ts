@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core'
 import { Platform } from 'ionic-angular'
-import { LoadingController } from 'ionic-angular';
 import { Http } from '@angular/http'
 import { Message } from '../models/message'
 import { MessageProvider } from './message-provider'
@@ -18,7 +17,7 @@ import { MESSAGES } from '../mocks/MESSAGES'
 export class UmdMessageProvider implements MessageProvider {
   sqliteObject: SQLiteObject;
   static dbName: string = "umd_storage_004";
-  static schemaVersion: number = 1;
+  static schemaVersion: number = 2;
   items = [];
   message: Message[]=[];
   pageSize = 8;
@@ -27,8 +26,7 @@ export class UmdMessageProvider implements MessageProvider {
   public static messageNotifier: Observable<Message> = Observable.create(observer => {
     UmdMessageProvider.messageObserver = observer;
   });
-  constructor(public platform: Platform,public http: Http, public sqlite: SQLite
-              , public loading: LoadingController) {
+  constructor(public platform: Platform,public http: Http, public sqlite: SQLite) {
 
   }
 
@@ -134,12 +132,18 @@ export class UmdMessageProvider implements MessageProvider {
     {
       fromVersion = 0
     }
-    // if (fromVersion < 1)
-    // {
-    //   let sql = "ALTER TABLE message ADD COLUMN archived integer default 0";
-    //   let stepOutput = Observable.fromPromise(db.executeSql(sql, [])).map(m => db);
-    //   output = output ? output.map(m => stepOutput) : stepOutput;
-    // }
+    if (fromVersion < 2)
+    {
+      console.log("update schema for version 2.")
+      output = this.getDB().concatMap(db => db.transaction(tx => {
+        tx.executeSql(
+          `ALTER TABLE message ADD COLUMN uuid text default ''`, []);
+        tx.executeSql(
+          `ALTER TABLE message ADD COLUMN readcount integer default 0`, []);
+        tx.executeSql(
+          `ALTER TABLE message ADD COLUMN readnamelist text default ''`, []);
+      }));
+    }
     let updateVersion = db.executeSql(`UPDATE schema_version SET version = ?`, [UmdMessageProvider.schemaVersion])
     output = output ? output.map(m => updateVersion).concatAll() : updateVersion;
     return output;
@@ -151,7 +155,7 @@ export class UmdMessageProvider implements MessageProvider {
     return Observable.fromPromise(
       db.transaction(tx => {
         tx.executeSql(
-          `CREATE TABLE IF NOT EXISTS message (id text, occurDT text, 
+          `CREATE TABLE IF NOT EXISTS message (id text, uuid text, readcount integer, readnamelist text, occurDT text, 
           alarmID text,eqptID text , alarmMessage text,alarmType text,
           description text, read integer default 0, archived integer default 0)`, []);
         tx.executeSql(
@@ -179,8 +183,8 @@ export class UmdMessageProvider implements MessageProvider {
     let output = Observable.create( observer => {
       this.getDB().subscribe(db =>
       {
-        Observable.fromPromise(db.executeSql(`select rowid, id, occurDT, alarmID, eqptID, alarmMessage,  
-                    description,alarmType,read,archived from message ${condition} order by occurDT desc ${limit}`, []))
+        Observable.fromPromise(db.executeSql(`select rowid, id, uuid, readcount, readnamelist, occurDT, alarmID, eqptID, alarmMessage,  
+                    description, alarmType, read, archived from message ${condition} order by occurDT desc ${limit}`, []))
         .subscribe(res => {
               // console.log("getallresultSet: "+JSON.stringify(res));
           let messages: Message[] = [];
@@ -192,7 +196,10 @@ export class UmdMessageProvider implements MessageProvider {
                 let message = new Message();
                 message = {
                   id: row.id,
+                  uuid: row.uuid,
                   rowid: row.rowid,
+                  readCount: row.readcount,
+                  readNameList: row.readnamelist,
                   occurDT: new Date(row.occurDT),
                   alarmID: row.alarmID,
                   description: row.description,
@@ -298,7 +305,37 @@ export class UmdMessageProvider implements MessageProvider {
     ).concatAll();    
   }
 
-  getMessage(page: number, alarmType:string, eqptID:string, alarmID:string, pattern: string) : Observable<Message[]>
+  updateReadCount(id: string, employeeName: string) : Observable<any>
+  {
+    var me = this;
+    var theId = id;
+    return Observable.create(server => {
+      let sql = `UPDATE message SET readcount = readcount + 1 AND readnamelist = readnamelist || ? || ',' WHERE id = ?`;
+      return this.getDB().concatMap(m =>        
+          Observable.fromPromise(m.executeSql(sql, [employeeName, id]))
+      ).subscribe( m => {
+        me.getMessage(theId).subscribe(m => 
+          UmdMessageProvider.messageObserver.next(m)
+        )
+      })
+      
+    })                 
+  }
+  
+  getMessage(id: string) : Observable<Message>
+  {
+    let sql = "SELECT * FROM message WHERE id = ?";
+    return this.getDB().concatMap(m => 
+      {
+        
+        UmdMessageProvider.messageObserver.next();
+        return Observable.fromPromise(m.executeSql(sql, [id]))
+      }
+    );     
+
+  }
+  
+  getMessages(page: number, alarmType:string, eqptID:string, alarmID:string, pattern: string) : Observable<Message[]>
   {
     let condition = this.composeCondition(alarmType, eqptID, alarmID, pattern, false);
     return this.loadMessage(condition, page);
@@ -317,24 +354,21 @@ export class UmdMessageProvider implements MessageProvider {
 
   addMessage(message: Message) : Observable<Message>
   {
-    var msg = message;
     let output = this.getDB().map(db =>
     {
       console.log("set id, alarmid,message,time="+ message.id + ":"+ message.alarmID + ":"+ message.alarmMessage+":"+message.occurDT);
 
-      return Observable.fromPromise(db.executeSql(`insert into message(id,occurDT , alarmID ,eqptID ,alarmMessage ,alarmType ,description ,read) values (?,?,?,?,?,?,?,?)`
-        , [message.id,message.occurDT,message.alarmID,message.eqptID,message.alarmMessage
-          ,message.alarmType,message.description,message.read ? 1 : 0]))
+      return Observable.fromPromise(db.executeSql(`insert into message(id, uuid, readcount, occurDT , alarmID ,eqptID ,alarmMessage ,alarmType ,description ,read) values (?,?,?,?,?,?,?,?,?,?)`
+        , [message.id, message.uuid, message.readCount, message.occurDT, message.alarmID, message.eqptID, message.alarmMessage
+          , message.alarmType, message.description, message.read ? 1 : 0]))
       .map( 
         m => {
-          msg.rowid = m.insertId;
+          UmdMessageProvider.messageObserver.next(message);
+          message.rowid = m.insertId;
           return message;
         }
       );
     }).concatAll();
-    output.subscribe(m => {
-      UmdMessageProvider.messageObserver.next(m);
-    })
     return output;
   }
 

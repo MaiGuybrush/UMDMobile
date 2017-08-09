@@ -1,15 +1,15 @@
 <ion-item-group >
-     <ion-item-divider *ngIf="!sameDate">{{showDate}}</ion-item-divider>
+     <ion-item-divider *ngIf="!sameDate"><div class="date-divider">{{showDate}}</div></ion-item-divider>
       <ion-item-sliding *ngIf="!msg.archived">
         <ion-item (click)="pushMsgDetailPage()" (onLongPress)="deleteMessage()">
-        <ion-label>
-            <ion-icon *ngIf="!msg.read" name="information-circle" color="red1" ></ion-icon>
-            <h2>{{msg.description}}</h2>
-            <h3>{{msg.alarmMessage}}</h3>
-        </ion-label>
-        <ion-badge color="light" item-end>{{msg.occurDT | date: 'shortTime'}}</ion-badge> 
+            <ion-icon *ngIf="!msg.read" name="information-circle" color="red1" item-start></ion-icon>
+            <ion-label>
+                <label class="alarm-item1">{{msg.alarmMessage}}</label><br/>
+                <label class="alarm-item2">{{msg.alarmID}},已讀({{msg.readcount}})</label>
+            </ion-label>
+            <div class="alarm-time" item-end>{{msg.occurDT | date: 'shortTime'}}</div>
         </ion-item>
-        <ion-item-options slide="right" (ionSwipe)="archiveMessage()">
+        <ion-item-options (ionSwipe)="archiveMessage()">
         </ion-item-options>
       </ion-item-sliding>
     <ion-item *ngIf="msg.archived">

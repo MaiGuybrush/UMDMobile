@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { Platform } from 'ionic-angular'
-import { Http, Response, RequestOptions } from '@angular/http'
+import { Http, Headers, Response, RequestOptions } from '@angular/http'
 import { Push, PushObject, PushOptions, RegistrationEventResponse } from '@ionic-native/push';
 import { Observable } from 'rxjs/Rx'
 import { PureHttp } from '../app/pure-http'
@@ -22,6 +22,7 @@ export class FcmPushProvider implements PushProvider {
     pushReadNotification(message: Message, name: string) : Observable<boolean>
     {
         let options = new RequestOptions();
+        options.headers = new Headers();
         options.headers.set("Content-Type", "application/json")
         options.headers.set("Authorization", "key=" + this.fcmAthorizationKey)
         return this.pureHttp.post("https://fcm.googleapis.com/fcm/send", 
@@ -92,13 +93,15 @@ export class FcmPushProvider implements PushProvider {
         const options: PushOptions = {
 
             android: {
-            senderID: '834424631529',
+                senderID: '834424631529',
+                icon: "alarm",
+                iconColor: "red"
             //    topics: ['sample-topic','dally-topic']
             },
             ios: {
-            alert: 'true',
-            badge: true,
-            sound: 'true',
+                alert: 'true',
+                badge: true,
+                sound: 'true',
             },
             windows: {}
         };

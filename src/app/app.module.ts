@@ -164,25 +164,25 @@ import { UniqueDeviceID } from '@ionic-native/unique-device-id';
                 deps: [XHRBackend, RequestOptions]                
               }
 //for web
-            , {provide: AccountProvider, useClass: MockAccountProvider}
-            , {
-                provide: Http,
-                useFactory: (backend: XHRBackend, options: RequestOptions, extraInfoProvider: ExtraInfoProvider) => {
-                  return new Http(backend, options);
-                },
-                deps: [XHRBackend, RequestOptions, ExtraInfoProvider]
-              }
-            , {provide: MessageProvider, useClass: MockMessageProvider}
-//for device/emulator
-            // , {provide: AccountProvider, useClass: ExtraInfoProvider}
+//            , {provide: AccountProvider, useClass: MockAccountProvider}
             // , {
             //     provide: Http,
             //     useFactory: (backend: XHRBackend, options: RequestOptions, extraInfoProvider: ExtraInfoProvider) => {
-            //       return new InterceptedHttp(backend, options, extraInfoProvider);
+            //       return new Http(backend, options);
             //     },
             //     deps: [XHRBackend, RequestOptions, ExtraInfoProvider]
             //   }
-            // , {provide: MessageProvider, useClass: UmdMessageProvider}
+            // , {provide: MessageProvider, useClass: MockMessageProvider}
+//for device/emulator
+            , {provide: AccountProvider, useClass: ExtraInfoProvider}
+            , {
+                provide: Http,
+                useFactory: (backend: XHRBackend, options: RequestOptions, extraInfoProvider: ExtraInfoProvider) => {
+                  return new InterceptedHttp(backend, options, extraInfoProvider);
+                },
+                deps: [XHRBackend, RequestOptions, ExtraInfoProvider]
+              }
+            , {provide: MessageProvider, useClass: UmdMessageProvider}
             ]
 })
 export class AppModule {}

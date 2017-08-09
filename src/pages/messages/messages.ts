@@ -8,6 +8,7 @@ import { MessageProvider } from '../../providers/message-provider'
 import { Message } from '../../models/message';
 import { Observable } from 'rxjs/Rx';
 import { Content } from 'ionic-angular';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'page-messages',
@@ -19,10 +20,11 @@ export class MessagesPage {
   queryPage: number;
   categoryMethod: CategoryMethod;
   categoryValue: string;
-  showDate: string ='' ;
+  showDate: string ='';
   dates: string[] =[];
   pattern : string = undefined;
   searchControl: FormControl;
+  subscription : Subscription;
   searching: boolean = false;
   constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController,
               public messageProvider: MessageProvider, public loading: LoadingController) {
@@ -54,6 +56,36 @@ export class MessagesPage {
     });    
   }
 
+  ionViewDidEnter()
+  {
+    console.log('ionViewDidEnter CategorizedMessagePage');
+    this.subscription = this.messageProvider.getMessageNotifier().subscribe(m => {
+      if (m.readCount > 0) //>0 表示不是新訊息
+      {
+        for (let i = 0; i < this.messages.length; i++)
+        {
+          if (m.id === this.messages[i].id)
+          {
+            this.messages[i] = m; 
+            this.messages = [].concat(this.messages);
+            break;
+          }
+        }
+      }
+      else //新訊息
+      {
+        this.messages = [m].concat(this.messages);
+      }
+    });
+
+
+  }
+
+  ionViewWillLeave() {
+    this.subscription.unsubscribe();
+  }
+
+
   onSearchInput()
   {
     this.searching = true;
@@ -67,11 +99,11 @@ export class MessagesPage {
     switch(this.categoryMethod)
     {
     case CategoryMethod.ByAlarmType:
-        return this.messageProvider.getMessage(this.queryPage++, this.categoryValue, undefined, undefined, this.pattern);
+        return this.messageProvider.getMessages(this.queryPage++, this.categoryValue, undefined, undefined, this.pattern);
     case CategoryMethod.ByEquipment:
-        return this.messageProvider.getMessage(this.queryPage++, undefined, this.categoryValue, undefined, this.pattern);
+        return this.messageProvider.getMessages(this.queryPage++, undefined, this.categoryValue, undefined, this.pattern);
     case CategoryMethod.ByAlarmID:
-        return this.messageProvider.getMessage(this.queryPage++, undefined, undefined, this.categoryValue, this.pattern);
+        return this.messageProvider.getMessages(this.queryPage++, undefined, undefined, this.categoryValue, this.pattern);
     } 
   }
 

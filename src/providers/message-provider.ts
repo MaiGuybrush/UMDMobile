@@ -1,4 +1,3 @@
-
 import { Message } from '../models/message'
 import { Observable } from 'rxjs/Rx'
 
@@ -6,12 +5,14 @@ export abstract class MessageProvider {
 
   abstract getUnreadMessageCount(groupBy:string) : Observable<{ groupItem: string; count: number; }[]>
 
-  abstract getMessage(page: number, alarmType:string, equipment:string, alarmID:string, pattern:string) : Observable<Message[]> 
+  abstract getMessages(page: number, alarmType:string, equipment:string, alarmID:string, pattern:string) : Observable<Message[]> 
 
   abstract getMessageFromUmd(beforeDT:Date) : Observable<Message[]> //UMD Service provide
 
   abstract getAllMessage() : Observable<Message[]>
 
+  abstract updateReadCount(id: string, employeeName: string) : Observable<any>
+  
   abstract setMessageRead(message:Message[]): Observable<boolean>
 
   abstract addMessage(message: Message): Observable<Message>
@@ -27,5 +28,7 @@ export abstract class MessageProvider {
   abstract restore(message: Message): Observable<any>
 
   abstract init(): Observable<any>;
+  
+  
 }
 

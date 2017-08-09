@@ -14,13 +14,13 @@
 
   <ion-content>
     <ion-list>
-      <button ion-item detail-none (click)="category = categoryMethod.ByAlarmID" menuClose="menu1">
+      <button ion-item detail-none (click)="changeCategory(categoryMethod.ByAlarmID)" menuClose="menu1">
         Category By Alarm ID
       </button>
-      <button ion-item detail-none (click)="category = categoryMethod.ByEquipment" menuClose="menu1">
+      <button ion-item detail-none (click)="changeCategory(categoryMethod.ByEquipment)" menuClose="menu1">
         Category By Equipment
       </button>
-      <button ion-item detail-none (click)="category = categoryMethod.ByAlarmType" menuClose="menu1">
+      <button ion-item detail-none (click)="changeCategory(categoryMethod.ByAlarmType)" menuClose="menu1">
         Category By Alarm Type
       </button>
       <button ion-item detail-none (click)="authTest()" menuClose="menu1">
@@ -50,7 +50,7 @@
 
 <ion-content padding #content>
   <ion-list *ngIf="unreadMessageCount">
-    <message-category *ngFor="let unreadCount of unreadMessageCount | orderBy: {property: 'groupItem', direction: -1}" 
+    <message-category *ngFor="let unreadCount of unreadMessageCount | orderBy: {property: 'groupItem', direction: -1}"  
     [categoryMethod]="category" [category]="unreadCount.groupItem" 
      [unreadCount]="unreadCount.count" (itemClicked)="pushPage($event)"></message-category>
   </ion-list>
