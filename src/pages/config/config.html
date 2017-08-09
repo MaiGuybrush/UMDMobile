@@ -7,10 +7,10 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-buttons end>
-      <button ion-button  >完成
+    <!-- <ion-buttons end>
+      <button ion-button>完成
       </button>
-    </ion-buttons>
+    </ion-buttons> -->
     <ion-title>設定</ion-title>
   </ion-navbar>
 
@@ -20,21 +20,21 @@
 <ion-content padding>
   <ion-item>
   <ion-label> 提示音</ion-label>
-  <ion-toggle checked="true"></ion-toggle>
+  <ion-toggle [(ngModel)]="soundSwitch" (ionChange)="updateConfig()"></ion-toggle>
   </ion-item>
   <ion-item>
     <ion-label> 提示音效</ion-label>
-    <ion-select [(ngModel)]="notificationSound">
-      <ion-option value="default" selected="true">default</ion-option>
-      <ion-option value="sound2">sound2</ion-option>
-      <ion-option value="sound3">sound3</ion-option>
-      <ion-option value="sound4">sound4</ion-option>
+    <ion-select [(ngModel)]="soundName" (ionChange)="updateConfig()">
+      <ion-option value="bell">Bell</ion-option>
+      <ion-option value="tinybell">TinyBell</ion-option>
     </ion-select>
    </ion-item>
-   <ion-item>
+    <ion-item>
     <ion-label> 顯示筆數</ion-label>
-    <ion-input type="text" [(ngModel)]="notificationCount"></ion-input>
-   </ion-item>
+    <ion-input type="number" [(ngModel)]="pageSize"></ion-input>
+    <button ion-button icon-only clear item-right (click)="updateConfig()"><ion-icon name="send"color="blue2" ></ion-icon></button>
+    <!-- <ion-icon item-end name="send" color="blue2" (click)="updateConfig()"></ion-icon> -->
+   </ion-item> 
 
 <!--<button ion-button (click)="testClick()">test</button>
 <ion-list>

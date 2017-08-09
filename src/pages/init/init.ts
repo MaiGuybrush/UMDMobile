@@ -11,6 +11,7 @@ import { MessageProvider } from '../../providers/message-provider';
 import { Message } from '../../models/message'
 import { TabsPage } from '../tabs/tabs'
 import { UniqueDeviceID } from '@ionic-native/unique-device-id';
+// import { ConfigProvider } from '../../providers/config-provider';
 declare var window;
 
 /**
@@ -191,12 +192,14 @@ export class InitPage {
 
       android: {
         senderID: '834424631529',
+        icon: "alarm",
+        iconColor: "red"
         //    topics: ['sample-topic','dally-topic']
       },
       ios: {
         alert: 'true',
         badge: true,
-        sound: 'true',
+        sound: 'true'
       },
       windows: {}
     };

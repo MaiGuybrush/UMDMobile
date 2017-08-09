@@ -52,6 +52,7 @@ import { EmployeeProvider } from '../providers/employee-provider'
 import { ExtraInfoProvider } from '../providers/extrainfo-provider'
 import { SubscriptionProvider } from '../providers/subscription-provider'
 import { AlarmProvider } from '../providers/alarm-provider'
+import { ConfigProvider } from '../providers/config-provider'
 import { UmdGroupProvider } from '../providers/umd-group-provider'
 import { UmdMessageProvider } from '../providers/umd-message-provider'
 import { UmdEmployeeProvider } from '../providers/umd-employee-provider'
@@ -59,6 +60,7 @@ import { UmdDepartmentProvider } from '../providers/umd-department-provider'
 import { UmdGeneralDataProvider } from '../providers/umd-general-data-provider'
 import { UmdSubscriptionProvider } from '../providers/umd-subscription-provider'
 import { UmdAlarmProvider } from '../providers/umd-alarm-provider'
+import { UmdConfigProvider } from '../providers/umd-config-provider'
 import { MockEmployeeProvider } from '../mocks/providers/mock-employee-provider'
 import { MockGroupProvider } from '../mocks/providers/mock-group-provider'
 import { MockGroupDetailProvider } from '../mocks/providers/mock-group-detail-provider'
@@ -141,6 +143,7 @@ import { UniqueDeviceID } from '@ionic-native/unique-device-id';
             , {provide: GeneralDataProvider, useClass: UmdGeneralDataProvider}
             , {provide: SubscriptionProvider, useClass: UmdSubscriptionProvider}
             , {provide: AlarmProvider, useClass: UmdAlarmProvider}
+            , {provide: ConfigProvider, useClass: UmdConfigProvider}
             , AppConfig
             , ExtraInfoProvider
             , LocalNotifications
@@ -150,25 +153,25 @@ import { UniqueDeviceID } from '@ionic-native/unique-device-id';
             , SplashScreen
             , UniqueDeviceID
 //for web
-            // , {provide: AccountProvider, useClass: MockAccountProvider}
-            // , {
-            //     provide: Http,
-            //     useFactory: (backend: XHRBackend, options: RequestOptions, extraInfoProvider: ExtraInfoProvider) => {
-            //       return new Http(backend, options);
-            //     },
-            //     deps: [XHRBackend, RequestOptions, ExtraInfoProvider]
-            //   }
-            // , {provide: MessageProvider, useClass: MockMessageProvider}
-//for device/emulator
-            , {provide: AccountProvider, useClass: ExtraInfoProvider}
+            , {provide: AccountProvider, useClass: MockAccountProvider}
             , {
                 provide: Http,
                 useFactory: (backend: XHRBackend, options: RequestOptions, extraInfoProvider: ExtraInfoProvider) => {
-                  return new InterceptedHttp(backend, options, extraInfoProvider);
+                  return new Http(backend, options);
                 },
                 deps: [XHRBackend, RequestOptions, ExtraInfoProvider]
               }
-            , {provide: MessageProvider, useClass: UmdMessageProvider}
+            , {provide: MessageProvider, useClass: MockMessageProvider}
+//for device/emulator
+            // , {provide: AccountProvider, useClass: ExtraInfoProvider}
+            // , {
+            //     provide: Http,
+            //     useFactory: (backend: XHRBackend, options: RequestOptions, extraInfoProvider: ExtraInfoProvider) => {
+            //       return new InterceptedHttp(backend, options, extraInfoProvider);
+            //     },
+            //     deps: [XHRBackend, RequestOptions, ExtraInfoProvider]
+            //   }
+            // , {provide: MessageProvider, useClass: UmdMessageProvider}
             ]
 })
 export class AppModule {}

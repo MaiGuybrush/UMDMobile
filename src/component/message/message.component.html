@@ -8,7 +8,6 @@
             <h3>{{msg.alarmMessage}}</h3>
         </ion-label>
         <ion-badge color="light" item-end>{{msg.occurDT | date: 'shortTime'}}</ion-badge> 
-        <!-- <ion-badge color="light" item-end>{{msg.occurDT | date: getDateFormat()}}</ion-badge>  -->
         </ion-item>
         <ion-item-options slide="right" (ionSwipe)="archiveMessage()">
         </ion-item-options>

@@ -30,42 +30,6 @@ export class MessageComponent
     ngOnInit() {
        this.sameDate = this.msg.sameDate;
     }
-
-    // getReadColor(): string
-    // {
-    //    if (this.read) {
-    //      return "yellow1";
-    //    }else
-    //    {
-    //      return "red1";
-    //    }
-    // }
-
-
-
-  //  ngAfterViewChecked()
-  // {
-  //   console.log( "! changement de la date du composant !" );
-  //   this.divider = this.showDivider;
-  // }
-
-  //   ngOnChanges() {
-  //    this.showDivider =this.showDivider;
-  //   }
-
-    // getDateFormat(): string
-    // {
-    //   let dateFormat:string; 
-    //   if (this.showDate === 'Today')
-    //   {
-    //      dateFormat = "shortTime"
-    //   }
-    //   else
-    //   {
-    //      dateFormat = "yyyy-MM-dd HH:mm:ss"
-    //   }
-    //   return dateFormat;
-    // }
     
     archiveMessage(): void
     {
