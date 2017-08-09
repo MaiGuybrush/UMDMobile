@@ -10,6 +10,7 @@ import { StatusBar } from '@ionic-native/status-bar'
 import { SplashScreen } from '@ionic-native/splash-screen'
 import { MyApp } from './app.component'
 import { InterceptedHttp } from './intercepted-http'
+import { PureHttp } from './pure-http'
 import { FilterPipe } from './filter.pipe.ts'
 import { GroupByPipe } from './groupby.pipe.ts'
 import { OrderByPipe } from './orderby.pipe.ts'
@@ -47,12 +48,14 @@ import { GroupProvider } from '../providers/group-provider'
 import { DepartmentProvider } from '../providers/department-provider'
 import { AppConfig } from '../providers/app-config'
 import { GeneralDataProvider } from '../providers/general-data-provider'
+import { PushProvider } from '../providers/push-provider'
 import { AccountProvider } from '../providers/account-provider'
 import { EmployeeProvider } from '../providers/employee-provider'
 import { ExtraInfoProvider } from '../providers/extrainfo-provider'
 import { SubscriptionProvider } from '../providers/subscription-provider'
 import { AlarmProvider } from '../providers/alarm-provider'
 import { ConfigProvider } from '../providers/config-provider'
+import { FcmPushProvider } from '../providers/fcm-push-provider'
 import { UmdGroupProvider } from '../providers/umd-group-provider'
 import { UmdMessageProvider } from '../providers/umd-message-provider'
 import { UmdEmployeeProvider } from '../providers/umd-employee-provider'
@@ -144,6 +147,7 @@ import { UniqueDeviceID } from '@ionic-native/unique-device-id';
             , {provide: SubscriptionProvider, useClass: UmdSubscriptionProvider}
             , {provide: AlarmProvider, useClass: UmdAlarmProvider}
             , {provide: ConfigProvider, useClass: UmdConfigProvider}
+            , {provide: PushProvider, useClass: FcmPushProvider}
             , AppConfig
             , ExtraInfoProvider
             , LocalNotifications
@@ -152,6 +156,13 @@ import { UniqueDeviceID } from '@ionic-native/unique-device-id';
             , SQLite
             , SplashScreen
             , UniqueDeviceID
+            , {
+                provide: PureHttp,
+                useFactory: (backend: XHRBackend, options: RequestOptions) => {
+                  return new PureHttp(backend, options);
+                },
+                deps: [XHRBackend, RequestOptions]                
+              }
 //for web
             , {provide: AccountProvider, useClass: MockAccountProvider}
             , {
