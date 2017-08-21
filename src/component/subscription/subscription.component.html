@@ -12,12 +12,14 @@
              </button>
           </ion-item-options>
     </ion-item-sliding>-->
-    <ion-row>
-          <ion-col col-auto align-self-center>
+    <ion-row align-items-center>
+          <!-- <ion-col col-auto align-self-center> -->
+            <ion-col col-1>
             <ion-checkbox color="danger" [(ngModel)]="subscription.isChecked"></ion-checkbox>
           </ion-col>
-          <ion-col col-auto align-self-center>
-            <ion-item text-wrap no-lines (tap)="editClick.emit(subscription)">
+          <!-- <ion-col col-auto align-self-center> -->
+            <ion-col col-11>
+            <ion-item text-wrap (tap)="editClick.emit(subscription)">
              <ion-label>
                  <h2>{{subscription.description}}</h2>
                  <p>{{subscription.alarmId}}<p>

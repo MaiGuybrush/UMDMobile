@@ -4,7 +4,7 @@ export class Config
     {
 
     }
-    soundSwitch: number;
+    soundSwitch: boolean;
     soundName: string;
     pageSize: number;
 }

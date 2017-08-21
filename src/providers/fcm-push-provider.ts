@@ -87,7 +87,7 @@ export class FcmPushProvider implements PushProvider {
         }
     }
 
-    pushInit(): Observable<RegistrationEventResponse & Error>
+    pushInit(): Observable<any>
     {
         var me = this;
         const options: PushOptions = {
@@ -111,8 +111,29 @@ export class FcmPushProvider implements PushProvider {
         });
         FcmPushProvider.pushObject.on('error').subscribe(error => console.error('Error with Push plugin err=' + error));
 
-        return Observable.fromPromise(this.push.hasPermission()).concatMap(
-        m => FcmPushProvider.pushObject.on('registration'));
+        // return Observable.fromPromise(this.push.hasPermission()).concatMap(
+        // m => FcmPushProvider.pushObject.on('registration'));
+
+        this.push.hasPermission()
+        .then((res: any) => {
+      
+          if (res.isEnabled) {
+            console.log('We have permission to send push notifications');
+          } else {
+            console.log('We do not have permission to send push notifications');
+          }
+      
+        });
+
+        return Observable.from([FcmPushProvider.pushObject.on('registration').subscribe((registration: any) => {
+            console.log('Device registered', registration);
+            return registration;
+        })
+        ])
+        
+
+        // return Observable.from(['eON91BZBkU8:APA91bGix57MvALuU-PU_vlzr5jOBC3XOlglXKEIKdYDt-tTRqmeJqG4NumycnxwJEfWZ9Qzkpr-Wp-SZUD8HdwyqByIKWIB4sy5WkWo64-XSln2gPbCONn9lbpt-HrbfSgGf-vtIvxB']);
+
     }
 
 }

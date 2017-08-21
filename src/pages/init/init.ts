@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
 import { Platform, AlertController } from "ionic-angular"
 import { LoadingController, Loading } from 'ionic-angular';
 import { AccountProvider } from '../../providers/account-provider'
@@ -10,8 +10,10 @@ import { EmployeeProvider } from '../../providers/employee-provider'
 import { MessageProvider } from '../../providers/message-provider';
 import { Message } from '../../models/message'
 import { TabsPage } from '../tabs/tabs'
+import { AuthTestPage } from '../auth-test/auth-test'
 import { UniqueDeviceID } from '@ionic-native/unique-device-id';
-// import { ConfigProvider } from '../../providers/config-provider';
+import { ConfigProvider } from '../../providers/config-provider';
+
 declare var window;
 
 /**
@@ -20,7 +22,7 @@ declare var window;
  * See http://ionicframework.com/docs/components/#navigation for more info
  * on Ionic pages and navigation.
  */
-@IonicPage()
+// @IonicPage()
 @Component({
   selector: 'page-init',
   templateUrl: 'init.html',
@@ -32,7 +34,7 @@ export class InitPage {
   constructor(public platform: Platform, public navCtrl: NavController, public navParams: NavParams
               , public loading: LoadingController, public alertCtrl: AlertController, public accountProvider: AccountProvider
               , public employeeProvider: EmployeeProvider, public messageProvider: MessageProvider
-              , public pushProvider: PushProvider, public uniqueDeviceID:UniqueDeviceID) {
+              , public pushProvider: PushProvider, public configProvider: ConfigProvider, public uniqueDeviceID:UniqueDeviceID) {
   }
 
   ionViewDidLoad() {
@@ -63,14 +65,17 @@ export class InitPage {
          this.getUniqueDeviceID().then(
           uuid=>{
         this.pushProvider.pushInit().subscribe(m => {
-          if (m.registrationId) {
-            console.log(`get registrationId = ${m.registrationId}`);
-              this.updateUserInfo(user, m.registrationId,uuid)
+          if (m) {
+            console.log(`get registrationId = ${m}`);
+          this.updateUserInfo(user, m,uuid)
             .subscribe(m => {
               this.initDB().subscribe(m => { 
                   console.log("execute initDB subscribe..")
-                  this.loader.dismiss();
-                  this.navCtrl.setRoot(TabsPage);
+                  this.configProvider.loadConfig().subscribe(m => { 
+                    console.log("load config: "+ m)
+                    this.loader.dismiss();
+                    this.navCtrl.setRoot(TabsPage);
+                  })
                 },
               e => {
                 this.loader.dismiss();
@@ -88,7 +93,7 @@ export class InitPage {
           {
             this.loader.dismiss();
             console.log(`getRegistrationInfo fail, ${m.message}`);
-            this.alert("取得RegistrationID失敗", "請連絡開發小組(514-32628)。");
+            this.alert("取得RegistrationID失敗", "請連絡開發小組(514-3n2628)。");
           }
         }, e =>
         {

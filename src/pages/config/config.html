@@ -17,24 +17,27 @@
 </ion-header>
 
 
-<ion-content padding>
-  <ion-item>
+<ion-content>
+  <!-- <ion-item>
   <ion-label> 提示音</ion-label>
-  <ion-toggle [(ngModel)]="soundSwitch" (ionChange)="updateConfig()"></ion-toggle>
+  <ion-toggle [(ngModel)]="config.soundSwitch" (ionChange)="updateConfig()"></ion-toggle>
   </ion-item>
   <ion-item>
     <ion-label> 提示音效</ion-label>
-    <ion-select [(ngModel)]="soundName" (ionChange)="updateConfig()">
+    <ion-select [(ngModel)]="config.soundName" (ionChange)="updateConfig()">
       <ion-option value="bell">Bell</ion-option>
       <ion-option value="tinybell">TinyBell</ion-option>
     </ion-select>
    </ion-item>
     <ion-item>
     <ion-label> 顯示筆數</ion-label>
-    <ion-input type="number" [(ngModel)]="pageSize"></ion-input>
+    <ion-input type="number" [(ngModel)]="config.pageSize"></ion-input>
     <button ion-button icon-only clear item-right (click)="updateConfig()"><ion-icon name="send"color="blue2" ></ion-icon></button>
-    <!-- <ion-icon item-end name="send" color="blue2" (click)="updateConfig()"></ion-icon> -->
-   </ion-item> 
+   </ion-item> -->
+
+
+  <!-- <config [config]="getConfig()" (updateClick)="updateConfig($event)" ></config>   -->
+  <config [config]="config" (updateClick)="updateConfig($event)" ></config>  
 
 <!--<button ion-button (click)="testClick()">test</button>
 <ion-list>

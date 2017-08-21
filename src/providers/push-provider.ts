@@ -4,5 +4,5 @@ import { Observable } from 'rxjs/Rx'
 
 export abstract class PushProvider  {
     abstract pushReadNotification(message: Message, name: string) : Observable<boolean>
-    abstract pushInit(): Observable<RegistrationEventResponse & Error>
+    abstract pushInit(): Observable<any>
 }

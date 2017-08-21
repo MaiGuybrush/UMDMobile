@@ -6,6 +6,9 @@ import { MessageProvider } from './message-provider'
 import { Observable } from 'rxjs/Rx'
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { MESSAGES } from '../mocks/MESSAGES'
+import { Config } from '../models/config';
+import { ConfigProvider } from './config-provider';
+
 
 /*
   Generated class for the Message provider.
@@ -26,7 +29,7 @@ export class UmdMessageProvider implements MessageProvider {
   public static messageNotifier: Observable<Message> = Observable.create(observer => {
     UmdMessageProvider.messageObserver = observer;
   });
-  constructor(public platform: Platform,public http: Http, public sqlite: SQLite) {
+  constructor(public platform: Platform,public http: Http, public sqlite: SQLite, public configProvider: ConfigProvider) {
 
   }
 
@@ -177,6 +180,7 @@ export class UmdMessageProvider implements MessageProvider {
  
 
    private loadMessage(condition: string, queryPageNo: number): Observable<Message[]>{
+    this.configProvider.getConfig().subscribe(m =>{this.pageSize = m.pageSize});
     // id text,occurDT text, alarmID text,eqptID text,alarmMessage text,alarmType text,description text,read text
     let limit = queryPageNo > 0 ? ` limit ${(queryPageNo - 1) * this.pageSize}, ${(queryPageNo) * this.pageSize}` : ``;
     //  console.log("limit: "+ limit);

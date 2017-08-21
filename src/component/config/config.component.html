@@ -1,0 +1,16 @@
+  <!-- <ion-item>
+  <ion-label> 提示音</ion-label>
+  <ion-toggle [(ngModel)]="config.soundSwitch" (ionChange)="triggerClick()"></ion-toggle>
+  </ion-item>
+  <ion-item>
+    <ion-label> 提示音效</ion-label>
+    <ion-select [(ngModel)]="config.soundName" (ionChange)="triggerClick()">
+      <ion-option value="bell">Bell</ion-option>
+      <ion-option value="tinybell">TinyBell</ion-option>
+    </ion-select>
+   </ion-item> -->
+    <ion-item>
+    <ion-label> 顯示筆數</ion-label>
+    <ion-input type="number" [(ngModel)]="config.pageSize" placeholder="Number Input"></ion-input>
+    <button ion-button icon-only clear item-right (click)="triggerClick()"><ion-icon name="send"color="blue2" ></ion-icon></button>
+   </ion-item>
