@@ -43,6 +43,7 @@ import { NosubscriptionComponent } from '../component/nosubscription/nosubscript
 import { DepartmentComponent } from '../component/department/department.component'
 import { AlarmActionComponent } from '../component/alarm-action/alarm-action.component'
 import { AlarmActionSettingComponent } from '../component/alarm-action-setting/alarm-action-setting.component'
+import { ConfigComponent } from '../component/config/config.component'
 import { MessageProvider } from '../providers/message-provider'
 import { GroupProvider } from '../providers/group-provider'
 import { DepartmentProvider } from '../providers/department-provider'
@@ -73,6 +74,8 @@ import { MockMessageProvider } from '../mocks/providers/mock-message-provider'
 import { MockSubscriptionProvider } from '../mocks/providers/mock-subscription-provider'
 import { MockAccountProvider } from '../mocks/providers/mock-account-provider'
 import { UniqueDeviceID } from '@ionic-native/unique-device-id';
+import { IonicStorageModule } from '@ionic/storage';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -101,6 +104,7 @@ import { UniqueDeviceID } from '@ionic-native/unique-device-id';
     SubscriptionComponent,
     AlarmActionComponent,
     AlarmActionSettingComponent,
+    ConfigComponent,
     PeopleSearchPage, 
     GroupSearchPage,
     DepartmentSelectPage,
@@ -112,6 +116,7 @@ import { UniqueDeviceID } from '@ionic-native/unique-device-id';
   ],
   imports: [
     IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot(),
     HttpModule,
     BrowserModule
   ],
