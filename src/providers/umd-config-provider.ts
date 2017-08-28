@@ -124,7 +124,7 @@ export class UmdConfigProvider implements ConfigProvider {
     )
   }
 
-  getConfig(): Observable<Config>
+  getConfig(): Config
   {
     // return Observable.fromPromise(this.storage.get('config')).map(
     //   val => {
@@ -133,7 +133,7 @@ export class UmdConfigProvider implements ConfigProvider {
     //     return UmdConfigProvider.config;
     //   }
     // )
-    return Observable.from([UmdConfigProvider.config]);
+    return UmdConfigProvider.config;
   }
 
   updateConfig(config:Config): Observable<boolean>

@@ -11,12 +11,15 @@
   <button ion-button (click)="verifyWithAppID()">
   verifyWithAppId
   </button>
+  <button ion-button (click)="clear()">
+    clear
+  </button>
   <h3>result</h3>
   <div>
-    {{apiResult}}
+    {{result.apiResult}}
   </div>
   <h3>error</h3>
   <div>
-    {{apiError}}
+    {{result.apiError}}
   </div>
 </ion-content>

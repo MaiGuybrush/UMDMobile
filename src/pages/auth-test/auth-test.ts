@@ -12,15 +12,22 @@ declare var ExtraInfo: any;
 export class AuthTestPage {
   constructor(public extraInfo:ExtraInfoProvider, public navCtrl: NavController, public appConfig: AppConfig) {
   }
-  apiResult: string;
-  apiError: string;
+  result = {
+      apiResult : "123",
+      apiError: "456"
+  }
+
+  ionViewDidLoad() {
+  }
   getUserInfo()
   {
-      var me: AuthTestPage = this;
-      this.extraInfo.getUserInfo().subscribe((result) => {
-        me.apiResult = me.extraInfo.accessToken;// JSON.stringify(result);
-      }, (err) => {
-        me.apiError = err;
+      this.extraInfo.getUserInfo().subscribe(result => 
+        this.result = {
+                      apiResult: JSON.stringify(this.extraInfo),// JSON.stringify(result);
+                      apiError: undefined
+                    }
+      , (err) => {
+        this.result.apiError = JSON.stringify(err);
       });
     //   this.extraInfo.getUserInfo(this.appID).then((result) => {
     //       this.apiResult = JSON.stringify(result);
@@ -28,14 +35,13 @@ export class AuthTestPage {
     //       this.apiError = err;
     //   });
   };
-
   verifyWithAppID()
   {
       var me: AuthTestPage = this;
       this.extraInfo.verifyWithAppID().subscribe((result) => {
-        me.apiResult = me.extraInfo.accessToken;// JSON.stringify(result);
+        me.result.apiResult = JSON.stringify(me.extraInfo);// JSON.stringify(result);
       }, (err) => {
-        me.apiError = err;
+        me.result.apiError = JSON.stringify(err);
       });
       // this.extraInfo.verifyWithAppID(this.appID).then((result) => {
       //     this.apiResult = JSON.stringify(result);
@@ -43,4 +49,11 @@ export class AuthTestPage {
       //     this.apiError = err;
       // });  
   };
+
+  clear ()
+  {
+    this.result.apiResult = "";
+    this.result.apiError = "";    
+  }
+
 }

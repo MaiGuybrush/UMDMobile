@@ -11,7 +11,9 @@ export class InterceptedHttp extends Http {
   }
   refreshToken() : Observable<string> 
   {
-    return this.tokenService.verifyWithAppID().map(m => m.accessToken);
+    return this.tokenService.verifyWithAppID().map(
+      m => m.accessToken
+    );
   }
   post(url: string, body: any, options?: RequestOptionsArgs): Observable<Response>
   {

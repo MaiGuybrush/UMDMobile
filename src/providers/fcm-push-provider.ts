@@ -7,6 +7,11 @@ import { PureHttp } from '../app/pure-http'
 import { PushProvider } from './push-provider'
 import { Message } from '../models/message'
 import { MessageProvider } from './message-provider'
+import { AccountProvider } from './account-provider'
+import { EmployeeProvider } from './employee-provider'
+import { UniqueDeviceID } from '@ionic-native/unique-device-id';
+import { InxAccount } from '../models/inx-account'
+declare var window;
 
 @Injectable()
 export class FcmPushProvider implements PushProvider {
@@ -15,37 +20,41 @@ export class FcmPushProvider implements PushProvider {
     fcmAthorizationKey = "AAAAwkeVcOk:APA91bGDRCbVZ06C-5c3yw1MHsby4Q2siEeXWYQfJzTyegeJr091nsSC1Efau293Kz0zwidUEaLm8Rsj3RMT0EpsVEQRoabkirl-loIPEfD2sfabMu1ETq8AJfMYPDavhyHM7cp956vO"
     
     constructor(public platform: Platform, public pureHttp: PureHttp
-        , public messageProvider: MessageProvider, public push: Push) {
+        , public messageProvider: MessageProvider, public push: Push
+        , public accountProvider: AccountProvider, public uniqueDeviceID:UniqueDeviceID
+        , public employeeProvider: EmployeeProvider) {
 
     }
 
     pushReadNotification(message: Message, name: string) : Observable<boolean>
     {
-        let options = new RequestOptions();
-        options.headers = new Headers();
-        options.headers.set("Content-Type", "application/json")
-        options.headers.set("Authorization", "key=" + this.fcmAthorizationKey)
-        return this.pureHttp.post("https://fcm.googleapis.com/fcm/send", 
-        { 
-            "notification": {
-                "title": "MessageRead",
-                "additionalData": { 
-                    "id": message.id,
-                    "name": name
-                }
-            },
-            "to" : "/topics/" + message.uuid
-        },
-        {
-            
-        }).map(m => m.status === 200);
+        ///TODO: complete this job
+        // let options = new RequestOptions();
+        // options.headers = new Headers();
+        // options.headers.set("Content-Type", "application/json")
+        // options.headers.set("Authorization", "key=" + this.fcmAthorizationKey)
+        // return this.pureHttp.post("https://fcm.googleapis.com/fcm/send", 
+        // { 
+        //     "notification": {
+        //         "title": "MessageRead",
+        //         "data": { 
+        //             "id": message.id,
+        //             "name": name
+        //         }
+        //     },
+        //     "to" : "/topics/" + message.uuid
+        // }, options).map(m => m.status === 200);
+        return Observable.from([true]);
     }
     
     pushNotificationHandler(data: any) {
         if (data.title == "MessageRead")
         {
             this.messageProvider
-            .updateReadCount(data.additionalData.id, data.additionalData.name).subscribe();
+            .updateReadCount(data.additionalData.id, data.additionalData.name).subscribe(
+                m => console.log("updateReadCount successfully!"),
+                e => console.log("updateReadCount failed!")
+            );
         }
         else
         {
@@ -80,14 +89,22 @@ export class FcmPushProvider implements PushProvider {
                         console.log(`Message ${m.alarmID} saved app open `)
                     });
                 }else{
-                    console.log("Tap Push notification bar background " );
-                    window.location.replace("#/app/src/pages/meeeages/messages"); 
+                    if(this.platform.is('ios')) {
+                        this.messageProvider.addMessage(m).subscribe(m => {
+                            console.log(`Message ${m.alarmID} saved app open `)
+                        });                        
+                    }
+                    else 
+                    {
+                        console.log("Tap Push notification bar background " );
+                        window.location.replace("#/app/src/pages/meeeages/messages"); 
+                    }
                 }
             }
         }
     }
 
-    pushInit(): Observable<any>
+    pushInit()
     {
         var me = this;
         const options: PushOptions = {
@@ -111,29 +128,77 @@ export class FcmPushProvider implements PushProvider {
         });
         FcmPushProvider.pushObject.on('error').subscribe(error => console.error('Error with Push plugin err=' + error));
 
-        // return Observable.fromPromise(this.push.hasPermission()).concatMap(
-        // m => FcmPushProvider.pushObject.on('registration'));
-
-        this.push.hasPermission()
-        .then((res: any) => {
-      
-          if (res.isEnabled) {
-            console.log('We have permission to send push notifications');
-          } else {
-            console.log('We do not have permission to send push notifications');
-          }
-      
-        });
-
-        return Observable.from([FcmPushProvider.pushObject.on('registration').subscribe((registration: any) => {
-            console.log('Device registered', registration);
-            return registration;
+        return FcmPushProvider.pushObject.on('registration').subscribe(m => {
+            var registrationInfo = m;
+            this.getUniqueDeviceID().subscribe( uuid => {
+                this.getUserInfo().subscribe(m => {
+                    var user = m;    
+                    if (registrationInfo && registrationInfo.registrationId) { 
+                        this.updateUserInfo(user, registrationInfo.registrationId, uuid).subscribe(m => {
+                        },
+                        e => {
+                        // this.loader.dismiss();
+                        console.log(`updateUserInfo fail, ${e}`);
+                        //this.alert("更新使用者資訊失敗", "請連絡開發小組(514-32628)。");
+                        });      
+                    } 
+                    else 
+                    {
+                    // this.loader.dismiss();
+                        console.log(`getRegistrationInfo fail, ${m.message}`);
+                    //this.alert("取得RegistrationID失敗", "請連絡開發小組(514-32628)。");
+                    }
+                }, e =>
+                {
+                  // this.loader.dismiss();
+                    console.log(`get User Info fail, ${e}`);
+                   // this.alert("取得使用者資訊失敗", "請確認是否安裝INX App Store!");
+                });
+            }
+            , e => {
+                // this.loader.dismiss();
+                console.log(`getDeviceID fail, ${JSON.stringify(e)}`);
+                //this.alert("取得DeviceID失敗", "請連絡開發小組(514-32628)。");
+            });
+        }, e =>
+        {
+        // this.loader.dismiss();
+        console.log(`getRegistrationInfo fail, ${e}`);
+        //this.alert("取得RegistrationID失敗", "請連絡開發小組(514-32628)。");
         })
-        ])
-        
-
-        // return Observable.from(['eON91BZBkU8:APA91bGix57MvALuU-PU_vlzr5jOBC3XOlglXKEIKdYDt-tTRqmeJqG4NumycnxwJEfWZ9Qzkpr-Wp-SZUD8HdwyqByIKWIB4sy5WkWo64-XSln2gPbCONn9lbpt-HrbfSgGf-vtIvxB']);
-
+    
+        //return Observable.from([{registrationId: "12345"}])
     }
 
-}
+    getUniqueDeviceID(): Observable<string> 
+    {
+      return Observable.fromPromise(this.uniqueDeviceID.get());
+    };
+  
+    hasPermission() : Observable<boolean>
+    {
+        return Observable.fromPromise(this.push.hasPermission()).map(m => m.isEnabled);
+    }
+
+    updateUserInfo(user: InxAccount, registrationId: string, uuid:string): Observable<any>
+    {
+      //  this.loader.setContent("更新使用者資訊...");
+        if (window.cordova)
+        {          
+          console.log("update user registrationId [" + `${registrationId}` + "].");
+          console.log("update user uuid [" + `${uuid}` + "].");
+          return this.employeeProvider.updateEmployeeInfo(user.empNo, registrationId,uuid)
+        }
+        return Observable.from([true]);
+    }
+  
+    getUserInfo(): Observable<any>
+    {
+//      this.loader.setContent("取得使用者資訊...");
+      return this.accountProvider.getUserInfo().map(m => {
+        console.log("get user [" + `${m.comid}` + "] logged in.");      
+        return m;
+      });
+    }
+  
+  }

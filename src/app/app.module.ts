@@ -13,11 +13,12 @@ import { InterceptedHttp } from './intercepted-http'
 import { PureHttp } from './pure-http'
 import { FilterPipe } from './filter.pipe.ts'
 import { GroupByPipe } from './groupby.pipe.ts'
-import { OrderByPipe } from './orderby.pipe.ts'
+// import { OrderByPipe } from './orderby.pipe.ts'
 import { AboutPage } from '../pages/about/about'
 import { AuthTestPage } from '../pages/auth-test/auth-test'
 import { ConfigPage } from '../pages/config/config'
-import { CategorizedMessagesPage } from '../pages/categorized-messages/categorized-messages'
+//import { CategorizedMessagesPage } from '../pages/categorized-messages/categorized-messages'
+import { CategorizedMessagesPageModule } from '../pages/categorized-messages/categorized-messages.module'
 import { MessagesPage } from '../pages/messages/messages'
 import { MessagesDetailPage } from '../pages/messages-detail/messages-detail'
 import { GroupsPage } from '../pages/groups/groups'
@@ -27,23 +28,23 @@ import { SubscribeAddPage } from '../pages/subscribe-add/subscribe-add'
 import { SubscribeEditPage } from '../pages/subscribe-edit/subscribe-edit'
 import { SubscribeConfigPage } from '../pages/subscribe-config/subscribe-config'
 import { SubscribeMappgroupPage } from '../pages/subscribe-mappgroup/subscribe-mappgroup'
-import { TabsPage } from '../pages/tabs/tabs'
 import { InitPage } from '../pages/init/init'
+import { TabsPage } from '../pages/tabs/tabs'
 import { PeopleSearchPage } from '../pages/people-search/people-search'
 import { GroupSearchPage } from '../pages/group-search/group-search'
 import { DepartmentSelectPage } from '../pages/department-select/department-select'
-import { MessageComponent } from '../component/message/message.component'
-import { MessageDetailComponent } from '../component/message-detail/message-detail.component'
-import { GroupComponent } from '../component/group/group.component'
-import { EmployeeComponent } from '../component/employee/employee.component'
-import { GroupEditComponent } from '../component/group-edit/group-edit.component'
-import { MessageCategoryComponent } from '../component/message-category/message-category.component'
-import { SubscriptionComponent } from '../component/subscription/subscription.component'
-import { NosubscriptionComponent } from '../component/nosubscription/nosubscription.component'
-import { DepartmentComponent } from '../component/department/department.component'
-import { AlarmActionComponent } from '../component/alarm-action/alarm-action.component'
-import { AlarmActionSettingComponent } from '../component/alarm-action-setting/alarm-action-setting.component'
-import { ConfigComponent } from '../component/config/config.component'
+import { MessageComponent } from '../components/message/message.component'
+import { MessageDetailComponent } from '../components/message-detail/message-detail.component'
+import { GroupComponent } from '../components/group/group.component'
+import { EmployeeComponent } from '../components/employee/employee.component'
+import { GroupEditComponent } from '../components/group-edit/group-edit.component'
+//import { MessageCategoryComponent } from '../components/message-category/message-category.component'
+import { SubscriptionComponent } from '../components/subscription/subscription.component'
+import { NosubscriptionComponent } from '../components/nosubscription/nosubscription.component'
+import { DepartmentComponent } from '../components/department/department.component'
+import { AlarmActionComponent } from '../components/alarm-action/alarm-action.component'
+import { AlarmActionSettingComponent } from '../components/alarm-action-setting/alarm-action-setting.component'
+import { ConfigComponent } from '../components/config/config.component'
 import { MessageProvider } from '../providers/message-provider'
 import { GroupProvider } from '../providers/group-provider'
 import { DepartmentProvider } from '../providers/department-provider'
@@ -76,16 +77,17 @@ import { MockAccountProvider } from '../mocks/providers/mock-account-provider'
 import { UniqueDeviceID } from '@ionic-native/unique-device-id';
 import { IonicStorageModule } from '@ionic/storage';
 
+import { DbProvider } from '../providers/db/db';
 @NgModule({
   declarations: [
     MyApp,
     FilterPipe,
     GroupByPipe,
-    OrderByPipe,
+//    OrderByPipe,
     AboutPage,
     AuthTestPage,
     ConfigPage,
-    CategorizedMessagesPage,
+    // CategorizedMessagesPage,
     MessagesPage,
     MessagesDetailPage,
     SubscribePage,
@@ -97,7 +99,7 @@ import { IonicStorageModule } from '@ionic/storage';
     GroupEditPage,
     MessageDetailComponent,
     MessageComponent,
-    MessageCategoryComponent,
+//    MessageCategoryComponent,
     EmployeeComponent,
     GroupComponent,
     GroupEditComponent,
@@ -118,7 +120,8 @@ import { IonicStorageModule } from '@ionic/storage';
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot(),
     HttpModule,
-    BrowserModule
+    BrowserModule,
+    CategorizedMessagesPageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -126,7 +129,7 @@ import { IonicStorageModule } from '@ionic/storage';
     AboutPage,
     AuthTestPage,
     ConfigPage,
-    CategorizedMessagesPage,
+    // CategorizedMessagesPage,
     MessagesPage,
     MessagesDetailPage,
     SubscribePage,
@@ -140,8 +143,8 @@ import { IonicStorageModule } from '@ionic/storage';
     GroupSearchPage,
     DepartmentSelectPage,
     ConfigPage,
-    TabsPage,
-    InitPage
+    InitPage,
+    TabsPage
   ],
   providers: [
               {provide: ErrorHandler, useClass: IonicErrorHandler} 
@@ -187,7 +190,8 @@ import { IonicStorageModule } from '@ionic/storage';
                 },
                 deps: [XHRBackend, RequestOptions, ExtraInfoProvider]
               }
-            , {provide: MessageProvider, useClass: UmdMessageProvider}
+            , {provide: MessageProvider, useClass: UmdMessageProvider},
+    DbProvider
             ]
 })
 export class AppModule {}

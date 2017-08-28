@@ -39,7 +39,7 @@ export class MessageComponent
           me.msg.archived = true;
         },
         e => {
-          console.log("archiveMessage error, e=/" + e.stringify() + "/.")
+          console.log("archiveMessage error, e=/" + JSON.stringify(e) + "/.")
         }
       );
     }
@@ -52,7 +52,7 @@ export class MessageComponent
           me.msg.archived = false;
         },
         e => {
-          console.log("restoreMessage error, e=/" + e.stringify() + "/.")
+          console.log("restoreMessage error, e=/" + JSON.stringify(e) + "/.")
         }       
       );
     }

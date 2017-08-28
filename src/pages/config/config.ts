@@ -19,7 +19,6 @@ import { Storage } from '@ionic/storage';
 })
 export class ConfigPage {
 
-  config: Config = {soundSwitch: true, soundName: 'bell', pageSize: 8};
   constructor(public navCtrl: NavController, public navParams: NavParams, public storage: Storage, 
               public configProvider: ConfigProvider, public alertCtrl: AlertController) {
 
@@ -27,21 +26,25 @@ export class ConfigPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ConfigPage');
-
-    this.configProvider.getConfig().subscribe( m => { 
-        this.config = m;
-        // console.log('Your config is', m);
-         console.log('getConfig config is', this.config);
-    }); 
+    // this.configProvider.getConfig().subscribe( m => { 
+    //     this.config = m;
+    //     // console.log('Your config is', m);
+    //      console.log('getConfig config is', this.config);
+    // }); 
 
     // this.config = this.configProvider.getConfig();
     // console.log('Your co。nfig is', this.config);
 
   }
 
+  getConfig(): Config
+  {
+    return this.configProvider.getConfig();    
+  }
+
   updateConfig(config:Config)
   {
-    this.configProvider.updateConfig(config).subscribe();
+    this.configProvider.updateConfig(config).subscribe()
   }
   
 

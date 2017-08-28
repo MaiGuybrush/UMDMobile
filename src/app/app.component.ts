@@ -6,6 +6,7 @@ import { StatusBar } from '@ionic-native/status-bar'
 import { SplashScreen } from '@ionic-native/splash-screen'
 import { Push } from '@ionic-native/push';
 import { InitPage } from "../pages/init/init"
+import { AuthTestPage } from "../pages/auth-test/auth-test"
 //import { PeopleSearchPage } from '../pages/people-search/people-search'
 import { MessageProvider } from '../providers/message-provider';
 import { AccountProvider } from '../providers/account-provider'

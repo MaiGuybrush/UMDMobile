@@ -3,7 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { FormControl } from '@angular/forms'
 import { LoadingController } from 'ionic-angular';
 import { MenuController } from 'ionic-angular';
-import { CategoryMethod } from '../../component/message-category/message-category.component'
+import { CategoryMethod } from '../../components/message-category/message-category.component'
 import { MessageProvider } from '../../providers/message-provider'
 import { Message } from '../../models/message';
 import { Observable } from 'rxjs/Rx';

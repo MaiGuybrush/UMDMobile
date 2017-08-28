@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core'
 import { Platform } from 'ionic-angular'
+import * as moment from 'moment'
 import { Http } from '@angular/http'
 import { Message } from '../models/message'
 import { MessageProvider } from './message-provider'
 import { Observable } from 'rxjs/Rx'
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
+import { CategorizedSummary } from '../models/categorized-summary'
 import { MESSAGES } from '../mocks/MESSAGES'
 import { Config } from '../models/config';
+import { DbProvider} from './db/db'
 import { ConfigProvider } from './config-provider';
 
 
@@ -23,39 +26,23 @@ export class UmdMessageProvider implements MessageProvider {
   static schemaVersion: number = 2;
   items = [];
   message: Message[]=[];
-  pageSize = 8;
+  static pageSize = 8;
   private static messageObserver:any; 
 
-  public static messageNotifier: Observable<Message> = Observable.create(observer => {
-    UmdMessageProvider.messageObserver = observer;
-  });
-  constructor(public platform: Platform,public http: Http, public sqlite: SQLite, public configProvider: ConfigProvider) {
+  public static messageNotifier: Observable<Message>
+  constructor(public platform: Platform,public http: Http, public db: DbProvider, public configProvider: ConfigProvider) {
 
   }
 
   public init(): Observable<any> {
-      let db = Observable.fromPromise(this.platform.ready()).concatMap(m => 
-      {
-        console.log("start create DB..")
-        // Observable.fromPromise(
-        //   this.sqlite.deleteDatabase({ name: "umd_Storage_v001", location: 'default' })
-        // )
-        // Observable.fromPromise(
-        //   this.sqlite.deleteDatabase({ name: "umd_Storage_002", location: 'default' })
-        // )
-        // Observable.fromPromise(
-        //   this.sqlite.deleteDatabase({ name: "umd_Storage_003", location: 'default' })
-        // )
-        return Observable.fromPromise(
-          this.sqlite.create({ name: UmdMessageProvider.dbName, location: "default" })
-        )
-      });
-      return db.concatMap( db => {
-      console.log("start create Table..")
-      let output = this.createTables(db);
-      this.sqliteObject = db;
-      return output;
-    });
+    console.log("start create Table..")
+    
+    return Observable.fromPromise(this.db.ready()).concatMap(m =>
+      this.createTables())
+    // console.log("checkVersionAndUpdate db start..")
+//    Observable.checkVersionAndUpdate()
+  
+    // return output.from([true]);
         // .subscribe(undefined, 
         // err => {
         //     console.error(`Unable to create initial storage message, err="${err}"`);
@@ -64,19 +51,19 @@ export class UmdMessageProvider implements MessageProvider {
   }
 
 
-  private getDB(): Observable<SQLiteObject>
-  {
-    if (!this.sqliteObject)
-    {
-        return Observable.fromPromise(
-          this.sqlite.create({ name: UmdMessageProvider.dbName, location: "default" })
-        )
-    }
-    else
-    {
-      return Observable.from([this.sqliteObject]);
-    }
-  }
+  // private getDB(): Observable<SQLiteObject>
+  // {
+  //   if (!this.sqliteObject)
+  //   {
+  //       return Observable.fromPromise(
+  //         this.sqlite.create({ name: UmdMessageProvider.dbName, location: "default" })
+  //       )
+  //   }
+  //   else
+  //   {
+  //     return Observable.from([this.sqliteObject]);
+  //   }
+  // }
 
   // private isColumnExist(table:string, column:string, db: SQLiteObject): Observable<boolean>
   // {
@@ -101,51 +88,48 @@ export class UmdMessageProvider implements MessageProvider {
       // let messages = [];
         for (let i = 0; i < MESSAGES.length; i++)
         {
-          this.addMessage(MESSAGES[i])
+          this.addMessage(MESSAGES[i]).subscribe(
+            m => {console.log("add successful")},
+            e => {console.log("add failed!" + JSON.stringify(e))}
+          )
         }
       //   observer.complete();
       // })
   }
 
-  protected checkVersionAndUpdate(db: SQLiteObject): Observable<SQLiteObject>
+  protected checkVersionAndUpdate()
   {
     let sql = `SELECT version FROM schema_version;`;
     console.log("checkVersionAndUpdate enter")!
-
-    return Observable.from(db.executeSql(sql, [])).concatMap(res =>
-      { 
-        console.log("checkVersionAndUpdate map")!
-        if (res.rows.length > 0)
-        {
-          let currentVersion = res.rows.item(0).version;
-          return this.schemaUpdate(db, currentVersion)
-        }   
-        else {
-          db.executeSql(`INSERT INTO schema_version (version) VALUES (1)`, []);
-          return this.schemaUpdate(db, 1)
-        }     
-      }
-    );
+    let db = this.db.getDB();
+    db.executeSql(sql, []).then(res => { 
+      console.log("checkVersionAndUpdate map")!
+      let currentVersion = 0;
+      if (res.rows.length > 0)
+      {
+        currentVersion = res.rows.item(0).version;
+      }   
+      else {
+        db.executeSql(`INSERT INTO schema_version (version) VALUES (0)`, []);
+      }     
+      return this.schemaUpdate(db, currentVersion)
+    })
   }
 
   protected schemaUpdate(db: SQLiteObject, fromVersion:number): Observable<SQLiteObject>
   {
     let output;
-    if (!fromVersion)
-    {
-      fromVersion = 0
-    }
-    if (fromVersion < 2)
+    if (fromVersion > 0 && fromVersion < 2)
     {
       console.log("update schema for version 2.")
-      output = this.getDB().concatMap(db => db.transaction(tx => {
+      output = this.db.getDB().transaction(tx => {
         tx.executeSql(
           `ALTER TABLE message ADD COLUMN uuid text default ''`, []);
         tx.executeSql(
           `ALTER TABLE message ADD COLUMN readcount integer default 0`, []);
         tx.executeSql(
           `ALTER TABLE message ADD COLUMN readnamelist text default ''`, []);
-      }));
+      })
     }
     let updateVersion = db.executeSql(`UPDATE schema_version SET version = ?`, [UmdMessageProvider.schemaVersion])
     output = output ? output.map(m => updateVersion).concatAll() : updateVersion;
@@ -153,77 +137,65 @@ export class UmdMessageProvider implements MessageProvider {
   }
 
   
-  createTables(db: SQLiteObject): Observable<SQLiteObject>
+  createTables() : Observable<any>
   {
-    return Observable.fromPromise(
-      db.transaction(tx => {
+    return Observable.from(this.db.getDB().transaction(tx => {
         tx.executeSql(
           `CREATE TABLE IF NOT EXISTS message (id text, uuid text, readcount integer, readnamelist text, occurDT text, 
           alarmID text,eqptID text , alarmMessage text,alarmType text,
           description text, read integer default 0, archived integer default 0)`, []);
         tx.executeSql(
           `CREATE TABLE IF NOT EXISTS schema_version (version integer)`, []);
-      })
-    ).concatMap( m => {
-        console.log("checkVersionAndUpdate db start..")
-        return this.checkVersionAndUpdate(db)
-      }
-    );
+      }))
   }
 
   delete(key: number): Observable<any> {
-    return this.getDB().concatMap(db => 
-      Observable.fromPromise(
-        db.executeSql(`delete from message where rowid = ?`, [key]))
-    );
+    return Observable.fromPromise(this.db.getDB().executeSql(`delete from message where rowid = ?`, [key]))
+    
   }
  
 
    private loadMessage(condition: string, queryPageNo: number): Observable<Message[]>{
-    this.configProvider.getConfig().subscribe(m =>{this.pageSize = m.pageSize});
+    this.configProvider.loadConfig().subscribe(m =>{UmdMessageProvider.pageSize = m.pageSize});
     // id text,occurDT text, alarmID text,eqptID text,alarmMessage text,alarmType text,description text,read text
-    let limit = queryPageNo > 0 ? ` limit ${(queryPageNo - 1) * this.pageSize}, ${(queryPageNo) * this.pageSize}` : ``;
+    let limit = queryPageNo > 0 ? ` limit ${(queryPageNo - 1) * UmdMessageProvider.pageSize}, ${(queryPageNo) * UmdMessageProvider.pageSize}` : ``;
     //  console.log("limit: "+ limit);
     let output = Observable.create( observer => {
-      this.getDB().subscribe(db =>
-      {
-        Observable.fromPromise(db.executeSql(`select rowid, id, uuid, readcount, readnamelist, occurDT, alarmID, eqptID, alarmMessage,  
-                    description, alarmType, read, archived from message ${condition} order by occurDT desc ${limit}`, []))
-        .subscribe(res => {
-              // console.log("getallresultSet: "+JSON.stringify(res));
-          let messages: Message[] = [];
+        
+      this.db.getDB().executeSql(`select rowid, id, uuid, readcount, readnamelist, occurDT, alarmID, eqptID, alarmMessage,  
+                    description, alarmType, read, archived from message ${condition} order by occurDT desc ${limit}`, []).then(res => {
+            // console.log("getallresultSet: "+JSON.stringify(res));
+        let messages: Message[] = [];
 
-          if(res.rows.length > 0) {
-                    //   this.items = [];
-            for(let i = 0; i < res.rows.length; i++) {
-                var row = res.rows.item(i);
-                let message = new Message();
-                message = {
-                  id: row.id,
-                  uuid: row.uuid,
-                  rowid: row.rowid,
-                  readCount: row.readcount,
-                  readNameList: row.readnamelist,
-                  occurDT: new Date(row.occurDT),
-                  alarmID: row.alarmID,
-                  description: row.description,
-                  alarmMessage:row.alarmMessage,                             
-                  alarmType: row.alarmType,
-                  eqptID: row.eqptID ,   
-                  read: row.read == 1,
-                  archived: row.archived
-                }
-                messages.push(message);
-            }
+        if(res.rows.length > 0) {
+                  //   this.items = [];
+          for(let i = 0; i < res.rows.length; i++) {
+              var row = res.rows.item(i);
+              let message = new Message();
+              message = {
+                id: row.id,
+                uuid: row.uuid,
+                rowid: row.rowid,
+                readCount: row.readcount,
+                readNameList: row.readnamelist,
+                occurDT: new Date(row.occurDT),
+                alarmID: row.alarmID,
+                description: row.description,
+                alarmMessage:row.alarmMessage,                             
+                alarmType: row.alarmType,
+                eqptID: row.eqptID ,   
+                read: row.read == 1,
+                archived: row.archived
+              }
+              messages.push(message);
           }
-          observer.next(messages);
-        },
-        error => {
-          observer.error(error)
-        },
-        () => {observer.complete()}); 
+        }
+        observer.next(messages);
+        observer.complete()
+      }).catch(e => {
+        observer.error(e)
       })
-    });    
+    })
     return output;
     // let limit = queryPageNo > 0 ? ` limit ${(queryPageNo - 1) * this.pageSize}, ${(queryPageNo) * this.pageSize}` : '';
     //  return this.query(`select rowid, id,occurDT,alarmID ,eqptID,alarmMessage,description,alarmType,read from message ${condition} order by occurDT desc 
@@ -288,25 +260,23 @@ export class UmdMessageProvider implements MessageProvider {
             ).concatAll();    
   }
 
-  getUnreadMessageCount(groupBy:string) : Observable<{ groupItem: string; count: number; }[]>
+  getUnreadMessageCount(groupBy:string) : Observable<CategorizedSummary[]>
   {
     let sql = `SELECT c.groupItem, u.messageCount from (SELECT DISTINCT ${groupBy} as groupItem from message) as c left join 
-    (SELECT ${groupBy} as groupItem, count(*) as messageCount from message WHERE read = 0 group by ${groupBy}) as u 
-    on c.groupItem == u.groupItem order by u.messageCount, c.groupItem`;
-    return this.getDB().map(m => 
-      Observable.fromPromise(m.executeSql(sql, [])).map(
-        res => {
-          let output: { groupItem: string; count: number; }[] = [];
-          if(res.rows.length > 0) {
-            for(let i = 0; i < res.rows.length; i++) {
-              let row = res.rows.item(i);
-              output.push({ groupItem: row.groupItem, count:+ row.messageCount })
-            }  
-          }
-          return output;
+    (SELECT ${groupBy} as groupItem, count(*) as messageCount, max(occurDT) as occurDT from message WHERE read = 0 and archived = 0 group by ${groupBy}) as u 
+    on c.groupItem == u.groupItem order by u.occurDT desc`;
+    return Observable.from(this.db.getDB().executeSql(sql, [])).map(
+      res => {
+        let output: CategorizedSummary[] = [];
+        if(res.rows.length > 0) {
+          for(let i = 0; i < res.rows.length; i++) {
+            let row = res.rows.item(i);
+            output.push({ groupItem: row.groupItem, unreadCount:+ row.messageCount, lastestMessageDT: row.occurDT })
+          }  
         }
-      )
-    ).concatAll();    
+        return output;
+      }
+    );    
   }
 
   updateReadCount(id: string, employeeName: string) : Observable<any>
@@ -315,27 +285,20 @@ export class UmdMessageProvider implements MessageProvider {
     var theId = id;
     return Observable.create(server => {
       let sql = `UPDATE message SET readcount = readcount + 1 AND readnamelist = readnamelist || ? || ',' WHERE id = ?`;
-      return this.getDB().concatMap(m =>        
-          Observable.fromPromise(m.executeSql(sql, [employeeName, id]))
-      ).subscribe( m => {
+      return Observable.fromPromise(this.db.getDB().executeSql(sql, [employeeName, id])).subscribe( m => {
         me.getMessage(theId).subscribe(m => 
           UmdMessageProvider.messageObserver.next(m)
         )
       })
-      
     })                 
   }
   
   getMessage(id: string) : Observable<Message>
   {
     let sql = "SELECT * FROM message WHERE id = ?";
-    return this.getDB().concatMap(m => 
-      {
-        
-        UmdMessageProvider.messageObserver.next();
-        return Observable.fromPromise(m.executeSql(sql, [id]))
-      }
-    );     
+  
+    UmdMessageProvider.messageObserver.next();
+    return Observable.fromPromise(this.db.getDB().executeSql(sql, [id]))
 
   }
   
@@ -353,59 +316,63 @@ export class UmdMessageProvider implements MessageProvider {
   
   getMessageNotifier(): Observable<Message>
   {
+    if(!UmdMessageProvider.messageNotifier)
+    {
+      UmdMessageProvider.messageNotifier = Observable.create(observer => {
+        UmdMessageProvider.messageObserver = observer;
+      });
+     }
     return UmdMessageProvider.messageNotifier;
   }
 
   addMessage(message: Message) : Observable<Message>
   {
-    let output = this.getDB().map(db =>
-    {
-      console.log("set id, alarmid,message,time="+ message.id + ":"+ message.alarmID + ":"+ message.alarmMessage+":"+message.occurDT);
+    console.log("set id, alarmid,message,time="+ message.id + ":"+ message.alarmID + ":"+ message.alarmMessage+":"+message.occurDT);
 
-      return Observable.fromPromise(db.executeSql(`insert into message(id, uuid, readcount, occurDT , alarmID ,eqptID ,alarmMessage ,alarmType ,description ,read) values (?,?,?,?,?,?,?,?,?,?)`
-        , [message.id, message.uuid, message.readCount, message.occurDT, message.alarmID, message.eqptID, message.alarmMessage
-          , message.alarmType, message.description, message.read ? 1 : 0]))
-      .map( 
-        m => {
-          UmdMessageProvider.messageObserver.next(message);
-          message.rowid = m.insertId;
-          return message;
-        }
-      );
-    }).concatAll();
-    return output;
+    return Observable.fromPromise(this.db.getDB().executeSql(`insert into message(id, uuid, readcount, occurDT , alarmID ,eqptID ,alarmMessage ,alarmType ,description ,read) values (?,?,?,?,?,?,?,?,?,?)`
+      , [message.id, message.uuid, message.readCount, moment(message.occurDT).format("YYYY-MM-DD HH:mm:ss.SSSSSS"), message.alarmID, message.eqptID, message.alarmMessage
+      , message.alarmType, message.description, message.read ? 1 : 0]))
+    .map( 
+      m => {
+        message.rowid = m.insertId;
+        UmdMessageProvider.messageObserver.next(message);
+        return message;
+      }
+    );
   }
 
   setMessageRead(messages: Message[]): Observable<any>
   {
-    let res = this.getDB().concatMap(db => 
-      Observable.fromPromise(
-        db.transaction(tx => {
-          for (let i = 0; i < messages.length; i++)
+    let res = Observable.fromPromise(this.db.getDB().transaction(tx => {
+        for (let i = 0; i < messages.length; i++)
+        {
+          if(!messages[i].read)
           {
-            if(!messages[i].read)
-            {
-              console.log(`set message read ${messages[i].rowid}`);
-              tx.executeSql(`update  message set read = ? where rowid = ?`, [1, messages[i].rowid])
-            }
+            console.log(`set message read ${messages[i].rowid}`);
+            tx.executeSql(`update  message set read = ? where rowid = ?`, [1, messages[i].rowid])
           }
-        })
-      )
+        }
+      })
     )
+
     return res;
+  }
+
+  deleteOverDurationsMessages(duration: number)
+  {
+    let beforeDate = moment().subtract(duration, 'd');
+    return Observable.fromPromise(this.db.getDB().executeSql(`delete from message where occurDT < ?`
+      , [beforeDate.format("YYYY-MM-DD HH:mm:ss.000000")]))
   }
 
   archive(message: Message): Observable<any>  
   {
-    return this.getDB().concatMap(m => 
-      Observable.fromPromise(m.executeSql(`update message set archived = ? where rowid = ?`, [1, message.rowid]))
-    );
+    return Observable.fromPromise(this.db.getDB().executeSql(`update message set archived = ? where rowid = ?`, [1, message.rowid]))
+    
   }
 
   restore(message: Message): Observable<any>
   {
-    return this.getDB().concatMap(m => 
-      Observable.fromPromise(m.executeSql(`update message set archived = ? where rowid = ?`, [0, message.rowid]))
-    );    
+    return Observable.fromPromise(this.db.getDB().executeSql(`update message set archived = ? where rowid = ?`, [0, message.rowid]))
   }  
 }

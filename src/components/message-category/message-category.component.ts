@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, EventEmitter, Output} from '@angular/core';
+import { CategorizedSummary } from '../../models/categorized-summary'
 
 export enum CategoryMethod
 {
@@ -10,18 +11,12 @@ export enum CategoryMethod
 
 @Component({
     selector: 'message-category',
-    templateUrl: './message-category.component.html'
+    templateUrl: 'message-category.component.html'
 })
 export class MessageCategoryComponent implements OnInit
 {
-    @Input()
-    unreadCount: number;
-    // @Input()
-    // messages : Message[] = [];    
-    @Input()
-    categoryMethod: CategoryMethod;
-    @Input()
-    category: string;
+    @Input() public categorizedSummary: CategorizedSummary;
+    @Input() public categoryMethod: CategoryMethod;
     @Output()
     itemClicked = new EventEmitter();
     constructor()
@@ -45,11 +40,7 @@ export class MessageCategoryComponent implements OnInit
 
     clickedHandler()
     {
-        this.itemClicked.emit({categoryMethod: this.categoryMethod, categoryValue: this.category});
+        this.itemClicked.emit({categoryMethod: this.categoryMethod, categoryValue: this.categorizedSummary.groupItem});
     }
 
-    getUnreadCount()
-    {
-        return this.unreadCount;
-    }
 }

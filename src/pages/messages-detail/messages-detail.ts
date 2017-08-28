@@ -22,10 +22,14 @@ export class MessagesDetailPage {
     this.messageProvider.setMessageRead([this.msg]).subscribe(
       m => {
         me.msg.read = true; 
-        this.pushProvider.pushReadNotification(this.msg, this.accountProvider.getInxAccount().name).subscribe();
+        this.pushProvider.pushReadNotification(this.msg, this.accountProvider.getInxAccount().name)
+        .subscribe(
+          m => console.log("pushReadNotification successful!"),
+          e => m => console.log("pushReadNotification failed!")
+        );
       },
       e => {
-        console.log("setMessageRead error, e=/" + e.stringify() + "/.")
+        console.log("setMessageRead error, e=/" + JSON.stringify(e) + "/.")
       }
     );
   }

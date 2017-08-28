@@ -30,7 +30,7 @@
   </ion-fab> 
 
   <ion-list>
-      <message *ngFor="let m of messages | orderBy: {property: 'occurDT', direction: -1}" [msg]="m" [showDate]= "getMsgDate(m)" [navCtrl]="navCtrl" ></message>
+      <message *ngFor="let m of messages" [msg]="m" [showDate]= "getMsgDate(m)" [navCtrl]="navCtrl" ></message>
   </ion-list>
   
   <ion-infinite-scroll (ionInfinite)="doInfinite($event)">

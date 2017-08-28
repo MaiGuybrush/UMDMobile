@@ -1,19 +1,20 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
-import { NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Platform, AlertController } from "ionic-angular"
 import { LoadingController, Loading } from 'ionic-angular';
-import { AccountProvider } from '../../providers/account-provider'
 import { PushProvider } from '../../providers/push-provider'
 import { InxAccount } from '../../models/inx-account'
 import { EmployeeProvider } from '../../providers/employee-provider'
 import { MessageProvider } from '../../providers/message-provider';
 import { Message } from '../../models/message'
 import { TabsPage } from '../tabs/tabs'
+import { CategorizedMessagesPage } from '../categorized-messages/categorized-messages'
 import { AuthTestPage } from '../auth-test/auth-test'
 import { UniqueDeviceID } from '@ionic-native/unique-device-id';
-import { ConfigProvider } from '../../providers/config-provider';
+import { AccountProvider } from '../../providers/account-provider'
 
+import { ConfigProvider } from '../../providers/config-provider';
 declare var window;
 
 /**
@@ -22,7 +23,7 @@ declare var window;
  * See http://ionicframework.com/docs/components/#navigation for more info
  * on Ionic pages and navigation.
  */
-// @IonicPage()
+//@IonicPage()
 @Component({
   selector: 'page-init',
   templateUrl: 'init.html',
@@ -31,10 +32,13 @@ export class InitPage {
   topic: string;
   loader: Loading;
   url: string;
+  test: number;
+  res: string;
   constructor(public platform: Platform, public navCtrl: NavController, public navParams: NavParams
               , public loading: LoadingController, public alertCtrl: AlertController, public accountProvider: AccountProvider
               , public employeeProvider: EmployeeProvider, public messageProvider: MessageProvider
-              , public pushProvider: PushProvider, public configProvider: ConfigProvider, public uniqueDeviceID:UniqueDeviceID) {
+              , public pushProvider: PushProvider, public uniqueDeviceID:UniqueDeviceID, public configProvider: ConfigProvider) {
+    this.test = 0;
   }
 
   ionViewDidLoad() {
@@ -50,109 +54,76 @@ export class InitPage {
       window.handleOpenURL = (url) => {
         console.log("received url: " + url);
       }           
-     }
+    }
+    // Observable.timer(2000, 1000).timeInterval().take(10).subscribe(m => {
+    //   this.test = this.test + 1
+    // })
     this.initialize();
   }
 
+  onClick()
+  {
+    this.test = this.test + 1;
+    this.accountProvider.getUserInfo().subscribe(m => {
+      this.res = JSON.stringify(m)
+    })
+  }
   initialize()
   {
+    if (!window.cordova){
+      this.navCtrl.setRoot(TabsPage);
+      return;
+    }
+    let debug = false;
+    if (debug)
+    {
+      this.navCtrl.setRoot(TabsPage);
+
+      return;
+    }
     this.platform.ready().then(() => { 
-      this.loader = this.loading.create();
-      this.loader.present();
-      
-      this.getUserInfo().subscribe(m => {
-        var user = m;
-         this.getUniqueDeviceID().then(
-          uuid=>{
-        this.pushProvider.pushInit().subscribe(m => {
-          if (m) {
-            console.log(`get registrationId = ${m}`);
-          this.updateUserInfo(user, m,uuid)
-            .subscribe(m => {
-              this.initDB().subscribe(m => { 
-                  console.log("execute initDB subscribe..")
-                  this.configProvider.loadConfig().subscribe(m => { 
-                    console.log("load config: "+ m)
-                    this.loader.dismiss();
-                    this.navCtrl.setRoot(TabsPage);
-                  })
-                },
-              e => {
-                this.loader.dismiss();
-                console.log(`initDB fail, ${e}`);
-                this.alert("DB初始化失敗", "請連絡開發小組(514-32628)。");
-              })
-            },
-            e => {
-              this.loader.dismiss();
-              console.log(`updateUserInfo fail, ${e}`);
-              this.alert("更新使用者資訊失敗", "請連絡開發小組(514-32628)。");
-            });      
-          } 
-          else 
-          {
-            this.loader.dismiss();
-            console.log(`getRegistrationInfo fail, ${m.message}`);
-            this.alert("取得RegistrationID失敗", "請連絡開發小組(514-3n2628)。");
-          }
-        }, e =>
-        {
-          this.loader.dismiss();
-            console.log(`getRegistrationInfo fail, ${e}`);
-            this.alert("取得RegistrationID失敗", "請連絡開發小組(514-32628)。");
-        })
-          }
-        );
-      
-      }, e =>
-      {
-        this.loader.dismiss();
-          console.log(`get User Info fail, ${e}`);
-          this.alert("取得使用者資訊失敗", "請確認是否安裝INX App Store!");
-      })        
-    });
+    //  this.loader = this.loading.create();
+    //  this.loader.present();
+        //  this.pushProvider.hasPermission().subscribe( m => {          
+          this.configProvider.loadConfig().subscribe( m => {
+              this.pushProvider.pushInit();
+              //     console.log(`get registrationId = ${m.registrationId}`);
+                    this.initDB().subscribe(m => { 
+                        console.log("execute initDB subscribe..")
+                        this.messageProvider.deleteOverDurationsMessages(60).subscribe(
+                          m => {},
+                          e => {},
+                          () => {
+//                            this.loader.dismiss();
+                            this.navCtrl.setRoot(TabsPage);
+//                            this.navCtrl.setRoot(CategorizedMessagesPage);
+                            //this.navCtrl.setRoot(AuthTestPage);
+                        })
+                    },
+                    e => {
+                      // this.loader.dismiss();
+                      console.log(`initDB fail, ${e}`);
+                      this.alert("DB初始化失敗", "請連絡開發小組(514-32628)。");
+                    })
+            // }
+            // else
+            // {
+            //     console.log(`hasPermission fail`);
+            //     this.alert("取得push權限失敗", "請連絡開發小組(514-32628)。");
+            // }
+          // })            
+          })
     
+    });
+
   }
 
   initDB(): Observable<any>
   {
-    this.loader.setContent("正在初始化...");
+ //   this.loader.setContent("正在初始化...");
     return this.messageProvider.init();
   }
 
-  getUserInfo(): Observable<any>
-  {
-    this.loader.setContent("取得使用者資訊...");
-    return this.accountProvider.getUserInfo().map(m => {
-      console.log("get user [" + `${m.comid}` + "] logged in.");      
-      return m;
-    });
-  }
-
-  updateUserInfo(user: InxAccount, registrationId: string, uuid:string): Observable<any>
-  {
-      this.loader.setContent("更新使用者資訊...");
-      if (window.cordova)
-      {          
-        console.log("update user registrationId [" + `${registrationId}` + "].");
-        console.log("update user uuid [" + `${uuid}` + "].");
-        return this.employeeProvider.updateEmployeeInfo(user.empNo, registrationId,uuid)
-      }
-      return Observable.from([true]);
-  }
-  getUniqueDeviceID(): any 
-  {
-    return this.platform.ready().then(() => 
-     { 
-     return  this.uniqueDeviceID.get()
-        .then((uuid: any) => 
-        {
-          console.log("get uuid [" + `${uuid}` + "].")
-          return uuid;
-        })
-      .catch((error: any) => console.log("get uuid error [" + `${error}` + "]."));
-    })
-  };
 
   alert(title:string, subTitle:string)
   {

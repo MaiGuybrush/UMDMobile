@@ -1,12 +1,16 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import * as moment from 'moment'
 import { MenuController } from 'ionic-angular';
 import { MessageProvider } from '../../providers/message-provider';
-import { CategoryMethod } from '../../component/message-category/message-category.component';
+import { MessageCategoryComponentModule } from '../../components/message-category/message-category.module';
+import { MessageCategoryComponent, CategoryMethod } from '../../components/message-category/message-category.component';
 import { MessagesPage } from '../messages/messages';
 import { AuthTestPage } from '../auth-test/auth-test';
 import { Subscription } from 'rxjs/Subscription';
 import { LoadingController, Loading } from 'ionic-angular';
+import { CategorizedSummary } from '../../models/categorized-summary'
+
 /*
   Generated class for the CategorizedMessage page.
 
@@ -14,18 +18,18 @@ import { LoadingController, Loading } from 'ionic-angular';
   Ionic pages and navigation.
 */
 
-
+@IonicPage()
 @Component({
   selector: 'page-categorized-message',
   templateUrl: 'categorized-messages.html'
 })
 export class CategorizedMessagesPage {
-  categoryMethod = CategoryMethod
+  CategoryMethod = CategoryMethod
   activeMenu : string = "menu1";
   loader: Loading;
   category : CategoryMethod = CategoryMethod.ByAlarmType;
   // messages : Message[] = [];
-  unreadMessageCount: { groupItem:string, count: number }[]
+  categorizedSummary: CategorizedSummary[]
   subscription : Subscription;
   // categorizedMessage : CategorizedMessages[]
   constructor(private ref: ChangeDetectorRef, public navCtrl: NavController, public navParams: NavParams
@@ -52,29 +56,34 @@ export class CategorizedMessagesPage {
       {
         return;
       }
-      me.loader = me.loading.create();
-      me.loader.present();
+      // me.loader = me.loading.create();
+      // me.loader.present();
 
       let found = false;
-      for (let i = 0; i < me.unreadMessageCount.length; i++) {
-        let msg = me.unreadMessageCount[i];
+      for (let i = 0; i < me.categorizedSummary.length; i++) {
+        let msg = me.categorizedSummary[i];
         if (msg.groupItem == m[me.getCategoryField()])
         {
-          msg.count ++;
+          msg.unreadCount ++;
           found = true;
+          me.categorizedSummary.splice(i, 1);
+          me.categorizedSummary.unshift(msg)
+          me.categorizedSummary = [].concat(me.categorizedSummary)
           break;
         } 
       }
       if (!found)
       {
-        me.unreadMessageCount.push({
+        me.categorizedSummary.unshift({
           groupItem: m[me.getCategoryField()], 
-          count: 1
+          unreadCount: 1,
+          lastestMessageDT: moment(m.occurDT).format('YYYY-MM-DD HH:mm:ss.SSSSSS')
         });
+        me.categorizedSummary = [].concat(me.categorizedSummary)
       }
 
-      me.unreadMessageCount = [].concat(me.unreadMessageCount);
-      me.loader.dismiss();
+      //me.categorizedSummary = [].concat(me.categorizedSummary);
+      // me.loader.dismiss();
       // me.messages.push(m);
       // me.messages = [].concat(me.messages);
     });
@@ -120,9 +129,13 @@ export class CategorizedMessagesPage {
     var me = this;
     this.provider.getUnreadMessageCount(this.getCategoryField()).subscribe(
       m => {
-        me.unreadMessageCount = m;
+        me.categorizedSummary = m;
       }, 
-      e => {}, 
+      e => {
+        console.log("loadByCategory failed!" + JSON.stringify(e))
+        me.loader.dismiss();
+      }
+      , 
       () => {
         me.loader.dismiss();
       }

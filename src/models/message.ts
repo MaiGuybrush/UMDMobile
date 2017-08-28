@@ -5,7 +5,7 @@ export class Message
 
     }
     rowid: number;
-    id:string;
+    id:string;  //tstamp UMD issued
     description: string;
     alarmID: string;
     eqptID: string;

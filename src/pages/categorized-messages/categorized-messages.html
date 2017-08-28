@@ -14,13 +14,13 @@
 
   <ion-content>
     <ion-list>
-      <button ion-item detail-none (click)="changeCategory(categoryMethod.ByAlarmID)" menuClose="menu1">
+      <button ion-item detail-none (click)="changeCategory(CategoryMethod.ByAlarmID)" menuClose="menu1">
         Category By Alarm ID
       </button>
-      <button ion-item detail-none (click)="changeCategory(categoryMethod.ByEquipment)" menuClose="menu1">
+      <button ion-item detail-none (click)="changeCategory(CategoryMethod.ByEquipment)" menuClose="menu1">
         Category By Equipment
       </button>
-      <button ion-item detail-none (click)="changeCategory(categoryMethod.ByAlarmType)" menuClose="menu1">
+      <button ion-item detail-none (click)="changeCategory(CategoryMethod.ByAlarmType)" menuClose="menu1">
         Category By Alarm Type
       </button>
       <button ion-item detail-none (click)="authTest()" menuClose="menu1">
@@ -42,16 +42,15 @@
         <ion-icon name="menu"></ion-icon>
       </button>
       <!--</ion-buttons><ion-title>Message</ion-title>-->
-    </ion-buttons><ion-title>訊息分類-{{categoryMethod[category]}}</ion-title>
+    </ion-buttons><ion-title>訊息分類-{{CategoryMethod[category]}}</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding #content>
-  <ion-list *ngIf="unreadMessageCount">
-    <message-category *ngFor="let unreadCount of unreadMessageCount | orderBy: {property: 'groupItem', direction: -1}"  
-    [categoryMethod]="category" [category]="unreadCount.groupItem" 
-     [unreadCount]="unreadCount.count" (itemClicked)="pushPage($event)"></message-category>
+  <ion-list *ngIf="categorizedSummary">
+    <message-category *ngFor="let theCategorizedSummary of categorizedSummary"  
+    [categoryMethod]="category" [categorizedSummary]="theCategorizedSummary" (itemClicked)="pushPage($event)"></message-category>
   </ion-list>
 </ion-content>

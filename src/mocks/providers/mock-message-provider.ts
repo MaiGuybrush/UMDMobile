@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs/Rx'
 import { MessageProvider } from '../../providers/message-provider'
 import { Message } from '../../models/message'
+import { CategorizedSummary } from '../../models/categorized-summary'
 import { MESSAGES } from '../MESSAGES'
 
 import 'rxjs/add/operator/map';
@@ -19,7 +20,7 @@ export class MockMessageProvider implements MessageProvider {
   constructor() {
   }
 
-  getUnreadMessageCount(groupBy:string) : Observable<{ groupItem: string; count: number; }[]>
+  getUnreadMessageCount(groupBy:string) : Observable<CategorizedSummary[]>
   {
     const groupedObj = MESSAGES.filter(m => !m.archived && !m.read).reduce((prev, cur)=> {
       if(!prev[cur[groupBy]]) {
@@ -30,9 +31,9 @@ export class MockMessageProvider implements MessageProvider {
       return prev;
     }, {});
     let map = Object.keys(groupedObj).map(key => ({ key, value: groupedObj[key] }));
-    let output:{ groupItem: string; count: number; }[] = [];
+    let output: CategorizedSummary[] = [];
     map.forEach(m => {
-      output.push({ groupItem: m.key, count: m.value.length });
+      output.push({ groupItem: m.key, unreadCount: m.value.length, lastestMessageDT: Math.max.apply(m.value.map(msg => msg.occurDT))});
     })
     return Observable.from([output]);
   }
@@ -141,4 +142,8 @@ export class MockMessageProvider implements MessageProvider {
     return Observable.from([]);
   }
 
+  deleteOverDurationsMessages(duration: number)
+  {
+
+  }
 }

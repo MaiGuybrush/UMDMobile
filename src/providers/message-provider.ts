@@ -1,9 +1,10 @@
 import { Message } from '../models/message'
+import { CategorizedSummary } from '../models/categorized-summary'
 import { Observable } from 'rxjs/Rx'
 
 export abstract class MessageProvider {
 
-  abstract getUnreadMessageCount(groupBy:string) : Observable<{ groupItem: string; count: number; }[]>
+  abstract getUnreadMessageCount(groupBy:string) : Observable<CategorizedSummary[]>
 
   abstract getMessages(page: number, alarmType:string, equipment:string, alarmID:string, pattern:string) : Observable<Message[]> 
 
@@ -29,6 +30,6 @@ export abstract class MessageProvider {
 
   abstract init(): Observable<any>;
   
-  
+  abstract deleteOverDurationsMessages(duration: number)
 }
 

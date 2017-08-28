@@ -1,0 +1,10 @@
+ 1. chrome 在device 上看不到AP ==> build 選項勿加入--release，要使用debug 版本
+
+
+ 2. chrome 在device 上看不到source map , 在package.json 加入以下設定
+    
+    "config": {
+        "ionic_bundler": "webpack",
+        "ionic_source_map_type": "#inline-source-map"
+    },
+    
