@@ -21,7 +21,7 @@
     </ion-item-group>
 
     <ion-item-group>
-      <ion-item-divider color="light"><img src="assets/img/inxMapp.png" width="25px">MAPP
+      <ion-item-divider color="light"><img src="assets/img/inxMapp.png" width="25px" item-start>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MAPP
         <button ion-button item-right (click)="openMenu(2)"><ion-icon name="add"></ion-icon></button></ion-item-divider>
         <alarmActionSetting *ngFor="let alarmActionSetting of alarmActionSettings |filter:{settingType: 'AP'};" [alarmActionSetting]="alarmActionSetting" [accountId]="accountId" (deleteClick)="doDeleteS($event)" ></alarmActionSetting>  
         <alarmActionSetting *ngFor="let alarmActionSetting of alarmActionSettings |filter:{settingType: 'AG'};" [alarmActionSetting]="alarmActionSetting" [accountId]="accountId" (deleteClick)="doDeleteS($event)" ></alarmActionSetting>  

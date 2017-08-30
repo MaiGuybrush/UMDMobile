@@ -1,11 +1,22 @@
 <ion-card>
-  <ion-card-header>
-    {{msg.description}}
-  </ion-card-header>
-    <ion-item><p>Alarm ID:  {{msg.alarmID}}</p></ion-item>
-    <ion-item><p>Alarm 分類:  {{msg.alarmType}}</p></ion-item>
-    <ion-item><p>ALARM DATE:  {{msg.occurDT | date:'yyyy/MM/dd H:mm'}}</p></ion-item>
-    <ion-card-content padding>
-    Message: {{msg.alarmMessage}}
-  </ion-card-content>
+    <ion-item text-wrap>
+      <h2>Alarm ID:</h2>
+      <p>{{msg.alarmID}}</p>
+    </ion-item>
+    <ion-item text-wrap>
+        <h2>Alarm Type:</h2>
+        <p>{{msg.alarmType}}</p>
+    </ion-item>
+    <ion-item text-wrap>
+        <h2>ALARM Equipment:</h2>
+        <p>{{msg.eqptID}}</p>
+    </ion-item>
+    <ion-item text-wrap>
+        <h2>Alarm DATE:</h2>
+        <p>{{msg.occurDT | date:'yyyy/MM/dd H:mm:ss'}}</p>
+    </ion-item>
+    <ion-item text-wrap>
+        <h2>Message:</h2>
+        <p>{{msg.description}}</p>
+    </ion-item>
 </ion-card>

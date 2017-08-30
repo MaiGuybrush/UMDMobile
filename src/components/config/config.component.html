@@ -11,6 +11,6 @@
    </ion-item> -->
     <ion-item>
     <ion-label> 顯示筆數</ion-label>
-    <ion-input type="number" [(ngModel)]="config.pageSize" placeholder="Number Input"></ion-input>
-    <button ion-button icon-only clear item-right (click)="triggerClick()"><ion-icon name="send"color="blue2" ></ion-icon></button>
+    <ion-input type="number" [(ngModel)]="config.pageSize" placeholder="Number Input" (input)="triggerClick()"></ion-input>
+    <!-- <button ion-button icon-only clear item-right (click)="triggerClick()"><ion-icon name="send"color="blue2" ></ion-icon></button> -->
    </ion-item>

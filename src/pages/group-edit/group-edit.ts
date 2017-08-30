@@ -87,7 +87,7 @@ export class GroupEditPage {
           this.GroupProvider.updateGroup(this.group.groupId,this.groupName,this.description,this.dempStr,this.nempStr,
                                          this.accountProvider.getInxAccount().empNo).subscribe(
                                            m => {
-                                             this.navCtrl.pop();
+                                            this.navCtrl.setRoot(GroupsPage);
                                             }
                                            );
       }else

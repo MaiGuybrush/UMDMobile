@@ -8,7 +8,7 @@ import { MessageCategoryComponent, CategoryMethod } from '../../components/messa
 import { MessagesPage } from '../messages/messages';
 import { AuthTestPage } from '../auth-test/auth-test';
 import { Subscription } from 'rxjs/Subscription';
-import { LoadingController, Loading } from 'ionic-angular';
+// import { LoadingController, Loading } from 'ionic-angular';
 import { CategorizedSummary } from '../../models/categorized-summary'
 
 /*
@@ -26,14 +26,14 @@ import { CategorizedSummary } from '../../models/categorized-summary'
 export class CategorizedMessagesPage {
   CategoryMethod = CategoryMethod
   activeMenu : string = "menu1";
-  loader: Loading;
+  // loader: Loading;
   category : CategoryMethod = CategoryMethod.ByAlarmType;
   // messages : Message[] = [];
   categorizedSummary: CategorizedSummary[]
   subscription : Subscription;
   // categorizedMessage : CategorizedMessages[]
   constructor(private ref: ChangeDetectorRef, public navCtrl: NavController, public navParams: NavParams
-    , public loading: LoadingController, public menu: MenuController, public provider: MessageProvider) 
+    , public menu: MenuController, public provider: MessageProvider) 
   {
 
   }
@@ -124,8 +124,8 @@ export class CategorizedMessagesPage {
 
   loadByCategory()
   {
-    this.loader = this.loading.create();
-    this.loader.present();
+    // this.loader = this.loading.create();
+    // this.loader.present();
     var me = this;
     this.provider.getUnreadMessageCount(this.getCategoryField()).subscribe(
       m => {
@@ -133,11 +133,11 @@ export class CategorizedMessagesPage {
       }, 
       e => {
         console.log("loadByCategory failed!" + JSON.stringify(e))
-        me.loader.dismiss();
+        // me.loader.dismiss();
       }
       , 
       () => {
-        me.loader.dismiss();
+        // me.loader.dismiss();
       }
     );
 

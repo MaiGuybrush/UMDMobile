@@ -12,8 +12,8 @@
              </button>
           </ion-item-options>
     </ion-item-sliding>-->
-    <ion-item-sliding>
-          <ion-item (tap)="editClick.emit(group)" (press)="deleteClick.emit(group)">
+    <!-- <ion-item-sliding> -->
+          <ion-item text-wrap (tap)="editClick.emit(group)" (press)="deleteClick.emit(group)">
              <ion-label>
                 <h2>{{group.groupName}}</h2>
                 <p>{{group.description}}</p>
@@ -22,4 +22,4 @@
               <!-- <ion-item-options>
     <button ion-button expandable (click)="deleteClick.emit(group)">Delete</button>
   </ion-item-options> -->
-    </ion-item-sliding>
+    <!-- </ion-item-sliding> -->

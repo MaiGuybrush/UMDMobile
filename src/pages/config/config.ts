@@ -44,7 +44,7 @@ export class ConfigPage {
 
   updateConfig(config:Config)
   {
-    this.configProvider.updateConfig(config).subscribe()
+    if (config.pageSize) this.configProvider.updateConfig(config).subscribe();
   }
   
 
