@@ -58,7 +58,7 @@ export class MessagesPage {
 
   ionViewDidEnter()
   {
-    console.log('ionViewDidEnter CategorizedMessagePage');
+    console.log('ionViewDidEnter MessagesPage');
     this.subscription = this.messageProvider.getMessageNotifier().subscribe(m => {
       if (m.readCount > 0) //>0 表示不是新訊息
       {

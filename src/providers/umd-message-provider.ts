@@ -281,12 +281,11 @@ export class UmdMessageProvider implements MessageProvider {
 
   updateReadCount(id: string, employeeName: string) : Observable<any>
   {
-    var me = this;
     var theId = id;
     return Observable.create(server => {
       let sql = `UPDATE message SET readcount = readcount + 1 AND readnamelist = readnamelist || ? || ',' WHERE id = ?`;
       return Observable.fromPromise(this.db.getDB().executeSql(sql, [employeeName, id])).subscribe( m => {
-        me.getMessage(theId).subscribe(m => 
+        this.getMessage(theId).subscribe(m => 
           UmdMessageProvider.messageObserver.next(m)
         )
       })
@@ -335,7 +334,10 @@ export class UmdMessageProvider implements MessageProvider {
     .map( 
       m => {
         message.rowid = m.insertId;
-        UmdMessageProvider.messageObserver.next(message);
+        if(UmdMessageProvider.messageObserver)
+        {
+          UmdMessageProvider.messageObserver.next(message);
+        }
         return message;
       }
     );

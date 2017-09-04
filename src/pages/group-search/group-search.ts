@@ -45,10 +45,10 @@ export class GroupSearchPage {
         if (alarmAction.actionType == this.actionType) {this.filterGroupIDs.add(alarmAction.actionValue);}
       });
     }
-    var me = this;
+//    var me = this;
     this.pattern ="";
     this.getGroups(this.accountProvider.getInxAccount().empNo, this.pattern).subscribe({
-        next: m => me.groups = m,
+        next: m => this.groups = m,
         error: (result) => console.log(result)
     });    
     // this.pattern ="";
@@ -91,8 +91,8 @@ export class GroupSearchPage {
 
   onInput($event)
   {
-    var me = this;
-    this.getGroups(this.accountProvider.getInxAccount().empNo, this.pattern).subscribe( m => me.groups = m);    
+//    var me = this;
+    this.getGroups(this.accountProvider.getInxAccount().empNo, this.pattern).subscribe( m => this.groups = m);    
   }
 
   onCancel()

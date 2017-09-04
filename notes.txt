@@ -1,5 +1,6 @@
 
 emulator -avd Nexus_5X_API_23
+emulator -avd API_25_7.1
 
 adb install -r D:\Projects\ionic\UmdMobile\platforms\android\build\outputs\apk\android-release.apk
 adb shell am start -n com.inx.umdmobile/com.inx.umdmobile.MainActivity

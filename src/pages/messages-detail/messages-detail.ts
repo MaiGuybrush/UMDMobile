@@ -18,10 +18,10 @@ export class MessagesDetailPage {
   }
 
   ionViewDidLoad() {
-    var me = this;
+//    var me = this;
     this.messageProvider.setMessageRead([this.msg]).subscribe(
       m => {
-        me.msg.read = true; 
+        this.msg.read = true; 
         this.pushProvider.pushReadNotification(this.msg, this.accountProvider.getInxAccount().name)
         .subscribe(
           m => console.log("pushReadNotification successful!"),

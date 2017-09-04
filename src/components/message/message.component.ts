@@ -33,10 +33,9 @@ export class MessageComponent
     
     archiveMessage(): void
     {
-      var me = this;
       this.provider.archive(this.msg).subscribe(
         m => {
-          me.msg.archived = true;
+          this.msg.archived = true;
         },
         e => {
           console.log("archiveMessage error, e=/" + JSON.stringify(e) + "/.")
@@ -46,10 +45,9 @@ export class MessageComponent
 
     restoreMessage(): void
     {
-      var me = this;
       this.provider.restore(this.msg).subscribe(
         m => {
-          me.msg.archived = false;
+          this.msg.archived = false;
         },
         e => {
           console.log("restoreMessage error, e=/" + JSON.stringify(e) + "/.")

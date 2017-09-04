@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, NgZone } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import * as moment from 'moment'
 import { MenuController } from 'ionic-angular';
@@ -8,7 +8,6 @@ import { MessageCategoryComponent, CategoryMethod } from '../../components/messa
 import { MessagesPage } from '../messages/messages';
 import { AuthTestPage } from '../auth-test/auth-test';
 import { Subscription } from 'rxjs/Subscription';
-// import { LoadingController, Loading } from 'ionic-angular';
 import { CategorizedSummary } from '../../models/categorized-summary'
 
 /*
@@ -26,13 +25,12 @@ import { CategorizedSummary } from '../../models/categorized-summary'
 export class CategorizedMessagesPage {
   CategoryMethod = CategoryMethod
   activeMenu : string = "menu1";
-  // loader: Loading;
   category : CategoryMethod = CategoryMethod.ByAlarmType;
   // messages : Message[] = [];
-  categorizedSummary: CategorizedSummary[]
+  @Input() categorizedSummary: CategorizedSummary[]
   subscription : Subscription;
   // categorizedMessage : CategorizedMessages[]
-  constructor(private ref: ChangeDetectorRef, public navCtrl: NavController, public navParams: NavParams
+  constructor(public navCtrl: NavController, public navParams: NavParams, public zone: NgZone
     , public menu: MenuController, public provider: MessageProvider) 
   {
 
@@ -50,42 +48,36 @@ export class CategorizedMessagesPage {
     //   m => {
     //     this.messages = [].concat(m);
     //   });
-        var me = this;
     this.subscription = this.provider.getMessageNotifier().subscribe(m => {
       if (m.readCount > 0) //>0 表示不是新訊息
       {
         return;
       }
-      // me.loader = me.loading.create();
-      // me.loader.present();
-
-      let found = false;
-      for (let i = 0; i < me.categorizedSummary.length; i++) {
-        let msg = me.categorizedSummary[i];
-        if (msg.groupItem == m[me.getCategoryField()])
+      this.zone.run(() => {
+        let found = false;
+        for (let i = 0; i < this.categorizedSummary.length; i++) {
+          let msg = this.categorizedSummary[i];
+          if (msg.groupItem == m[this.getCategoryField()])
+          {
+            msg.unreadCount ++;
+            found = true;
+            this.categorizedSummary.splice(i, 1);
+            this.categorizedSummary.unshift(msg)
+            this.categorizedSummary = [].concat(this.categorizedSummary)
+            break;
+          } 
+        }
+        if (!found)
         {
-          msg.unreadCount ++;
-          found = true;
-          me.categorizedSummary.splice(i, 1);
-          me.categorizedSummary.unshift(msg)
-          me.categorizedSummary = [].concat(me.categorizedSummary)
-          break;
-        } 
-      }
-      if (!found)
-      {
-        me.categorizedSummary.unshift({
-          groupItem: m[me.getCategoryField()], 
-          unreadCount: 1,
-          lastestMessageDT: moment(m.occurDT).format('YYYY-MM-DD HH:mm:ss.SSSSSS')
-        });
-        me.categorizedSummary = [].concat(me.categorizedSummary)
-      }
+          this.categorizedSummary.unshift({
+            groupItem: m[this.getCategoryField()], 
+            unreadCount: 1,
+            lastestMessageDT: moment(m.occurDT).format('YYYY-MM-DD HH:mm:ss.SSSSSS')
+          });
+          this.categorizedSummary = [].concat(this.categorizedSummary)
+        }
+      });
 
-      //me.categorizedSummary = [].concat(me.categorizedSummary);
-      // me.loader.dismiss();
-      // me.messages.push(m);
-      // me.messages = [].concat(me.messages);
     });
 
   }
@@ -124,20 +116,15 @@ export class CategorizedMessagesPage {
 
   loadByCategory()
   {
-    // this.loader = this.loading.create();
-    // this.loader.present();
-    var me = this;
     this.provider.getUnreadMessageCount(this.getCategoryField()).subscribe(
       m => {
-        me.categorizedSummary = m;
+        this.categorizedSummary = m;
       }, 
       e => {
         console.log("loadByCategory failed!" + JSON.stringify(e))
-        // me.loader.dismiss();
       }
       , 
       () => {
-        // me.loader.dismiss();
       }
     );
 
