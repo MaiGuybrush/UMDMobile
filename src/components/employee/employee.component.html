@@ -2,7 +2,7 @@
         <ion-icon [name]="!checked ? '' : 'checkmark'" item-left></ion-icon>
         <ion-label>
             <h2>{{employee.name}}/{{employee.adId}}/{{employee.empId}}</h2>
-            <p>{{employee.deptFullName}}</p>
+            <p>{{!employee.deptFullName ? employee.deptTxt : employee.deptFullName}}</p>
         </ion-label>
         <!--<ion-label>{{employee.empId}}</ion-label>
         <ion-label>{{employee.name}}</ion-label>

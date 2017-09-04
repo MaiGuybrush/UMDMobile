@@ -79,6 +79,11 @@ export class GroupEditPage {
 
   done()
   {
+    let loader = this.loading.create({
+      content: 'Processing...',
+    });
+
+   loader.present();
       this.nemployees.forEach(employee => {
             this.nempStr.push(employee.empId);    
       });
@@ -87,6 +92,7 @@ export class GroupEditPage {
           this.GroupProvider.updateGroup(this.group.groupId,this.groupName,this.description,this.dempStr,this.nempStr,
                                          this.accountProvider.getInxAccount().empNo).subscribe(
                                            m => {
+                                            loader.dismiss();
                                             this.navCtrl.setRoot(GroupsPage);
                                             }
                                            );
@@ -95,6 +101,7 @@ export class GroupEditPage {
           this.GroupProvider.addGroup(this.groupName,this.description,this.nempStr,
                                       this.accountProvider.getInxAccount().empNo).subscribe(                                           
                                            m => {
+                                             loader.dismiss();
                                              this.navCtrl.setRoot(GroupsPage);
                                             });
       }

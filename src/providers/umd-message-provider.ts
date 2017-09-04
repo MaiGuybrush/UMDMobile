@@ -26,7 +26,7 @@ export class UmdMessageProvider implements MessageProvider {
   static schemaVersion: number = 2;
   items = [];
   message: Message[]=[];
-  static pageSize = 8;
+  // static pageSize = 8;
   private static messageObserver:any; 
 
   public static messageNotifier: Observable<Message>
@@ -156,9 +156,10 @@ export class UmdMessageProvider implements MessageProvider {
  
 
    private loadMessage(condition: string, queryPageNo: number): Observable<Message[]>{
-    this.configProvider.loadConfig().subscribe(m =>{UmdMessageProvider.pageSize = m.pageSize});
+    let pageSize = this.configProvider.getConfig().pageSize;
+    // this.configProvider.loadConfig().subscribe(m =>{UmdMessageProvider.pageSize = m.pageSize});
     // id text,occurDT text, alarmID text,eqptID text,alarmMessage text,alarmType text,description text,read text
-    let limit = queryPageNo > 0 ? ` limit ${(queryPageNo - 1) * UmdMessageProvider.pageSize}, ${(queryPageNo) * UmdMessageProvider.pageSize}` : ``;
+    let limit = queryPageNo > 0 ? ` limit ${(queryPageNo - 1) * pageSize}, ${(queryPageNo) * pageSize}` : ``;
     //  console.log("limit: "+ limit);
     let output = Observable.create( observer => {
         
@@ -248,7 +249,7 @@ export class UmdMessageProvider implements MessageProvider {
      }
      if (pattern)
      {
-        condition += ` AND ( alarmMessage LIKE '%${pattern}%' OR description LIKE '%${pattern}%' ) `;
+        condition += ` AND ( alarmMessage LIKE '%${pattern}%' OR alarmID LIKE '%${pattern}%' ) `;
      }
      return condition;
   }
