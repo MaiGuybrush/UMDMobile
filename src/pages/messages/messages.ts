@@ -39,10 +39,12 @@ export class MessagesPage {
     //   content: '正在載入訊息..',
     // });
 
-    this.searching = true;
-    if (this.pattern === undefined) {
+
+    if (!this.pattern) {
+              this.searching = true;
               this.queryPage =1;
               this.queryMessageByPage().subscribe(m => {
+                  this.searching = false;
                   this.appendMessage(m);
               });; 
         // loader.dismiss();
@@ -50,7 +52,7 @@ export class MessagesPage {
 
     this.searchControl.valueChanges.debounceTime(700).subscribe(search => {
             this.searching = false;
-            if (search === undefined ) this.pattern = undefined;
+            if (!search) this.pattern = undefined;
               this.queryMessageByPage().subscribe(m => {
                   this.appendMessage(m);
               });; 

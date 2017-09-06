@@ -47,6 +47,7 @@ export class GroupEditPage {
                     }
               );
           }else{
+            this.searching = false;
             // loader.dismiss();
           }
 
