@@ -7,6 +7,9 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
+    <div *ngIf="searching" class="spinner-container">
+        <ion-spinner></ion-spinner>
+    </div>
   <ion-list>
     <ion-item-group>
       <ion-item-divider color="light">群組資訊</ion-item-divider>

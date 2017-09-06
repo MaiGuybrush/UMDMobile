@@ -12,6 +12,11 @@
 </ion-header>
 
 <ion-content>
+
+  <div *ngIf="searching" class="spinner-container">
+        <ion-spinner></ion-spinner>
+  </div>
+  
   <ion-list>
     <ion-item-group>
       <ion-item-divider color="light"><ion-icon name="mail" color="yellow1" item-start></ion-icon>MAIL<button ion-button item-right (click)="openMenu(1)"><ion-icon name="add"></ion-icon> </button></ion-item-divider>

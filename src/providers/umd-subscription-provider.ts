@@ -13,28 +13,28 @@ export class UmdSubscriptionProvider implements SubscriptionProvider {
   }
 
 
-  getSubscribed(empId:string, alarmtype?:string, pattern?: string) : Observable<Subscribe[]>
+  getSubscribed(empId:string, alarmtype?:string, pattern?: string, queryPage?: number) : Observable<Subscribe[]>
   {
      let headers = new Headers({ 'Content-Type': 'application/json' });
      let options = new RequestOptions({ headers: headers });
 
      let url = Api.getHttpUrl('GetSubscribedAlarmIdData');
 
-     let body = {"EmpId": `${empId}`, "AlarmType": `${alarmtype}`, "Keyword": `${pattern}`};
+     let body = {"EmpId": `${empId}`, "AlarmType": `${alarmtype}`, "Keyword": `${pattern}`, "QueryPage": queryPage };
      console.log('post start');
      return this.http.post(url, body, options).map(res => 
                       Api.toCamel(res.json()).alarmIdList
                     );
   }
 
-  getNotSubscribed(empId:string, alarmtype?:string, pattern?: string) : Observable<Subscribe[]>
+  getNotSubscribed(empId:string, alarmtype?:string, pattern?: string, queryPage?: number) : Observable<Subscribe[]>
   {
      let headers = new Headers({ 'Content-Type': 'application/json' });
      let options = new RequestOptions({ headers: headers });
 
      let url = Api.getHttpUrl('GetNotSubscribeAlarmIdData');
 
-     let body = {"EmpId": `${empId}`, "AlarmType": `${alarmtype}`, "Keyword": `${pattern}`};
+     let body = {"EmpId": `${empId}`, "AlarmType": `${alarmtype}`, "Keyword": `${pattern}`, "QueryPage": queryPage };
      console.log('post start');
      return this.http.post(url, body, options).map(res => 
                       Api.toCamel(res.json()).alarmIdList

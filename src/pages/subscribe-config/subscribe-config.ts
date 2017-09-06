@@ -35,6 +35,7 @@ export class SubscribeConfigPage {
   accountId: string;
   actionType: number;
   alarmIds: string[]=[];
+  searching: boolean = false;
   constructor(public navCtrl: NavController, public navParams: NavParams, public events: Events, public platform: Platform,
               public provider: AlarmProvider, public subscriptionProvider: SubscriptionProvider, public loading: LoadingController, 
               public accountProvider: AccountProvider, public actionsheetCtrl: ActionSheetController) {
@@ -48,12 +49,14 @@ export class SubscribeConfigPage {
           this.accountId = this.accountProvider.getInxAccount().empNo;
           if (this.subscription)
           {
-             let loader = this.loading.create({content: 'Loading...'});
-             loader.present();
+            //  let loader = this.loading.create({content: 'Loading...'});
+            //  loader.present();
+             this.searching = true;
              this.provider.getAlarmActionSetting(this.subscription.alarmId).subscribe(
                  res => {
+                   this.searching = false;
                    this.alarmActionSettings = res
-                   if(res) loader.dismiss();
+                  //  if(res) loader.dismiss();
                   }
              ); 
           }

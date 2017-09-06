@@ -66,9 +66,9 @@ export class DepartmentSelectPage {
             this.searching = false;
             if (search.length > 0)
             {
-              var me = this;
+              // var me = this;
               this.queryPage =1;
-              this.getDepartments().subscribe( m => me.departments = m);       
+              this.getDepartments().subscribe( m => this.departments = m);       
             }
             else
             {

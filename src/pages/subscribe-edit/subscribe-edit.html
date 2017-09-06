@@ -10,13 +10,27 @@
 </ion-header>
 
 <ion-content padding>
-   <ion-fab bottom right>
-    <button ion-fab color="danger" mini (click)="cancelConfirm()" ><ion-icon name="close"></ion-icon></button>
+
+  <div *ngIf="searching" class="spinner-container">
+      <ion-spinner></ion-spinner>
+  </div>
+
+  <ion-fab right middle>
+      <button ion-fab color="danger" mini (click)="cancelConfirm()" ><ion-icon name="close"></ion-icon></button>
   </ion-fab>
 
-<!--<ion-list>-->
+  <ion-fab bottom right>
+      <button ion-fab color="orange1" mini (click)="scrollToTop()" ><ion-icon name="arrow-up"></ion-icon></button>
+  </ion-fab>
+  
   <ion-grid text-center>
   <subscription *ngFor="let subscription of subscriptions" [subscription]="subscription" (editClick)="gotoEdit($event)" ></subscription>
   </ion-grid>
-<!--</ion-list>-->
+<ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+  <ion-infinite-scroll-content
+    loadingSpinner="bubbles"
+    loadingText="Loading more data...">
+  </ion-infinite-scroll-content>
+</ion-infinite-scroll>
+
 </ion-content>

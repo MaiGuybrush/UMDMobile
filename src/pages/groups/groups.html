@@ -3,11 +3,15 @@
     <ion-buttons end>
      <button ion-button (click)="gotoEdit()" >新增
      </button>
-     </ion-buttons><ion-title>Groups</ion-title>
+     </ion-buttons><ion-title>群組管理</ion-title>
   </ion-navbar>
 </ion-header>
 
+
 <ion-content>
+    <div *ngIf="searching" class="spinner-container">
+        <ion-spinner></ion-spinner>
+    </div>  
  <ion-list>
      <group-edit *ngFor="let group of groups" [group]="group" (editClick)="gotoEdit($event)" (deleteClick)="doDelete($event)">
      </group-edit>

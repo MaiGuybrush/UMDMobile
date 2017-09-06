@@ -81,10 +81,10 @@ export class PeopleSearchPage {
             this.searching = false;
             if (search.length > 0)
             {
-              var me = this;
+              // var me = this;
               this.queryPage =1;
               this.getEmployees().subscribe( m => {
-                me.employees = m
+                this.employees = m
               });    
             }
             else
@@ -97,14 +97,14 @@ export class PeopleSearchPage {
 
   getEmployees() : Observable<Employee[]>
   {
-    var me = this;
+    // var me = this;
     // let employees =this.provider.getEmployees(this.accountProvider.getInxAccount().empNo, this.pattern).subscribe(res => me.employees = res);
     let employees =this.provider.getEmployees(this.accountProvider.getInxAccount().empNo, this.pattern, this.queryPage);
     if (employees!= null) this.queryPage +=1;
     return employees.map((x, idx) => {
         let output : Employee[] = [];
         x.forEach(employee => {
-          if (!me.filterEmployeeIDs.has(employee.empId) && !me.filterEmployeeIDs.has(employee.adId) )
+          if (!this.filterEmployeeIDs.has(employee.empId) && !this.filterEmployeeIDs.has(employee.adId) )
           {
             output.push(employee);
           }      

@@ -3,9 +3,9 @@ import { CategorizedSummary } from '../../models/categorized-summary'
 
 export enum CategoryMethod
 {
-  ByAlarmID,
-  ByEquipment,
-  ByAlarmType
+  AlarmID,
+  Equipment,
+  AlarmType
 }
 
 

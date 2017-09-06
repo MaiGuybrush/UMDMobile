@@ -13,21 +13,24 @@ import { AlertController } from 'ionic-angular';
 })
 export class GroupsPage {
   groups : Group[];
+  searching: boolean = false;
   constructor(public navCtrl: NavController, public provider: GroupProvider, public alertCtrl:AlertController, 
               public loading: LoadingController,  public accountProvider: AccountProvider) {
 
   } 
 
   ionViewDidLoad() {
-     let loader = this.loading.create({
-        content: 'Loading...',
-      });
+    //  let loader = this.loading.create({
+    //     content: 'Loading...',
+    //   });
 
-     loader.present();
+    //  loader.present();
+      this.searching = true;
       this.provider.getGroups(this.accountProvider.getInxAccount().empNo,'').subscribe(
           value => {
+              this.searching = false;
               this.groups = value
-              loader.dismiss();
+              // loader.dismiss();
             },
           error => this.groups = [],
           () => console.log("done")

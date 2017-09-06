@@ -42,6 +42,9 @@
 
 
 <ion-content padding #content>
+  <div *ngIf="searching" class="spinner-container">
+        <ion-spinner></ion-spinner>
+  </div>
   <ion-list>
     <ion-item-divider color="light">請選擇Alarm類別</ion-item-divider>
     <ion-item *ngFor="let alarmtype of alarmtypes" (click)="gotoEdit(alarmtype)">{{alarmtype}}</ion-item>

@@ -25,7 +25,7 @@ import { CategorizedSummary } from '../../models/categorized-summary'
 export class CategorizedMessagesPage {
   CategoryMethod = CategoryMethod
   activeMenu : string = "menu1";
-  category : CategoryMethod = CategoryMethod.ByAlarmType;
+  category : CategoryMethod = CategoryMethod.AlarmType;
   // messages : Message[] = [];
   @Input() categorizedSummary: CategorizedSummary[]
   subscription : Subscription;
@@ -94,11 +94,11 @@ export class CategorizedMessagesPage {
   getCategoryField() {
     switch(this.category)
     {
-      case CategoryMethod.ByAlarmID:
+      case CategoryMethod.AlarmID:
           return 'alarmID';
-      case CategoryMethod.ByEquipment:
+      case CategoryMethod.Equipment:
           return 'eqptID';
-      case CategoryMethod.ByAlarmType:
+      case CategoryMethod.AlarmType:
           return 'alarmType';
     }
   }

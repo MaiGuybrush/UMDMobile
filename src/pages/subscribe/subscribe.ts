@@ -10,16 +10,19 @@ import { LoadingController } from 'ionic-angular';
 })
 export class SubscribePage {
   alarmtypes : string[] = [];
+  searching: boolean = false;
   constructor(public navCtrl: NavController, public provider: GeneralDataProvider, public loading: LoadingController) {
-      let loader = this.loading.create({
-        content: 'Loading...',
-      });
+    //   let loader = this.loading.create({
+    //     content: 'Loading...',
+    //   });
 
-     loader.present();
+    //  loader.present();
+      this.searching = true;
       this.provider.getAlarmTypes().subscribe(
         m => {
+          this.searching = false;
           this.alarmtypes = m
-          if(m) loader.dismiss();
+          // if(m) loader.dismiss();
           }
       );   
   }

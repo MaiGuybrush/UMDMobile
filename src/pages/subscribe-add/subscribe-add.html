@@ -18,13 +18,32 @@
 </ion-header>
 
 <ion-content padding>
-   <ion-searchbar
+  <ion-searchbar
+    [(ngModel)]="pattern"
+    [showCancelButton]="shouldShowCancel"
+    [formControl]="searchControl"
+    (keyup)="onSearchInput()">
+  </ion-searchbar>
+   <!-- <ion-searchbar
     [(ngModel)]="pattern"
     [showCancelButton]="shouldShowCancel"
     (ionInput)="onInput($event)"
     (ionCancel)="onCancel($event)">
-  </ion-searchbar>
+  </ion-searchbar> -->
+  <div *ngIf="searching" class="spinner-container">
+    <ion-spinner></ion-spinner>
+  </div>
+  
+  <ion-fab bottom right>
+      <button ion-fab color="orange1" mini (click)="scrollToTop()" ><ion-icon name="arrow-up"></ion-icon></button>
+    </ion-fab> 
   <ion-list>
       <nosubscription *ngFor="let nosubscription of nosubscriptions" [nosubscription]="nosubscription" ></nosubscription>
   </ion-list>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

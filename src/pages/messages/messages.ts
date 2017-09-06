@@ -35,16 +35,17 @@ export class MessagesPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad MessagePage');
-    let loader = this.loading.create({
-      content: '正在載入訊息..',
-    });
+    // let loader = this.loading.create({
+    //   content: '正在載入訊息..',
+    // });
 
+    this.searching = true;
     if (this.pattern === undefined) {
               this.queryPage =1;
               this.queryMessageByPage().subscribe(m => {
                   this.appendMessage(m);
               });; 
-        loader.dismiss();
+        // loader.dismiss();
     }
 
     this.searchControl.valueChanges.debounceTime(700).subscribe(search => {
@@ -98,11 +99,11 @@ export class MessagesPage {
   {
     switch(this.categoryMethod)
     {
-    case CategoryMethod.ByAlarmType:
+    case CategoryMethod.AlarmType:
         return this.messageProvider.getMessages(this.queryPage++, this.categoryValue, undefined, undefined, this.pattern);
-    case CategoryMethod.ByEquipment:
+    case CategoryMethod.Equipment:
         return this.messageProvider.getMessages(this.queryPage++, undefined, this.categoryValue, undefined, this.pattern);
-    case CategoryMethod.ByAlarmID:
+    case CategoryMethod.AlarmID:
         return this.messageProvider.getMessages(this.queryPage++, undefined, undefined, this.categoryValue, this.pattern);
     } 
   }
@@ -134,7 +135,7 @@ export class MessagesPage {
   {
        let today = new Date(Date.now());
         if (msg.occurDT.getMonth() === today.getMonth() && msg.occurDT.getDate() === today.getDate()){
-            this.showDate ='Today';
+            this.showDate ='今天';
         }else{
             this.showDate = msg.occurDT.getFullYear() + "/" + (Number(msg.occurDT.getMonth()) + 1).toString()  + "/" + msg.occurDT.getDate() ;
         }

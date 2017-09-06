@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { SubscribeAddPage } from '../subscribe-add/subscribe-add';
 import { SubscriptionProvider } from '../../providers/subscription-provider'
@@ -8,6 +8,8 @@ import { SubscribeConfigPage } from '../subscribe-config/subscribe-config';
 import { AccountProvider } from '../../providers/account-provider';
 import { AlertController } from 'ionic-angular';
 import { LoadingController } from 'ionic-angular';
+import { Observable } from 'rxjs/Rx'
+import { Content } from 'ionic-angular';
 
 
 /*
@@ -21,28 +23,45 @@ import { LoadingController } from 'ionic-angular';
   templateUrl: 'subscribe-edit.html'
 })
 export class SubscribeEditPage {
-
+@ViewChild(Content) content: Content;
 alarmtype: string;
 subscriptions: Subscribe[] = [];
 alarmIds: string[]=[];
 isSuccess : boolean;
 subscribeCancelResult : SubscribeCancelResult;
+queryPage: number;
+searching: boolean = false;
   constructor(public navCtrl: NavController, public navParams: NavParams, public provider: SubscriptionProvider,
               public alertCtrl:AlertController, public loading: LoadingController, public accountProvider: AccountProvider) {
   }
    
   ionViewDidLoad() {
-    let loader = this.loading.create({content: 'Loading...'});
-    loader.present();
-    this.alarmtype = this.navParams.get('alarmtype');
-    this.provider.getSubscribed(this.accountProvider.getInxAccount().empNo,this.alarmtype,'').subscribe(
-         res => {
-           this.subscriptions = res
-           loader.dismiss();
-         }
-    );   
-
     console.log('ionViewDidLoad SubscribeEditPage');
+    // let loader = this.loading.create({content: 'Loading...'});
+    // loader.present();
+    this.alarmtype = this.navParams.get('alarmtype');
+    // if (search.length > 0)
+    // {
+      this.queryPage =1;
+      this.searching = true;
+      this.getSubscribed().subscribe( m => {
+           this.searching = false;
+           this.subscriptions = m;
+         });
+    // this.provider.getSubscribed(this.accountProvider.getInxAccount().empNo,this.alarmtype,'',).subscribe(
+    //      res => {
+    //        this.subscriptions = res
+    //        loader.dismiss();
+    //      }
+    // );   
+
+  }
+
+  getSubscribed() : Observable<Subscribe[]>
+  {
+    let subs = this.provider.getSubscribed(this.accountProvider.getInxAccount().empNo,this.alarmtype,'',this.queryPage)
+    if (subs!= null) this.queryPage +=1;
+    return subs;
   }
 
   
@@ -128,6 +147,22 @@ subscribeCancelResult : SubscribeCancelResult;
   {
         let alert = this.alertCtrl.create({ title: '訊息', subTitle: subTitle,buttons: ['OK'] });
         alert.present();
+  }
+
+  doInfinite(infiniteScroll) {
+    console.log('Begin async operation');
+
+      setTimeout(() => {
+       this.getSubscribed().subscribe( m => {
+        this.subscriptions = this.subscriptions.concat(m);
+        console.log('Async operation has ended:' + this.subscriptions.length);
+         infiniteScroll.complete();
+       });
+      }, 500);
+  }
+
+  scrollToTop() {
+    this.content.scrollToTop();
   }
 
 }

@@ -23,28 +23,31 @@ export class GroupEditPage {
   isSuccess: boolean;
   groupName: string ="";
   description: string ="";
+  searching: boolean = false;
   constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController,
               public GroupProvider: GroupProvider, public loading: LoadingController, public accountProvider: AccountProvider) {
   }
 
   ionViewDidLoad() {
-     let loader = this.loading.create({
-        content: 'Loading...',
-      });
+    //  let loader = this.loading.create({
+    //     content: 'Loading...',
+    //   });
 
-     loader.present();
+    //  loader.present();
+          this.searching = true;
           this.group = this.navParams.get('group');
           if (this.group != null){
           this.groupName = this.group.groupName;
           this.description = this.group.description;
           this.GroupProvider.getGroupEmployee(this.group.groupId).subscribe(
               m => {
+                    this.searching = false;
                     this.oemployees = m
-                    if(m) loader.dismiss();
+                    // if(m) loader.dismiss();
                     }
               );
           }else{
-            loader.dismiss();
+            // loader.dismiss();
           }
 
     console.log('ionViewDidLoad SubscribeEditPage');
