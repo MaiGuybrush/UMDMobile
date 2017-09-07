@@ -57,6 +57,7 @@
     </feature>
     <engine name="android" spec="^6.2.3" />
     <engine name="ios" spec="^4.4.0" />
+    <plugin name="com.napolitano.cordova.plugin.intent" spec="~0.1.2" />
     <plugin name="cordova-plugin-ExtraInfo" spec="file:plugins\cordova-plugin-ExtraInfo" />
     <plugin name="cordova-plugin-console" spec="^1.0.5" />
     <plugin name="cordova-plugin-customurlscheme" spec="^4.3.0">

@@ -19,7 +19,7 @@
     [(ngModel)]="pattern"
     [showCancelButton]="shouldShowCancel"
     [formControl]="searchControl"
-    (keyup)="onSearchInput()">
+    (ionInput)="onSearchInput()">
   </ion-searchbar>
     <div *ngIf="searching" class="spinner-container">
         <ion-spinner></ion-spinner>
