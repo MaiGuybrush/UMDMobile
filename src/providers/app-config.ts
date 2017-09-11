@@ -7,6 +7,6 @@ export class AppConfig {
     
   }
 //  appID = "RVVLiNxw1mk"; //Prod
-  appID = "abYg88Aenft"; //Test
+  appID = "TyGgyCFQzEu"; //Test
     
 }

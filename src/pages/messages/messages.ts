@@ -135,14 +135,25 @@ export class MessagesPage {
 
   getMsgDate(msg: Message): string
   {
-       let today = new Date(Date.now());
-        if (msg.occurDT.getMonth() === today.getMonth() && msg.occurDT.getDate() === today.getDate()){
-            this.showDate ='今天';
-        }else{
-            this.showDate = msg.occurDT.getFullYear() + "/" + (Number(msg.occurDT.getMonth()) + 1).toString()  + "/" + msg.occurDT.getDate() ;
-        }
-        this.getShowDivider(msg);
-        return this.showDate;
+    let today = new Date(Date.now());
+    var occurtDt =new Date(msg.occurDT.toString().substr(0,10)+'T'+msg.occurDT.toString().substr(11,8)); 
+  
+      if (occurtDt.getMonth() === today.getMonth() && occurtDt.getDate() === today.getDate()){
+          this.showDate ='Today';
+      }else{
+          this.showDate = occurtDt.getFullYear() + "/" + (Number(occurtDt.getMonth()) + 1).toString()  + "/" + occurtDt.getDate() ;
+      }
+      this.getShowDivider(msg);
+      return this.showDate;
+
+      //  let today = new Date(Date.now());
+      //   if (msg.occurDT.getMonth() === today.getMonth() && msg.occurDT.getDate() === today.getDate()){
+      //       this.showDate ='今天';
+      //   }else{
+      //       this.showDate = msg.occurDT.getFullYear() + "/" + (Number(msg.occurDT.getMonth()) + 1).toString()  + "/" + msg.occurDT.getDate() ;
+      //   }
+      //   this.getShowDivider(msg);
+      //   return this.showDate;
   }
 
   getShowDivider(msg: Message)

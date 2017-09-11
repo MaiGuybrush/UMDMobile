@@ -164,7 +164,7 @@ export class UmdMessageProvider implements MessageProvider {
     //  console.log("limit: "+ limit);
     let output = Observable.create( observer => {
         
-      this.db.getDB().executeSql(`select rowid, id, uuid, readcount, readnamelist, occurDT, alarmID, eqptID, alarmMessage,  
+      this.db.getDB().executeSql(`select rowid, id, uuid, readcount, readnamelist,  datetime(occurDT) as occurDT , alarmID, eqptID, alarmMessage,  
                     description, alarmType, read, archived from message ${condition} order by occurDT desc ${limit}`, []).then(res => {
             // console.log("getallresultSet: "+JSON.stringify(res));
         let messages: Message[] = [];
@@ -182,7 +182,7 @@ export class UmdMessageProvider implements MessageProvider {
                 rowid: row.rowid,
                 readCount: row.readcount,
                 readNameList: row.readnamelist,
-                occurDT: new Date(row.occurDT),
+                occurDT: row.occurDT,
                 alarmID: row.alarmID,
                 description: row.description,
                 alarmMessage:row.alarmMessage,                             
