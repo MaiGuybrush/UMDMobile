@@ -34,6 +34,7 @@ export class UmdSubscriptionProvider implements SubscriptionProvider {
 
      let url = Api.getHttpUrl('GetNotSubscribeAlarmIdData');
 
+     console.log('pattern: ' +  `${pattern}` );
      let body = {"EmpId": `${empId}`, "AlarmType": `${alarmtype}`, "Keyword": `${pattern}`, "QueryPage": queryPage };
      console.log('post start');
      return this.http.post(url, body, options).map(res => 

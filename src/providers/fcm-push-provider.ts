@@ -65,8 +65,11 @@ export class FcmPushProvider implements PushProvider {
             m.eqptID = data.additionalData.eqptID;
             m.alarmMessage = data.message;
             m.alarmType = data.additionalData.alarmType;
-            m.description = data.additionalData.description;
+            // m.description = data.additionalData.description;
+            m.description = data.additionalData.description.toString().charAt(0) === '~' ? data.additionalData.description.toString().substring(1) : data.additionalData.description;
             m.uuid = data.additionalData.uuid;
+
+            console.log("data:", data);
 
             if(this.platform.is('ios')){        
                 FcmPushProvider.pushObject.finish().then(()=>{
@@ -124,6 +127,7 @@ export class FcmPushProvider implements PushProvider {
         };
         FcmPushProvider.pushObject = this.push.init(options);
         FcmPushProvider.pushObject.on('notification').subscribe((data: any) => {
+            console.log('notification:',data);
             me.pushNotificationHandler(data);
         });
         FcmPushProvider.pushObject.on('error').subscribe(error => console.error('Error with Push plugin err=' + error));

@@ -159,7 +159,8 @@ export class UmdMessageProvider implements MessageProvider {
     let pageSize = this.configProvider.getConfig().pageSize;
     // this.configProvider.loadConfig().subscribe(m =>{UmdMessageProvider.pageSize = m.pageSize});
     // id text,occurDT text, alarmID text,eqptID text,alarmMessage text,alarmType text,description text,read text
-    let limit = queryPageNo > 0 ? ` limit ${(queryPageNo - 1) * pageSize}, ${(queryPageNo) * pageSize}` : ``;
+    // let limit = queryPageNo > 0 ? ` limit ${(queryPageNo - 1) * pageSize}, ${(queryPageNo) * pageSize}` : ``;
+    let limit = queryPageNo > 0 ? ` limit ${(queryPageNo - 1) * pageSize}, ${pageSize}` : ``;
     //  console.log("limit: "+ limit);
     let output = Observable.create( observer => {
         
@@ -167,6 +168,8 @@ export class UmdMessageProvider implements MessageProvider {
                     description, alarmType, read, archived from message ${condition} order by occurDT desc ${limit}`, []).then(res => {
             // console.log("getallresultSet: "+JSON.stringify(res));
         let messages: Message[] = [];
+
+        // console.log("res.rows.length: "+ res.rows.length);
 
         if(res.rows.length > 0) {
                   //   this.items = [];
@@ -191,6 +194,9 @@ export class UmdMessageProvider implements MessageProvider {
               messages.push(message);
           }
         }
+
+        // console.log("messages.length: "+ messages.length);
+
         observer.next(messages);
         observer.complete()
       }).catch(e => {

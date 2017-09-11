@@ -47,6 +47,6 @@
   </div>
   <ion-list>
     <ion-item-divider color="light">請選擇Alarm類別</ion-item-divider>
-    <ion-item *ngFor="let alarmtype of alarmtypes" (click)="gotoEdit(alarmtype)">{{alarmtype}}</ion-item>
+    <ion-item *ngFor="let alarmtype of alarmtypes" (tap)="gotoEdit(alarmtype)">{{alarmtype}}</ion-item>
   </ion-list>
 </ion-content>

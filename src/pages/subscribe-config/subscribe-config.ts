@@ -191,7 +191,7 @@ export class SubscribeConfigPage {
         menuButtons = [
           {
             text: 'Mail-選擇群組',
-            icon: !this.platform.is('ios') ? 'trash' : null,
+            icon: !this.platform.is('ios') ? 'contacts' : null,
             handler: () => {
               this.actionType = 2;
               this.navCtrl.push(GroupSearchPage, {'callback': this.callbackFunction, 'actionType': this.actionType, 'pageTitle': "選擇群組", 'filterAlarmActions': this.alarmActions})
@@ -199,7 +199,7 @@ export class SubscribeConfigPage {
           },
           {
             text: 'Mail-選擇人員',
-            icon: !this.platform.is('ios') ? 'share' : null,
+            icon: !this.platform.is('ios') ? 'person' : null,
             handler: () => {
               this.actionType = 1;           
               this.navCtrl.push(PeopleSearchPage, {'callback': this.callbackFunction, 'actionType': this.actionType, 'pageTitle': "選擇人員", 'filterAlarmActions': this.alarmActions})
@@ -207,7 +207,7 @@ export class SubscribeConfigPage {
           },
           {
             text: 'Mail-選擇部門',
-            icon: !this.platform.is('ios') ? 'arrow-dropright-circle' : null,
+            icon: !this.platform.is('ios') ? 'people' : null,
             handler: () => {
               this.actionType = 1; 
               this.navCtrl.push(DepartmentSelectPage, {'callback': this.callbackFunction, 'actionType': this.actionType, 'pageTitle': "選擇部門", 'filterAlarmActions': this.alarmActions})
@@ -227,7 +227,7 @@ export class SubscribeConfigPage {
         menuButtons = [
           {
             text: 'MAPP-選擇群組',
-            icon: !this.platform.is('ios') ? 'trash' : null,
+            icon: !this.platform.is('ios') ? 'contacts' : null,
             handler: () => {
             this.actionType = 4;
               this.navCtrl.push(GroupSearchPage, {'callback': this.callbackFunction,'actionType': this.actionType, 'pageTitle': "選擇群組", 'filterAlarmActions': this.alarmActions})
@@ -235,7 +235,7 @@ export class SubscribeConfigPage {
           },
           {
             text: 'MAPP-選擇人員',
-            icon: !this.platform.is('ios') ? 'share' : null,
+            icon: !this.platform.is('ios') ? 'person' : null,
             handler: () => {
               this.actionType = 3; 
               this.navCtrl.push(PeopleSearchPage, {'callback': this.callbackFunction,'actionType': this.actionType, 'pageTitle': "選擇人員", 'filterAlarmActions': this.alarmActions})
@@ -243,7 +243,7 @@ export class SubscribeConfigPage {
           },
           {
             text: 'MAPP-輸入聊天室ID',
-            icon: !this.platform.is('ios') ? 'arrow-dropright-circle' : null,
+            icon: !this.platform.is('ios') ? 'chatbubbles' : null,
             handler: () => {
               this.actionType = 5; 
               this.navCtrl.push(SubscribeMappgroupPage, {'callback': this.callbackFunction, 'actionType': this.actionType } )

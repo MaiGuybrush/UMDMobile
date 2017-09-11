@@ -165,6 +165,7 @@ export class MessagesPage {
   appendMessage(message: Message[])
   {
     this.messages = [].concat(this.messages).concat(message)
+    // console.log("appendMessage:" , message );
   }
 
   doInfinite(infiniteScroll) {
@@ -172,8 +173,8 @@ export class MessagesPage {
 
       setTimeout(() => {
         this.queryMessageByPage().subscribe(m => {
-            console.log('Async operation has ended:' + this.messages.length);
             this.appendMessage(m);
+            console.log('Async operation has ended:' + this.messages.length);
             infiniteScroll.complete();
         });
       }, 500);

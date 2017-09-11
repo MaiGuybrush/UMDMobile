@@ -13,12 +13,30 @@
           </ion-item-options>
     </ion-item-sliding>-->
     <!-- <ion-item-sliding> -->
-          <ion-item text-wrap (click)="editClick.emit(group)" (press)="deleteClick.emit(group)">
+          <!-- <ion-item text-wrap (click)="editClick.emit(group)">
              <ion-label>
                 <h2>{{group.groupName}}</h2>
                 <p>{{group.description}}</p>
              </ion-label>
-          </ion-item>
+             <button ion-button color="light" item-right (click)="deleteClick.emit(group)"><ion-icon name="remove-circle"></ion-icon></button>
+          </ion-item> -->
+
+      <ion-row align-items-center>
+            <ion-col col-10>
+                <ion-item text-wrap (tap)="editClick.emit(group)">
+                  <ion-label>
+                     <h2>{{group.groupName}}</h2>
+                     <p>{{group.description}}</p>
+                  </ion-label>
+               </ion-item>
+            </ion-col>
+            <ion-col col-2>
+              <div text-center>
+                <button (click)="deleteClick.emit(group)" color="danger" ><ion-icon name="close" ></ion-icon></button>
+              </div>
+            </ion-col>
+      </ion-row>
+          
               <!-- <ion-item-options>
     <button ion-button expandable (click)="deleteClick.emit(group)">Delete</button>
   </ion-item-options> -->
