@@ -30,8 +30,19 @@
   </ion-fab> 
 
   <ion-list>
-      <message *ngFor="let m of messages" [msg]="m" [showDate]= "getMsgDate(m)" [navCtrl]="navCtrl" ></message>
+    <message *ngFor="let m of messages" [msg]="m" [showDate]="getMsgDate(m)" [navCtrl]="navCtrl" ></message>
   </ion-list>
+
+  <!-- <ion-list>
+      <message *ngFor="let m of messages; let idx = index" 
+      [msg]="m" [prevMsg]="(0 === idx)? undefined : messages[idx - 1]" [isNewMsg] = "isNewMsg"
+      [navCtrl]="navCtrl" ></message>
+  </ion-list> -->
+
+  <!-- <ion-list>
+    <message *ngFor="let m of messages;let prevMessage = (0 === index) ? undefined : messages[index - 1]" [msg]="m" 
+    [sameDate]= "(0 === index) ? false : isSameDate(m, prevMessage)" [navCtrl]="navCtrl" ></message>
+</ion-list> -->
   
   <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
     <ion-infinite-scroll-content

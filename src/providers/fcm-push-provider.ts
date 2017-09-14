@@ -11,6 +11,7 @@ import { AccountProvider } from './account-provider'
 import { EmployeeProvider } from './employee-provider'
 import { UniqueDeviceID } from '@ionic-native/unique-device-id';
 import { InxAccount } from '../models/inx-account'
+import * as moment from 'moment'
 declare var window;
 
 @Injectable()
@@ -68,6 +69,7 @@ export class FcmPushProvider implements PushProvider {
             // m.description = data.additionalData.description;
             m.description = data.additionalData.description.toString().charAt(0) === '~' ? data.additionalData.description.toString().substring(1) : data.additionalData.description;
             m.uuid = data.additionalData.uuid;
+
 
             console.log("data:", data);
 

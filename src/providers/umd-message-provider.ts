@@ -164,7 +164,7 @@ export class UmdMessageProvider implements MessageProvider {
     //  console.log("limit: "+ limit);
     let output = Observable.create( observer => {
         
-      this.db.getDB().executeSql(`select rowid, id, uuid, readcount, readnamelist,  datetime(occurDT) as occurDT , alarmID, eqptID, alarmMessage,  
+      this.db.getDB().executeSql(`select rowid, id, uuid, readcount, readnamelist,  occurDT , alarmID, eqptID, alarmMessage,  
                     description, alarmType, read, archived from message ${condition} order by occurDT desc ${limit}`, []).then(res => {
             // console.log("getallresultSet: "+JSON.stringify(res));
         let messages: Message[] = [];
@@ -182,7 +182,7 @@ export class UmdMessageProvider implements MessageProvider {
                 rowid: row.rowid,
                 readCount: row.readcount,
                 readNameList: row.readnamelist,
-                occurDT: row.occurDT,
+                occurDT: new Date(row.occurDT),
                 alarmID: row.alarmID,
                 description: row.description,
                 alarmMessage:row.alarmMessage,                             
@@ -191,6 +191,7 @@ export class UmdMessageProvider implements MessageProvider {
                 read: row.read == 1,
                 archived: row.archived
               }
+
               messages.push(message);
           }
         }
@@ -336,7 +337,7 @@ export class UmdMessageProvider implements MessageProvider {
     console.log("set id, alarmid,message,time="+ message.id + ":"+ message.alarmID + ":"+ message.alarmMessage+":"+message.occurDT);
 
     return Observable.fromPromise(this.db.getDB().executeSql(`insert into message(id, uuid, readcount, occurDT , alarmID ,eqptID ,alarmMessage ,alarmType ,description ,read) values (?,?,?,?,?,?,?,?,?,?)`
-      , [message.id, message.uuid, message.readCount, moment(message.occurDT).format("YYYY-MM-DD HH:mm:ss.SSSSSS"), message.alarmID, message.eqptID, message.alarmMessage
+      , [message.id, message.uuid, message.readCount, message.occurDT, message.alarmID, message.eqptID, message.alarmMessage
       , message.alarmType, message.description, message.read ? 1 : 0]))
     .map( 
       m => {
