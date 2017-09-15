@@ -11,7 +11,7 @@ import { AccountProvider } from './account-provider'
 import { EmployeeProvider } from './employee-provider'
 import { UniqueDeviceID } from '@ionic-native/unique-device-id';
 import { InxAccount } from '../models/inx-account'
-import * as moment from 'moment'
+// import * as moment from 'moment'
 declare var window;
 
 @Injectable()

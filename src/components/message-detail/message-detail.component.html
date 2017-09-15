@@ -1,7 +1,10 @@
 <ion-card>
+    <ion-item>
+        <span item-end><p>{{occurDT | date:'yyyy-MM-dd HH:mm:ss'}}</p></span>
+    </ion-item>
     <ion-item text-wrap>
-      <h2>Alarm ID:</h2>
-      <p>{{msg.alarmID}}</p>
+        <h2>Alarm ID:</h2>
+        <p>{{msg.alarmID}}</p>
     </ion-item>
     <ion-item text-wrap>
         <h2>Alarm Type:</h2>
@@ -10,10 +13,6 @@
     <ion-item text-wrap>
         <h2>ALARM Equipment:</h2>
         <p>{{msg.eqptID}}</p>
-    </ion-item>
-    <ion-item text-wrap>
-        <h2>Alarm DATE:</h2>
-        <p>{{occurDT | date:'yyyy-MM-dd HH:mm:ss'}}</p>
     </ion-item>
     <ion-item text-wrap>
         <h2>Message:</h2>

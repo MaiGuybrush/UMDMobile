@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+import { FormControl } from '@angular/forms'
 import { SubscribeAddPage } from '../subscribe-add/subscribe-add';
 import { SubscriptionProvider } from '../../providers/subscription-provider'
 import { Subscribe } from '../../models/subscribe';
@@ -29,37 +30,45 @@ subscriptions: Subscribe[] = [];
 alarmIds: string[]=[];
 isSuccess : boolean;
 subscribeCancelResult : SubscribeCancelResult;
+pattern : string;
 queryPage: number;
 searching: boolean = false;
+searchControl: FormControl;
   constructor(public navCtrl: NavController, public navParams: NavParams, public provider: SubscriptionProvider,
               public alertCtrl:AlertController, public loading: LoadingController, public accountProvider: AccountProvider) {
+       this.searchControl = new FormControl();
   }
    
   ionViewDidLoad() {
     console.log('ionViewDidLoad SubscribeEditPage');
-    // let loader = this.loading.create({content: 'Loading...'});
-    // loader.present();
+    this.pattern="";
     this.alarmtype = this.navParams.get('alarmtype');
-    // if (search.length > 0)
-    // {
-      this.queryPage =1;
-      this.searching = true;
-      this.getSubscribed().subscribe( m => {
-           this.searching = false;
-           this.subscriptions = m;
-         });
-    // this.provider.getSubscribed(this.accountProvider.getInxAccount().empNo,this.alarmtype,'',).subscribe(
-    //      res => {
-    //        this.subscriptions = res
-    //        loader.dismiss();
-    //      }
-    // );   
+      // this.queryPage =1;
+      // this.searching = true;
+      // this.getSubscribed().subscribe( m => {
+      //      this.searching = false;
+      //      this.subscriptions = m;
+      //    });
+    
+    this.searching = true;
+    this.searchControl.valueChanges.debounceTime(700).subscribe(search => {
+        this.queryPage =1;
+        this.getSubscribed().subscribe( m => {
+             this.searching = false;
+             this.subscriptions = m;
+           });
+    });    
+  }
 
+  onSearchInput()
+  {
+        this.searching = true;
+        this.queryPage =1;
   }
 
   getSubscribed() : Observable<Subscribe[]>
   {
-    let subs = this.provider.getSubscribed(this.accountProvider.getInxAccount().empNo,this.alarmtype,'',this.queryPage)
+    let subs = this.provider.getSubscribed(this.accountProvider.getInxAccount().empNo, this.alarmtype, this.pattern, this.queryPage)
     if (subs!= null) this.queryPage +=1;
     return subs;
   }

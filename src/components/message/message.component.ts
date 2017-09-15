@@ -22,11 +22,11 @@ export class MessageComponent
     navCtrl: NavController;
     // @Input()
     // isNewMsg: boolean;
-    @Input()
-    showDate: string;
+    // @Input()
+    // showDate: string;
     
 
-    sameDate: boolean;
+    // sameDate: boolean;
     // showDate: string;
     occurDT : Date;
     // read: boolean = false;
@@ -35,15 +35,15 @@ export class MessageComponent
     }
 
 
-    ngOnInit() {
-      this.sameDate = this.msg.sameDate;
-      this.occurDT = moment.utc(this.msg.occurDT).toDate();
-    //  this.getShowDate();
+    // ngOnInit() {
+    //   this.sameDate = this.msg.sameDate;
+    //   this.occurDT = moment.utc(this.msg.occurDT).toDate();
+    // //  this.getShowDate();
   
-      //  console.log ('occurDT:' + this.occurDT );
+    //   //  console.log ('occurDT:' + this.occurDT );
 
-      // this.sameDate = this.isSameDate(this.msg, this.prevMsg);
-    }
+    //   // this.sameDate = this.isSameDate(this.msg, this.prevMsg);
+    // }
 
     // getShowDate()
     // {

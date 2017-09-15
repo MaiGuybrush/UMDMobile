@@ -30,7 +30,11 @@
   </ion-fab> 
 
   <ion-list>
-    <message *ngFor="let m of messages" [msg]="m" [showDate]="getMsgDate(m)" [navCtrl]="navCtrl" ></message>
+    <!-- <message *ngFor="let m of messages" [msg]="m" [showDate]="getMsgDate(m)" [navCtrl]="navCtrl" ></message> -->
+    <ng-container *ngFor="let m of messages; let idx = index;">
+      <ion-item-divider *ngIf="idx == 0 || !isSameDate(messages[idx - 1].occurDT, m.occurDT)"><div class="date-divider">{{getDateString(m.occurDT)}}</div></ion-item-divider>        
+      <message [msg]="m" [navCtrl]="navCtrl" ></message>
+    </ng-container>
   </ion-list>
 
   <!-- <ion-list>

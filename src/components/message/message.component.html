@@ -1,5 +1,5 @@
 <ion-item-group >
-     <ion-item-divider *ngIf="!sameDate"><div class="date-divider">{{showDate}}</div></ion-item-divider>
+     <!-- <ion-item-divider *ngIf="!sameDate"><div class="date-divider">{{showDate}}</div></ion-item-divider> -->
       <ion-item-sliding *ngIf="!msg.archived">
         <ion-item (tap)="pushMsgDetailPage()" (onLongPress)="deleteMessage()">
             <ion-icon *ngIf="!msg.read" name="information-circle" color="red1" item-start></ion-icon>
@@ -8,7 +8,7 @@
                 <label class="alarm-item2">{{msg.alarmID}}</label>
                 <!-- <label class="alarm-item2">{{msg.alarmID}},已讀({{msg.readcount}})</label> -->
             </ion-label>
-            <div class="alarm-time" item-end>{{occurDT | date: 'shortTime'}}</div>
+            <div class="alarm-time" item-end>{{msg.occurDT | date: 'shortTime'}}</div>
             <!-- <div class="alarm-time" item-end>{{occurDT}}</div> -->
         </ion-item>
         <ion-item-options (ionSwipe)="archiveMessage()">

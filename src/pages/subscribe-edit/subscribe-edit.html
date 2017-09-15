@@ -11,9 +11,15 @@
 
 <ion-content padding>
 
-  <div *ngIf="searching" class="spinner-container">
-      <ion-spinner></ion-spinner>
-  </div>
+<ion-searchbar
+  [(ngModel)]="pattern"
+  [showCancelButton]="shouldShowCancel"
+  [formControl]="searchControl"
+  (keyup)="onSearchInput()">
+</ion-searchbar>
+<div *ngIf="searching" class="spinner-container">
+  <ion-spinner></ion-spinner>
+</div>
 
   <ion-fab right middle>
       <button ion-fab color="danger" mini (click)="cancelConfirm()" ><ion-icon name="close"></ion-icon></button>
