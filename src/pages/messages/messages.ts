@@ -1,4 +1,4 @@
-import { Component, ViewChild, NgZone } from '@angular/core';
+import { Component, ViewChild, ViewChildren, QueryList, NgZone } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { FormControl } from '@angular/forms'
 import { LoadingController } from 'ionic-angular';
@@ -18,7 +18,7 @@ import * as moment from 'moment'
 })
 export class MessagesPage {
   @ViewChild(Content) content: Content;
-  // @ViewChildren(MessageComponent) messageChildren: QueryList<MessageComponent>;
+  @ViewChildren(MessageComponent) messageChildren: QueryList<MessageComponent>;
   messages: Message[] = []
   queryPage: number;
   categoryMethod: CategoryMethod;
@@ -164,34 +164,34 @@ export class MessagesPage {
 
 
 
-  // getMsgDate(msg: Message): string
-  // {
-  //      let today = new Date(Date.now());
-  //       if (msg.occurDT.getMonth() === today.getMonth() && msg.occurDT.getDate() === today.getDate()){
-  //           this.showDate ='今天';
-  //       }else{
-  //           this.showDate = msg.occurDT.getFullYear() + "/" + (Number(msg.occurDT.getMonth()) + 1).toString()  + "/" + msg.occurDT.getDate() ;
-  //       }
-  //       this.getShowDivider(msg);
-  //       return this.showDate;
-  // }
+  getMsgDate(msg: Message): string
+  {
+       let today = new Date(Date.now());
+        if (msg.occurDT.getMonth() === today.getMonth() && msg.occurDT.getDate() === today.getDate()){
+            this.showDate ='今天';
+        }else{
+            this.showDate = msg.occurDT.getFullYear() + "/" + (Number(msg.occurDT.getMonth()) + 1).toString()  + "/" + msg.occurDT.getDate() ;
+        }
+        this.getShowDivider(msg);
+        return this.showDate;
+  }
 
-  // getShowDivider(msg: Message)
-  // {       
-  //       let existed:boolean = false;
-  //       this.dates.forEach(date => {
-  //           if (date === this.showDate) existed = true;
-  //       });
+  getShowDivider(msg: Message)
+  {       
+        let existed:boolean = false;
+        this.dates.forEach(date => {
+            if (date === this.showDate) existed = true;
+        });
         
-  //       if (!existed)
-  //       {
-  //          this.dates.push(this.showDate);
-  //          msg.sameDate = false;
-  //       }else
-  //       {
-  //          msg.sameDate = true;
-  //       }
-  // }
+        if (!existed)
+        {
+           this.dates.push(this.showDate);
+           msg.sameDate = false;
+        }else
+        {
+           msg.sameDate = true;
+        }
+  }
 
   appendMessage(message: Message[])
   {
