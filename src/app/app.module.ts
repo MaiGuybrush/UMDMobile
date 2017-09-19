@@ -8,6 +8,7 @@ import { BrowserModule } from '@angular/platform-browser'
 import { SQLite } from '@ionic-native/sqlite'
 import { StatusBar } from '@ionic-native/status-bar'
 import { SplashScreen } from '@ionic-native/splash-screen'
+import { Device } from '@ionic-native/Device'
 import { MyApp } from './app.component'
 import { InterceptedHttp } from './intercepted-http'
 import { PureHttp } from './pure-http'
@@ -76,6 +77,7 @@ import { MockSubscriptionProvider } from '../mocks/providers/mock-subscription-p
 import { MockAccountProvider } from '../mocks/providers/mock-account-provider'
 import { UniqueDeviceID } from '@ionic-native/unique-device-id';
 import { IonicStorageModule } from '@ionic/storage';
+
 
 import { DbProvider } from '../providers/db/db';
 @NgModule({
@@ -162,6 +164,7 @@ import { DbProvider } from '../providers/db/db';
             , Push
             , StatusBar
             , SQLite
+            , Device
             , SplashScreen
             , UniqueDeviceID
             , {

@@ -16,10 +16,10 @@ export class UmdEmployeeProvider implements EmployeeProvider {
      console.log('Hello Employee Provider');
   }
 
-  updateEmployeeInfo(empId:string, deviceToken: string,uuid:string ): Observable<boolean>{
+  updateEmployeeInfo(empId:string, deviceToken: string,uuid:string ,manufacturer:string,model:string,universallyId:string,version:string): Observable<boolean>{
       let headers = new Headers({ 'Content-Type': 'application/json' });
       let options = new RequestOptions({ headers: headers });
-
+      
       let url = Api.getHttpUrl('UpdateUserInfo');
 
       let platform = undefined;
@@ -33,12 +33,18 @@ export class UmdEmployeeProvider implements EmployeeProvider {
       }
       if (platform)
       {
+        console.log(`[Manufacturer] ${manufacturer}`);
        // let body = {"EmpId": `${empId}`,"DeviceToken": `${deviceToken}`,"Platform": `${platform}`,"UuId": `${uuid}`};
-        let body = {"EmpId": `${empId}`,"DeviceId": `${uuid}`,"DeviceToken": `${deviceToken}`,"Platform": `${platform}`};
+        let body = {"EmpId": `${empId}`,"DeviceId": `${uuid}`,"DeviceToken": `${deviceToken}`,"Platform": `${platform}`,"Manufacturer": `${manufacturer}`,"Model": `${ model.substr(0,32)}`,"Uuid": `${universallyId}`,"Version": `${version}`};
         console.log('post start');
         let response = this.http.post(url, body, options)
-        // response.subscribe(m => {}, e => {
-        //   console.log("updateEmployeeInfo error! => " + e)});
+         response.subscribe(m => {
+          console.log(`updateEmployeeInfo${JSON.stringify(m)}`);
+         }, e => {
+           console.log("updateEmployeeInfo error! => " + e)
+          },()=>{
+            console.log(`updateEmployeeInfo complete`);
+             });
         return response.map(res => 
                         Api.toCamel(res.json()).isSuccess
                     );

@@ -6,11 +6,13 @@ import { Observable } from 'rxjs/Rx'
 import { PureHttp } from '../app/pure-http'
 import { PushProvider } from './push-provider'
 import { Message } from '../models/message'
+import { DeviceInfo } from '../models/device-info'
 import { MessageProvider } from './message-provider'
 import { AccountProvider } from './account-provider'
 import { EmployeeProvider } from './employee-provider'
 import { UniqueDeviceID } from '@ionic-native/unique-device-id';
 import { InxAccount } from '../models/inx-account'
+import { Device } from '@ionic-native/Device'
 // import * as moment from 'moment'
 declare var window;
 
@@ -23,7 +25,8 @@ export class FcmPushProvider implements PushProvider {
     constructor(public platform: Platform, public pureHttp: PureHttp
         , public messageProvider: MessageProvider, public push: Push
         , public accountProvider: AccountProvider, public uniqueDeviceID:UniqueDeviceID
-        , public employeeProvider: EmployeeProvider) {
+        , public employeeProvider: EmployeeProvider
+        , public device : Device) {
 
     }
 
@@ -133,39 +136,49 @@ export class FcmPushProvider implements PushProvider {
             me.pushNotificationHandler(data);
         });
         FcmPushProvider.pushObject.on('error').subscribe(error => console.error('Error with Push plugin err=' + error));
+        
 
         return FcmPushProvider.pushObject.on('registration').subscribe(m => {
             var registrationInfo = m;
-            this.getUniqueDeviceID().subscribe( uuid => {
-                this.getUserInfo().subscribe(m => {
-                    var user = m;    
-                    if (registrationInfo && registrationInfo.registrationId) { 
-                        this.updateUserInfo(user, registrationInfo.registrationId, uuid).subscribe(m => {
-                        },
-                        e => {
+            this.getDeviceInfo().subscribe(d=>{                
+                console.log("updateDeviceInfo [" + JSON.stringify(d) + "]");  
+                
+                    this.getUniqueDeviceID().subscribe( uuid => {
+                        this.getUserInfo().subscribe(m => {
+                            var user = m;    
+                            if (registrationInfo && registrationInfo.registrationId) { 
+                                this.updateUserInfo(user, registrationInfo.registrationId, uuid,d.manufacturer,d.model,d.uuid,d.version).subscribe(m => {
+                                },
+                                e => {
+                                // this.loader.dismiss();
+                                console.log(`updateUserInfo fail, ${e}`);
+                                //this.alert("更新使用者資訊失敗", "請連絡開發小組(514-32628)。");
+                                });      
+                            } 
+                            else 
+                            {
+                            // this.loader.dismiss();
+                                console.log(`getRegistrationInfo fail, ${m.message}`);
+                            //this.alert("取得RegistrationID失敗", "請連絡開發小組(514-32628)。");
+                            }
+                        }, e =>
+                        {
                         // this.loader.dismiss();
-                        console.log(`updateUserInfo fail, ${e}`);
-                        //this.alert("更新使用者資訊失敗", "請連絡開發小組(514-32628)。");
-                        });      
-                    } 
-                    else 
-                    {
-                    // this.loader.dismiss();
-                        console.log(`getRegistrationInfo fail, ${m.message}`);
-                    //this.alert("取得RegistrationID失敗", "請連絡開發小組(514-32628)。");
+                            console.log(`get User Info fail, ${e}`);
+                        // this.alert("取得使用者資訊失敗", "請確認是否安裝INX App Store!");
+                        });
                     }
-                }, e =>
-                {
-                  // this.loader.dismiss();
-                    console.log(`get User Info fail, ${e}`);
-                   // this.alert("取得使用者資訊失敗", "請確認是否安裝INX App Store!");
-                });
-            }
-            , e => {
+                    , e => {
+                        // this.loader.dismiss();
+                        console.log(`getDeviceID fail, ${JSON.stringify(e)}`);
+                        //this.alert("取得DeviceID失敗", "請連絡開發小組(514-32628)。");
+                    });
+        }, e => {
                 // this.loader.dismiss();
-                console.log(`getDeviceID fail, ${JSON.stringify(e)}`);
-                //this.alert("取得DeviceID失敗", "請連絡開發小組(514-32628)。");
-            });
+                console.log(`updateDeviceInfo fail, ${e}`);
+                //this.alert("更新使用者資訊失敗", "請連絡開發小組(514-32628)。");
+                });   
+
         }, e =>
         {
         // this.loader.dismiss();
@@ -186,14 +199,14 @@ export class FcmPushProvider implements PushProvider {
         return Observable.fromPromise(this.push.hasPermission()).map(m => m.isEnabled);
     }
 
-    updateUserInfo(user: InxAccount, registrationId: string, uuid:string): Observable<any>
+    updateUserInfo(user: InxAccount, registrationId: string, uuid:string,manufacturer:string,model:string,  universallyId:string,version:string,): Observable<any>
     {
       //  this.loader.setContent("更新使用者資訊...");
         if (window.cordova)
         {          
           console.log("update user registrationId [" + `${registrationId}` + "].");
           console.log("update user uuid [" + `${uuid}` + "].");
-          return this.employeeProvider.updateEmployeeInfo(user.empNo, registrationId,uuid)
+          return this.employeeProvider.updateEmployeeInfo(user.empNo, registrationId,uuid,manufacturer,model,universallyId,version)
         }
         return Observable.from([true]);
     }
@@ -205,6 +218,37 @@ export class FcmPushProvider implements PushProvider {
         console.log("get user [" + `${m.comid}` + "] logged in.");      
         return m;
       });
+    }
+    getDeviceInfo(): Observable<any>
+    {
+        var d=new DeviceInfo;
+        var deviceInfoPromise = new Promise((resolve, reject) => {
+            if(this.device.platform)
+                {
+                    d.cordova=this.device.cordova
+                    d.isVirtual=this.device.isVirtual
+                    d.manufacturer=this.device.manufacturer
+                    d.model=this.device.model
+                    d.serial=this.device.serial
+                    d.uuid=this.device.uuid
+                    d.version=this.device.version
+                    console.log("Device Info [" + JSON.stringify(d) + "]");      
+                    resolve(d); // 實現
+
+                }
+                else{
+
+                    console.log("Device Info Fail [" + JSON.stringify(d) + "]");   
+                    reject(d); // 拒絕   
+                }
+          });
+           
+          return Observable.fromPromise(deviceInfoPromise);
+          
+           
+
+
+     
     }
   
   }
