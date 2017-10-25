@@ -24,6 +24,10 @@ export class InterceptedHttp extends Http {
       options = {headers: new Headers()};
     }
     options.headers.set('Authorization', `Bearer ${token}`);
+    if (!options.headers.get('Content-Type'))
+    {
+      options.headers.set('Content-Type', 'application/json');
+    }
     //return super.request(url, options).catch(this.catchAuthError(this));
     return super.post(url, body, options)
     .catch(initialError => {
