@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { SplashScreen } from '@ionic-native/splash-screen'
 import { Platform, AlertController } from "ionic-angular"
 import { LoadingController, Loading } from 'ionic-angular';
 import { PushProvider } from '../../providers/push-provider'
@@ -13,10 +14,9 @@ import { CategorizedMessagesPage } from '../categorized-messages/categorized-mes
 import { AuthTestPage } from '../auth-test/auth-test'
 import { UniqueDeviceID } from '@ionic-native/unique-device-id';
 import { AccountProvider } from '../../providers/account-provider'
-
 import { ConfigProvider } from '../../providers/config-provider';
-declare var window;
 
+declare var window;
 /**
  * Generated class for the InitPage page.
  *
@@ -37,7 +37,8 @@ export class InitPage {
   constructor(public platform: Platform, public navCtrl: NavController, public navParams: NavParams
               , public loading: LoadingController, public alertCtrl: AlertController, public accountProvider: AccountProvider
               , public employeeProvider: EmployeeProvider, public messageProvider: MessageProvider
-              , public pushProvider: PushProvider, public uniqueDeviceID:UniqueDeviceID, public configProvider: ConfigProvider) {
+              , public pushProvider: PushProvider, public uniqueDeviceID:UniqueDeviceID, public configProvider: ConfigProvider
+              , public splashScreen: SplashScreen) {
     this.test = 0;
   }
 
@@ -59,7 +60,12 @@ export class InitPage {
     //   this.test = this.test + 1
     // })
     this.initialize();
+    
   }
+
+  ionViewDidLeave() {
+    this.splashScreen.hide();
+  }    
 
   onClick()
   {
@@ -67,6 +73,7 @@ export class InitPage {
     this.accountProvider.getUserInfo().subscribe(m => {
       this.res = JSON.stringify(m)
     })
+    //this.initialize();
   }
   initialize()
   {
@@ -84,36 +91,27 @@ export class InitPage {
     this.platform.ready().then(() => { 
     //  this.loader = this.loading.create();
     //  this.loader.present();
-        //  this.pushProvider.hasPermission().subscribe( m => {          
-          this.configProvider.loadConfig().subscribe( m => {
-              this.pushProvider.pushInit();
-              //     console.log(`get registrationId = ${m.registrationId}`);
-                    this.initDB().subscribe(m => { 
-                        console.log("execute initDB subscribe..")
-                        this.messageProvider.deleteOverDurationsMessages(60).subscribe(
-                          m => {},
-                          e => {},
-                          () => {
-//                            this.loader.dismiss();
-                            this.navCtrl.setRoot(TabsPage);
-//                            this.navCtrl.setRoot(CategorizedMessagesPage);
-                            //this.navCtrl.setRoot(AuthTestPage);
-                        })
-                    },
-                    e => {
-                      // this.loader.dismiss();
-                      console.log(`initDB fail, ${e}`);
-                      this.alert("DB初始化失敗", "請連絡開發小組(514-32628)。");
-                    })
-            // }
-            // else
-            // {
-            //     console.log(`hasPermission fail`);
-            //     this.alert("取得push權限失敗", "請連絡開發小組(514-32628)。");
-            // }
-          // })            
-          })
-    
+        //  this.pushProvider.hasPermission().subscribe( m => {
+      
+      this.configProvider.loadConfig().subscribe( m => {
+        this.pushProvider.pushInit();
+     
+        this.initDB().subscribe(m => { 
+          console.log("execute initDB subscribe..")
+          this.messageProvider.deleteOverDurationsMessages(60).subscribe(
+            m => {},
+            e => {},
+            () => {
+              this.navCtrl.setRoot(TabsPage);
+            }
+          )
+        },
+        e => {
+          // this.loader.dismiss();
+          console.log(`initDB fail, ${JSON.stringify(e)}`);
+          this.alert("DB初始化失敗", "請連絡開發小組(514-32628)。");
+        })
+      })   
     });
 
   }
