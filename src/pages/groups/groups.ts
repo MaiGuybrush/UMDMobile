@@ -32,7 +32,15 @@ export class GroupsPage {
               this.groups = value
               // loader.dismiss();
             },
-          error => this.groups = [],
+          error => {
+            this.searching = false;
+            this.groups = [];
+            let alert = this.alertCtrl.create({
+              title: "錯誤",
+              message: JSON.stringify(error)
+            })
+            alert.present();
+          },
           () => console.log("done")
       );
     console.log('ionViewDidLoad SubscribeEditPage');
