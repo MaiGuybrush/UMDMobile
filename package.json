@@ -1,7 +1,7 @@
 {
   "name": "umd-mobile",
   "author": "Ionic Framework",
-    "version": "1.0.3",
+  "version": "1.0.3",
   "homepage": "http://ionicframework.com/",
   "private": true,
   "scripts": {
@@ -25,11 +25,11 @@
     "@angular/http": "^4.4.6",
     "@angular/platform-browser": "^4.4.6",
     "@angular/platform-browser-dynamic": "^4.4.6",
-    "@ionic-native/device": "^4.2.1",
     "@angular/platform-server": "^4.4.6",
     "@angular/router": "^4.4.6",
     "@ionic-native/app-version": "^4.3.2",
     "@ionic-native/core": "^4.3.2",
+    "@ionic-native/device": "^4.2.1",
     "@ionic-native/local-notifications": "^4.3.2",
     "@ionic-native/push": "^4.3.2",
     "@ionic-native/splash-screen": "^4.3.2",
