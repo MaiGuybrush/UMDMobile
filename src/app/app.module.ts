@@ -1,10 +1,10 @@
+import { BrowserModule } from '@angular/platform-browser'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, ErrorHandler } from '@angular/core'
 import { Push } from '@ionic-native/push'
 import { LocalNotifications } from '@ionic-native/local-notifications';
-import { HttpModule, Http } from '@angular/http'
+import { HttpModule, Http, XHRBackend, RequestOptions  } from '@angular/http'
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular'
-import { XHRBackend, RequestOptions } from '@angular/http'
-import { BrowserModule } from '@angular/platform-browser'
 import { SQLite } from '@ionic-native/sqlite'
 import { StatusBar } from '@ionic-native/status-bar'
 import { SplashScreen } from '@ionic-native/splash-screen'
@@ -77,6 +77,7 @@ import { MockSubscriptionProvider } from '../mocks/providers/mock-subscription-p
 import { MockAccountProvider } from '../mocks/providers/mock-account-provider'
 import { UniqueDeviceID } from '@ionic-native/unique-device-id';
 import { IonicStorageModule } from '@ionic/storage';
+import { AppVersion } from '@ionic-native/app-version';
 
 
 import { DbProvider } from '../providers/db/db';
@@ -123,6 +124,7 @@ import { DbProvider } from '../providers/db/db';
     IonicStorageModule.forRoot(),
     HttpModule,
     BrowserModule,
+    BrowserAnimationsModule,
     CategorizedMessagesPageModule
   ],
   bootstrap: [IonicApp],
@@ -167,6 +169,7 @@ import { DbProvider } from '../providers/db/db';
             , Device
             , SplashScreen
             , UniqueDeviceID
+            , AppVersion
             , {
                 provide: PureHttp,
                 useFactory: (backend: XHRBackend, options: RequestOptions) => {
