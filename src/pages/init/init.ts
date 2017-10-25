@@ -102,7 +102,9 @@ export class InitPage {
             m => {},
             e => {},
             () => {
-              this.navCtrl.setRoot(TabsPage);
+              this.messageProvider.loadKeptPush().subscribe(m =>{}, e => {}, () => {
+                this.navCtrl.setRoot(TabsPage);
+              })
             }
           )
         },
