@@ -14,11 +14,17 @@ export abstract class MessageProvider {
 
   abstract updateReadCount(id: string, employeeName: string) : Observable<any>
   
-  abstract setMessageRead(message:Message[]): Observable<boolean>
+  abstract updateMessageRead(message:Message[]): Observable<boolean>
 
+  abstract updateMessageArchive(message:Message[]): Observable<boolean>
+  
   abstract addMessage(message: Message): Observable<Message>
 
   abstract insertTestMessages()
+
+  abstract getDbName() : string
+
+  abstract loadKeptPush()
   
   abstract delete(key: number): Observable<any>
 
@@ -31,5 +37,7 @@ export abstract class MessageProvider {
   abstract init(): Observable<any>;
   
   abstract deleteOverDurationsMessages(duration: number)
+
+  abstract setAllMessagesRead(alarmType:string, eqptID:string, alarmID:string) : Observable<any>
 }
 

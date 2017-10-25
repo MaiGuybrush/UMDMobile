@@ -11,7 +11,7 @@ import { MESSAGES } from '../mocks/MESSAGES'
 import { Config } from '../models/config';
 import { DbProvider} from './db/db'
 import { ConfigProvider } from './config-provider';
-
+import { PushProvider} from './push-provider';
 
 /*
   Generated class for the Message provider.
@@ -30,8 +30,15 @@ export class UmdMessageProvider implements MessageProvider {
   private static messageObserver:any; 
 
   public static messageNotifier: Observable<Message>
-  constructor(public platform: Platform,public http: Http, public db: DbProvider, public configProvider: ConfigProvider) {
+  
+  constructor(public platform: Platform,public http: Http, public db: DbProvider
+    , public configProvider: ConfigProvider) {
 
+  }
+
+  public getDbName(): string
+  {
+    return UmdMessageProvider.dbName;
   }
 
   public init(): Observable<any> {
@@ -146,6 +153,8 @@ export class UmdMessageProvider implements MessageProvider {
           description text, read integer default 0, archived integer default 0)`, []);
         tx.executeSql(
           `CREATE TABLE IF NOT EXISTS schema_version (version integer)`, []);
+        tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS RECV_PUSH (pushdata TEXT)`, []);
       }))
   }
 
@@ -159,8 +168,8 @@ export class UmdMessageProvider implements MessageProvider {
     let pageSize = this.configProvider.getConfig().pageSize;
     // this.configProvider.loadConfig().subscribe(m =>{UmdMessageProvider.pageSize = m.pageSize});
     // id text,occurDT text, alarmID text,eqptID text,alarmMessage text,alarmType text,description text,read text
-    // let limit = queryPageNo > 0 ? ` limit ${(queryPageNo - 1) * pageSize}, ${(queryPageNo) * pageSize}` : ``;
-    let limit = queryPageNo > 0 ? ` limit ${(queryPageNo - 1) * pageSize}, ${pageSize}` : ``;
+    let limit = queryPageNo > 0 ? ` limit ${pageSize} offset ${(queryPageNo - 1) * pageSize}` : ``;
+
     //  console.log("limit: "+ limit);
     let output = Observable.create( observer => {
         
@@ -287,6 +296,56 @@ export class UmdMessageProvider implements MessageProvider {
     );    
   }
 
+  loadKeptPush(): Observable<any>
+  {
+    let sql = `SELECT rowid, pushdata from RECV_PUSH order by rowid desc limit 0, 1000`;
+    var jobObserver 
+    let output = Observable.create(observer => {
+      jobObserver = observer;
+    });
+
+    this.db.getDB().executeSql(sql, []).then(
+      res => 
+      {
+        if(res.rows.length > 0) {
+          Observable.range(0, res.rows.length).map(i => 
+          {
+            let row = res.rows.item(i);
+            let pushdata = JSON.parse(row.pushdata);
+            let message = new Message(pushdata);
+            message.keptPushRowid = row.rowid;
+            return this.addMessage(message);
+          }).concatAll().subscribe( m => {
+            console.log("load message from RECV_PUSH! msg - " + m.id + "," + m.occurDT + "," + m.alarmID);
+          },
+          e => {
+            jobObserver.next(false);            
+            jobObserver.complete();
+          },
+          () => {  //complete
+            let sql = `DELETE from RECV_PUSH`;
+            this.db.getDB().executeSql(sql, []).then(m => {
+              console.log("clear RECV_PUSH!");
+              jobObserver.next(true);
+              jobObserver.complete();
+            }).catch(e => {
+              console.log("clear RECV_PUSH error" + JSON.stringify(e));    
+              jobObserver.next(false);
+              jobObserver.complete();
+            });            
+          })
+        }
+        jobObserver.next(true);            
+        jobObserver.complete();      
+      }
+    ).catch(e => {
+      console.log("select from RECV_PUSH error - " + JSON.stringify(e));    
+      jobObserver.next(false);            
+      jobObserver.complete();
+    });    
+    return output;
+  }
+
   updateReadCount(id: string, employeeName: string) : Observable<any>
   {
     var theId = id;
@@ -334,14 +393,22 @@ export class UmdMessageProvider implements MessageProvider {
 
   addMessage(message: Message) : Observable<Message>
   {
-    console.log("set id, alarmid,message,time="+ message.id + ":"+ message.alarmID + ":"+ message.alarmMessage+":"+message.occurDT);
-
-    return Observable.fromPromise(this.db.getDB().executeSql(`insert into message(id, uuid, readcount, occurDT , alarmID ,eqptID ,alarmMessage ,alarmType ,description ,read) values (?,?,?,?,?,?,?,?,?,?)`
-      , [message.id, message.uuid, message.readCount, message.occurDT, message.alarmID, message.eqptID, message.alarmMessage
-      , message.alarmType, message.description, message.read ? 1 : 0]))
+    return Observable.fromPromise(this.db.getDB().transaction(tx => {
+      console.log("set id, alarmid,message,time="+ message.id + ":"+ message.alarmID + ":"+ message.alarmMessage+":"+message.occurDT);
+      tx.executeSql(`insert into message(id, uuid, readcount, occurDT , alarmID ,eqptID ,alarmMessage ,alarmType ,description ,read) values (?,?,?,?,?,?,?,?,?,?)`
+      , [message.id, message.uuid, message.readCount, message.occurDT.toISOString(), message.alarmID, message.eqptID, message.alarmMessage
+      , message.alarmType, message.description, message.read ? 1 : 0], 
+      (tx, resultSet) => {
+        message.rowid = resultSet.insertId;
+      });
+      if (message.keptPushRowid)
+      {
+        tx.executeSql(`delete from RECV_PUSH where rowid = ?`, [message.keptPushRowid])
+      }
+    }))
     .map( 
       m => {
-        message.rowid = m.insertId;
+//        message.rowid = m.insertId;
         if(UmdMessageProvider.messageObserver)
         {
           UmdMessageProvider.messageObserver.next(message);
@@ -351,16 +418,27 @@ export class UmdMessageProvider implements MessageProvider {
     );
   }
 
-  setMessageRead(messages: Message[]): Observable<any>
+  updateMessageRead(messages: Message[]): Observable<any>
   {
     let res = Observable.fromPromise(this.db.getDB().transaction(tx => {
         for (let i = 0; i < messages.length; i++)
         {
-          if(!messages[i].read)
-          {
             console.log(`set message read ${messages[i].rowid}`);
             tx.executeSql(`update  message set read = ? where rowid = ?`, [1, messages[i].rowid])
-          }
+        }
+      })
+    )
+
+    return res;
+  }
+
+  updateMessageArchive(messages: Message[]): Observable<any>
+  {
+    let res = Observable.fromPromise(this.db.getDB().transaction(tx => {
+        for (let i = 0; i < messages.length; i++)
+        {
+            console.log(`set message archived ${messages[i].rowid}`);
+            tx.executeSql(`update message set archived = ? where rowid = ?`, [1, messages[i].rowid])
         }
       })
     )
@@ -372,7 +450,7 @@ export class UmdMessageProvider implements MessageProvider {
   {
     let beforeDate = moment().subtract(duration, 'd');
     return Observable.fromPromise(this.db.getDB().executeSql(`delete from message where occurDT < ?`
-      , [beforeDate.format("YYYY-MM-DD HH:mm:ss.000000")]))
+      , [JSON.stringify(beforeDate.toDate())]))
   }
 
   archive(message: Message): Observable<any>  
@@ -385,4 +463,11 @@ export class UmdMessageProvider implements MessageProvider {
   {
     return Observable.fromPromise(this.db.getDB().executeSql(`update message set archived = ? where rowid = ?`, [0, message.rowid]))
   }  
+
+  setAllMessagesRead(alarmType:string, eqptID:string, alarmID:string) : Observable<any>
+  {
+    let condition = this.composeCondition(alarmType, eqptID, alarmID, "", false);
+    return Observable.fromPromise(this.db.getDB().executeSql("update message set read = ? " + condition + " AND read = 0", [1]));
+  }
+  
 }

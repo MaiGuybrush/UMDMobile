@@ -6,6 +6,7 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
+  <div [@itemState]="itemState" (@itemState.done)="animationDone($event)" (swipe)="swipeHandler($event)">
   <!--<ion-navbar>
     <ion-buttons start="">
       <button color="danger" icon-only="" ion-button="" class="disable-hover bar-button bar-button-default "><span class="button-inner">
@@ -17,5 +18,6 @@
   <!--<ion-list>
     <message *ngFor="let m of msg" [msg]="m"></message>
   </ion-list>-->
-<message-detail [msg]="msg"></message-detail>
+  <message-detail [msg]="msg" ></message-detail>
+  </div>
 </ion-content>

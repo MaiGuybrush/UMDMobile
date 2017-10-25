@@ -20,6 +20,17 @@ export class MockMessageProvider implements MessageProvider {
   constructor() {
   }
 
+  loadKeptPush()
+  {
+     return;
+  }
+
+  getDbName() : string
+  {
+    return "";
+  }
+  
+
   getUnreadMessageCount(groupBy:string) : Observable<CategorizedSummary[]>
   {
     const groupedObj = MESSAGES.filter(m => !m.archived && !m.read).reduce((prev, cur)=> {
@@ -99,10 +110,18 @@ export class MockMessageProvider implements MessageProvider {
     
   }
   
-  setMessageRead(messages: Message[]): Observable<any>
+  updateMessageRead(messages: Message[]): Observable<any>
   {
     messages.forEach(m => {
       m.read = true;
+    });
+    return Observable.from([true]);
+  }
+
+  updateMessageArchive(messages: Message[]): Observable<any>
+  {
+    messages.forEach(m => {
+      m.archived = true;
     });
     return Observable.from([true]);
   }
@@ -146,4 +165,9 @@ export class MockMessageProvider implements MessageProvider {
   {
 
   }
+
+  setAllMessagesRead(alarmType:string, eqptID:string, alarmID:string) : Observable<any>
+  {
+    return Observable.from([true]);
+  }  
 }

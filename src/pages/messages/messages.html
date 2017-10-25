@@ -1,9 +1,35 @@
+
+<ion-menu [content]="content" id="menu-message" type="overlay" side="bottom"  persistent="true">
+  
+  <ion-header>
+    <ion-toolbar color="secondary">
+      <ion-title>選單</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ion-list>
+      <button ion-item detail-none (click)="setAllRead()" menuClose="menu-message">
+        全部設為已讀
+      </button>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+  
 <ion-header>
   <ion-navbar>  
+    <ion-buttons end>
+        <button ion-button icon-only menuToggle="menu-message">
+          <ion-icon name="menu"></ion-icon>
+        </button>
+    </ion-buttons>    
     <ion-title>
       訊息
-    </ion-title>
-  </ion-navbar>
+      <ion-icon float-end name="checkmark" (click)="checkAll()" [color]="'red2'" class="title-bar-icon"></ion-icon>
+      <ion-icon float-end name="eye" (click)="setCheckedRead()" [color]="checkedMessages.size > 0 ? 'red2' : 'gray1'" class="title-bar-icon"></ion-icon>
+      <ion-icon float-end name="trash" (click)="setCheckedArchive()" [color]="checkedMessages.size > 0 ? 'red2' : 'gray1'" class="title-bar-icon" ></ion-icon>
+    </ion-title>    
+</ion-navbar>
 </ion-header>
 <ion-content >
   <ion-searchbar
@@ -32,7 +58,9 @@
   <ion-list>
     <ng-container *ngFor="let m of messages; let idx = index;">
       <ion-item-divider *ngIf="idx == 0 || !isSameDate(messages[idx - 1].occurDT, m.occurDT)"><div class="date-divider">{{getDateString(m.occurDT)}}</div></ion-item-divider>        
-      <message [msg]="m" [navCtrl]="navCtrl" ></message>
+      <message @itemState (itemClicked)="messageClickHandler($event)" 
+          (itemSwiped)="messageSwipeHandler($event)"
+          (itemChecked)="messageCheckHandler($event)" [msg]="m" [navCtrl]="navCtrl" ></message>
     </ng-container>
   </ion-list>
   

@@ -5,16 +5,32 @@ import { LoadingController } from 'ionic-angular';
 import { MenuController } from 'ionic-angular';
 import { CategoryMethod } from '../../components/message-category/message-category.component'
 import { MessageComponent } from '../../components/message/message.component'
+import { MessageItemEvent } from '../../components/message/message-item-event'
 import { MessageProvider } from '../../providers/message-provider'
+import { PushProvider } from '../../providers/push-provider'
 import { Message } from '../../models/message';
+import { MessagesDetailPage } from '../messages-detail/messages-detail'
 import { Observable } from 'rxjs/Rx';
 import { Content } from 'ionic-angular';
 import { Subscription } from 'rxjs/Subscription';
 import * as moment from 'moment'
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition
+} from '@angular/animations';
 
 @Component({
   selector: 'page-messages',
-  templateUrl: 'messages.html'
+  templateUrl: 'messages.html',
+  animations: [
+    trigger('itemState', [
+      state("void", style({height: 0})),
+      transition('* => void', animate('500ms'))
+    ])
+  ]    
 })
 export class MessagesPage {
   @ViewChild(Content) content: Content;
@@ -29,8 +45,10 @@ export class MessagesPage {
   searchControl: FormControl;
   subscription : Subscription;
   searching: boolean = false;
+  checkedMessages: Set<MessageComponent> = new Set<MessageComponent>();
+  
   constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController,public zone: NgZone, 
-              public messageProvider: MessageProvider, public loading: LoadingController) {
+              public messageProvider: MessageProvider, public loading: LoadingController, public pushProvider: PushProvider) {
     this.categoryMethod = this.navParams.get('categoryMethod');
     this.categoryValue = this.navParams.get('categoryValue');
     this.searchControl = new FormControl();
@@ -53,6 +71,7 @@ export class MessagesPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad MessagePage');
+    this.menu.enable(true, 'menu-message');
     // let loader = this.loading.create({
     //   content: '正在載入訊息..',
     // });
@@ -90,26 +109,24 @@ export class MessagesPage {
   {
     console.log('ionViewDidEnter MessagesPage');
     this.subscription = this.messageProvider.getMessageNotifier().subscribe(m => this.zone.run(() => {
-      {
-        if (m.readCount > 0) //>0 表示不是新訊息
-        {
-          for (let i = 0; i < this.messages.length; i++)
-          {
-            if (m.id === this.messages[i].id)
-            {
-              this.messages[i] = m; 
-              this.messages = [].concat(this.messages);
-              break;
-            }
-          }
-        }
-        else //新訊息
-        {
+      // if (m.readCount > 0) //>0 表示不是新訊息
+      // {
+      //   for (let i = 0; i < this.messages.length; i++)
+      //   {
+      //     if (m.id === this.messages[i].id)
+      //     {
+      //       this.messages[i] = m; 
+      //       this.messages = [].concat(this.messages);
+      //       break;
+      //     }
+      //   }
+      // }
+      // else //新訊息
+      // {
 //          let messageChildren = this.messageChildren.toArray();
 //          messageChildren[0].showDate = undefined;
-          this.messages = [m].concat(this.messages);
-        }
-      }
+        this.messages = [m].concat(this.messages);
+      // }
     }));
 
 
@@ -193,6 +210,11 @@ export class MessagesPage {
         }
   }
 
+  animationDone(event: any)
+  {
+
+  }
+
   appendMessage(message: Message[])
   {
     this.messages = [].concat(this.messages).concat(message)
@@ -212,5 +234,145 @@ export class MessagesPage {
 
   scrollToTop() {
     this.content.scrollToTop();
+  }
+
+  archiveMessages(archiveMessages: Message[])
+  {
+    let unreadCount = 0;
+    archiveMessages.forEach(m => {
+      if (!m.read)
+      {
+        unreadCount++;
+      }
+      m.archived = true;
+    })
+    if (archiveMessages.length > 0)
+    {
+      this.messageProvider.updateMessageArchive(archiveMessages).subscribe(
+        m => { 
+            this.pushProvider.increaseBadgeCount(-1 * unreadCount).subscribe();
+            for (let i = 0; i < archiveMessages.length; i++)
+            {
+              let idx = this.messages.indexOf(archiveMessages[i]);
+              if (idx >= 0)
+              {
+                this.messages.splice(idx, 1);              
+              }
+            }
+        },
+        e => {
+          console.log("archiveMessages error, e=/" + JSON.stringify(e) + "/.")
+        }
+      );
+    }
+  }
+
+  messageSwipeHandler(event)
+  {
+    let messageComponent = event.source;
+    if (messageComponent.msg.archived)
+    {
+      return;
+    }
+    messageComponent.msg.archived = true;
+    let messages = [messageComponent.msg];
+    if(messageComponent.isChecked())
+    {
+      this.checkedMessages.delete(messageComponent);    
+    }
+    this.archiveMessages(messages)
+  }
+
+  messageClickHandler(event)
+  {
+    let msg = event.message;
+    this.navCtrl.push(MessagesDetailPage, {'msg': msg, 'messages': this.messages, 'index':this.messages.indexOf(msg) })
+  }
+
+  messageCheckHandler(event: MessageItemEvent)
+  {
+    if (event.check)
+    {
+      this.checkedMessages.add(event.source);
+    }
+    else
+    {
+      this.checkedMessages.delete(event.source);
+    }    
+  }
+
+  setCheckedArchive()
+  {
+    let messages: Message[] = [];
+    this.checkedMessages.forEach((m) => {
+      messages.push(m.msg);
+    });
+    this.checkedMessages.clear();          
+    this.archiveMessages(messages);
+    // if (messages.length > 0)
+    // {
+    //   this.messageProvider.updateMessageArchive(messages).subscribe(
+    //     m => { 
+    //       this.pushProvider.increaseBadgeCount(-1 * unreadCount).subscribe();
+    //     },
+    //     e => {
+    //       console.log("setCheckedArchive error, e=/" + JSON.stringify(e) + "/.")
+    //     }
+    //   );
+    // }
+
+  }
+  
+  setCheckedRead()
+  {
+    let messages: Message[] = [];
+    this.checkedMessages.forEach((m) => {
+      if (!m.msg.read)
+      {
+        m.msg.read = true;
+        m.setMessage(m.msg);
+        messages.push(m.msg);
+      }
+    });
+    if (messages.length > 0)
+    {
+      this.messageProvider.updateMessageRead(messages).subscribe(
+        m => { 
+          this.pushProvider.increaseBadgeCount(messages.length).subscribe();
+        },
+        e => {
+          console.log("setCheckedRead error, e=/" + JSON.stringify(e) + "/.")
+        }
+      );
+    }
+  }
+
+  setAllRead()
+  {
+    switch(this.categoryMethod)
+    {
+    case CategoryMethod.AlarmType:
+        return this.messageProvider.setAllMessagesRead(this.categoryValue, undefined, undefined);
+    case CategoryMethod.Equipment:
+        return this.messageProvider.setAllMessagesRead(undefined, this.categoryValue, undefined);
+    case CategoryMethod.AlarmID:
+        return this.messageProvider.setAllMessagesRead(undefined, undefined, this.categoryValue);
+    } 
+    
+  }
+
+  checkAll()
+  {
+    if (!this.messageChildren)
+    {
+      return
+    }
+    this.messageChildren.forEach((m, i, array) => {
+      if (!m.msg.archived && !m.isChecked())
+      {
+        m.setChecked(true);
+        this.checkedMessages.add(m);
+      }
+    })
   }
 }

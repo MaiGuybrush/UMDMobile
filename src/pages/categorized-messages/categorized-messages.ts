@@ -1,12 +1,12 @@
 import { Component, Input, NgZone } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import * as moment from 'moment'
-import { MenuController } from 'ionic-angular';
 import { MessageProvider } from '../../providers/message-provider';
+import { ConfigProvider } from '../../providers/config-provider';
+import { PushProvider } from '../../providers/push-provider';
 import { MessageCategoryComponentModule } from '../../components/message-category/message-category.module';
 import { MessageCategoryComponent, CategoryMethod } from '../../components/message-category/message-category.component';
 import { MessagesPage } from '../messages/messages';
-import { AuthTestPage } from '../auth-test/auth-test';
 import { Subscription } from 'rxjs/Subscription';
 import { CategorizedSummary } from '../../models/categorized-summary'
 
@@ -24,21 +24,20 @@ import { CategorizedSummary } from '../../models/categorized-summary'
 })
 export class CategorizedMessagesPage {
   CategoryMethod = CategoryMethod
-  activeMenu : string = "menu1";
   category : CategoryMethod = CategoryMethod.AlarmType;
   // messages : Message[] = [];
   @Input() categorizedSummary: CategorizedSummary[]
   subscription : Subscription;
   // categorizedMessage : CategorizedMessages[]
   constructor(public navCtrl: NavController, public navParams: NavParams, public zone: NgZone
-    , public menu: MenuController, public provider: MessageProvider) 
+    , public provider: MessageProvider, public pushProvider: PushProvider
+    , public config: ConfigProvider) 
   {
-
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad CategorizedMessagePage');
-    this.menu.enable(true, 'menu1');
+
   }
 
   ionViewDidEnter() {
@@ -102,11 +101,6 @@ export class CategorizedMessagesPage {
           return 'alarmType';
     }
   }
-  
-  authTest()
-  {
-    this.navCtrl.push(AuthTestPage)    
-  }
 
   pushPage(event): void
   {
@@ -119,6 +113,12 @@ export class CategorizedMessagesPage {
     this.provider.getUnreadMessageCount(this.getCategoryField()).subscribe(
       m => {
         this.categorizedSummary = m;
+        let sum = 0;
+        for (let i = 0; i < m.length; i++)
+        {
+          sum += m[i].unreadCount;
+        }
+        this.pushProvider.setBadgeCount(sum).subscribe();
       }, 
       e => {
         console.log("loadByCategory failed!" + JSON.stringify(e))

@@ -27,7 +27,6 @@ export class FcmPushProvider implements PushProvider {
         , public accountProvider: AccountProvider, public uniqueDeviceID:UniqueDeviceID
         , public employeeProvider: EmployeeProvider
         , public device : Device) {
-
     }
 
     pushReadNotification(message: Message, name: string) : Observable<boolean>
@@ -51,27 +50,20 @@ export class FcmPushProvider implements PushProvider {
         return Observable.from([true]);
     }
     
+    
     pushNotificationHandler(data: any) {
-        if (data.title == "MessageRead")
-        {
-            this.messageProvider
-            .updateReadCount(data.additionalData.id, data.additionalData.name).subscribe(
-                m => console.log("updateReadCount successfully!"),
-                e => console.log("updateReadCount failed!")
-            );
-        }
-        else
-        {
-            let m = new Message();
-            m.id = data.additionalData.tstamp//data.additionalData["google.message_id"];
-            m.occurDT = data.additionalData.occurDT;
-            m.alarmID = data.title;
-            m.eqptID = data.additionalData.eqptID;
-            m.alarmMessage = data.message;
-            m.alarmType = data.additionalData.alarmType;
-            // m.description = data.additionalData.description;
+        // if (data.title == "MessageRead")
+        // {
+        //     this.messageProvider
+        //     .updateReadCount(data.additionalData.id, data.additionalData.name).subscribe(
+        //         m => console.log("updateReadCount successfully!"),
+        //         e => console.log("updateReadCount failed!")
+        //     );
+        // }
+        // else
+        // {
+            let m = new Message(data);
             m.description = data.additionalData.description.toString().charAt(0) === '~' ? data.additionalData.description.toString().substring(1) : data.additionalData.description;
-            m.uuid = data.additionalData.uuid;
 
 
             console.log("data:", data);
@@ -91,8 +83,9 @@ export class FcmPushProvider implements PushProvider {
                     console.log(`Message ${m.alarmID} saved app open `)
                 });
             } else {
+                console.log("Push notification background codestart = " + JSON.stringify(data.additionalData.coldstart));
                 if (data.additionalData.coldstart) {
-                    console.log("Push notification background ");
+                    console.log("Push notification background");
                     this.messageProvider.addMessage(m).subscribe(m => {
                         console.log(`Message ${m.alarmID} saved app open `)
                     });
@@ -109,7 +102,7 @@ export class FcmPushProvider implements PushProvider {
                     }
                 }
             }
-        }
+        // }
     }
 
     pushInit()
@@ -187,6 +180,20 @@ export class FcmPushProvider implements PushProvider {
         })
     
         //return Observable.from([{registrationId: "12345"}])
+    }
+
+    increaseBadgeCount(count: number): Observable<any>
+    {
+        return Observable.from(FcmPushProvider.pushObject.getApplicationIconBadgeNumber())
+        .concatMap(badge =>
+        {
+            return Observable.from(FcmPushProvider.pushObject.setApplicationIconBadgeNumber(badge + count < 0 ? 0 : badge + count));
+        });
+    }
+
+    setBadgeCount(count: number): Observable<any>
+    {
+        return Observable.from(FcmPushProvider.pushObject.setApplicationIconBadgeNumber(count));        
     }
 
     getUniqueDeviceID(): Observable<string> 

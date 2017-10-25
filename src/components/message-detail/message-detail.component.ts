@@ -1,4 +1,4 @@
-import { Component, Input} from '@angular/core';
+import { Component, Input, Output, EventEmitter} from '@angular/core';
 import { Message } from '../../models/message';
 import * as moment from 'moment'
 
@@ -11,6 +11,9 @@ export class MessageDetailComponent
     @Input()
     msg: Message;
     occurDT : Date;
+    @Output()
+    swipeEvent: EventEmitter<Event> = new EventEmitter();
+
     constructor()
     {
     }
@@ -19,5 +22,8 @@ export class MessageDetailComponent
         this.occurDT = moment.utc(this.msg.occurDT).toDate();
     }
 
-
+    swipeHandler(event)
+    {
+        this.swipeEvent.emit(event);
+    }
 }

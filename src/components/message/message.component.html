@@ -1,17 +1,22 @@
 <ion-item-group >
-      <ion-item-sliding *ngIf="!msg.archived">
-        <ion-item (click)="pushMsgDetailPage()" (onLongPress)="deleteMessage()">
-            <ion-icon *ngIf="!msg.read" name="information-circle" color="red1" item-start></ion-icon>
-            <ion-label>
-                <label class="alarm-item1">{{msg.alarmMessage}}</label><br/>
-                <label class="alarm-item2">{{msg.alarmID}},已讀({{msg.readcount}})</label>
+    <ion-item-sliding>
+        <ion-item>
+            <!-- <ion-icon *ngIf="!msg.read" name="information-circle" color="red1" item-start></ion-icon> -->
+            <ion-icon (click)="checkHandler()" [name]="checked ? 'checkmark-circle' : 'information-circle'" 
+            [color]="checked ? getColorByCheck() : getColorByRead()" item-start></ion-icon>
+            <ion-label (click)="clickHandler()" (onLongPress)="deleteMessage()">
+                <label [class]="msg.read ? 'alarm-item1-read' : 'alarm-item1'">{{msg.alarmMessage}}</label><br/>
+                <label class="alarm-item2">{{msg.alarmID}}</label>
             </ion-label>
             <div class="alarm-time" item-end>{{msg.occurDT | date: 'shortTime'}}</div>
         </ion-item>
-        <ion-item-options (ionSwipe)="archiveMessage()">
+        <ion-item-options (ionSwipe)="swipeHandler()" side="left">
         </ion-item-options>
-      </ion-item-sliding>
-    <ion-item *ngIf="msg.archived">
+        <ion-item-options (ionSwipe)="swipeHandler()" side="right">
+        </ion-item-options>
+    </ion-item-sliding>
+    
+    <!-- <ion-item [@itemState]="msg.archived ? 'archived' : 'active'" (@itemState.done)="animationDone($event)" *ngIf="msg.archived">
         訊息已刪除<button ion-button (click)="restoreMessage()">復原</button>
-    </ion-item>
+    </ion-item> -->
 </ion-item-group>

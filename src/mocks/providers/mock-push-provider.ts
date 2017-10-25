@@ -16,4 +16,16 @@ export class MockPushProvider implements PushProvider {
     {
         return;
     }
+    pushNotificationHandler(data: any) {
+    }
+    increaseBadgeCount(count: number): Observable<any>
+    {
+        return Observable.from([true]);
+    }
+    setBadgeCount(count: number): Observable<any>    
+    {
+        return Observable.from([true]);
+        
+    }
+    
 }
