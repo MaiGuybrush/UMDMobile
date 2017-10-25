@@ -111,7 +111,6 @@ export class FcmPushProvider implements PushProvider {
         const options: PushOptions = {
 
             android: {
-                senderID: '834424631529',
                 icon: "alarm",
                 iconColor: "red"
             //    topics: ['sample-topic','dally-topic']
