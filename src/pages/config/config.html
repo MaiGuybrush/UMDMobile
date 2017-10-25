@@ -46,5 +46,12 @@
     <ion-item *ngFor="let department of items">{{department}}</ion-item>
     <ion-item *ngFor="let group of items">{{group.groupId}}</ion-item>
 </ion-list>-->
-
+  <ion-item>
+      問題回饋
+    <a href="http://line.me/R/ti/g/yfrcBc0rVL"><img src="img/line.png"height="30" width="30"/></a>
+  </ion-item>
+  <ion-item (click)="openReleaseNote()">
+    版本更新訊息
+  </ion-item>
+      
 </ion-content>

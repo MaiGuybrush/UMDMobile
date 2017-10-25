@@ -47,5 +47,8 @@ export class ConfigPage {
     if (config.pageSize) this.configProvider.updateConfig(config).subscribe();
   }
   
-
+  openReleaseNote()
+  {
+    this.navCtrl.push('ReleaseNotePage');
+  }
 }

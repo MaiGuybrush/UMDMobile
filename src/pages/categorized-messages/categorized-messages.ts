@@ -7,8 +7,10 @@ import { PushProvider } from '../../providers/push-provider';
 import { MessageCategoryComponentModule } from '../../components/message-category/message-category.module';
 import { MessageCategoryComponent, CategoryMethod } from '../../components/message-category/message-category.component';
 import { MessagesPage } from '../messages/messages';
+import { ReleaseNotePage } from '../release-note/release-note';
 import { Subscription } from 'rxjs/Subscription';
 import { CategorizedSummary } from '../../models/categorized-summary'
+import { AppVersion } from '@ionic-native/app-version';
 
 /*
   Generated class for the CategorizedMessage page.
@@ -31,13 +33,20 @@ export class CategorizedMessagesPage {
   // categorizedMessage : CategorizedMessages[]
   constructor(public navCtrl: NavController, public navParams: NavParams, public zone: NgZone
     , public provider: MessageProvider, public pushProvider: PushProvider
-    , public config: ConfigProvider) 
+    , public config: ConfigProvider, private appVersion: AppVersion) 
   {
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad CategorizedMessagePage');
 
+    this.appVersion.getVersionNumber().then(m => {
+      this.config.getConfig().appVersion = m;
+      if (!this.config.getConfig().lastViewAppVersion || this.config.getConfig().lastViewAppVersion != m)
+      {
+        this.navCtrl.push('ReleaseNotePage');
+      }
+    })
   }
 
   ionViewDidEnter() {
@@ -101,7 +110,7 @@ export class CategorizedMessagesPage {
           return 'alarmType';
     }
   }
-
+  
   pushPage(event): void
   {
 //        this.navCtrl.push(MessagesPage, {'messages': this.messages})

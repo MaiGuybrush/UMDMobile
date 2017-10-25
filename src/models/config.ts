@@ -7,4 +7,6 @@ export class Config
     soundSwitch: boolean;
     soundName: string;
     pageSize: number;
+    lastViewAppVersion?: any;
+    appVersion?: any;
 }
