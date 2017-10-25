@@ -109,8 +109,11 @@ export class MessagesDetailPage {
   } 
   animationDone(event)
   {
-    this.msg = this.messages[this.index];    
-    this.setMessageRead();
-    this.itemState = "normal";
+    if (event.toState == "hideLeft" || event.toState == "hideRight")
+    {
+      this.msg = this.messages[this.index];    
+      this.setMessageRead();
+      this.itemState = "normal";
+    }
   }
 }

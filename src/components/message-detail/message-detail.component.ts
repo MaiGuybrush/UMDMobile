@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter} from '@angular/core';
 import { Message } from '../../models/message';
-import * as moment from 'moment'
 
 @Component({
     selector: 'message-detail',
@@ -10,7 +9,6 @@ export class MessageDetailComponent
 {
     @Input()
     msg: Message;
-    occurDT : Date;
     @Output()
     swipeEvent: EventEmitter<Event> = new EventEmitter();
 
@@ -19,7 +17,12 @@ export class MessageDetailComponent
     }
 
     ngOnInit() {
-        this.occurDT = moment.utc(this.msg.occurDT).toDate();
+
+    }
+
+    ngOnChanges()
+    {
+
     }
 
     swipeHandler(event)

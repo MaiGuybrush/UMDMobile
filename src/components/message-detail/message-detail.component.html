@@ -1,6 +1,6 @@
 <ion-card (swipe)="swipeHandler($event)">
     <ion-item>
-        <span item-end><p>{{occurDT | date:'yyyy-MM-dd HH:mm:ss'}}</p></span>
+        <span item-end><p>{{msg.occurDT | date:'yyyy-MM-dd HH:mm:ss'}}</p></span>
     </ion-item>
     <ion-item text-wrap>
         <h2>Alarm ID:</h2>
@@ -13,10 +13,6 @@
     <ion-item text-wrap>
         <h2>ALARM Equipment:</h2>
         <p>{{msg.eqptID}}</p>
-    </ion-item>
-    <ion-item text-wrap>
-        <h2>Alarm DATE:</h2>
-        <p>{{msg.occurDT | date:'yyyy/MM/dd H:mm:ss'}}</p>
     </ion-item>
     <ion-item text-wrap>
         <h2>Message:</h2>
