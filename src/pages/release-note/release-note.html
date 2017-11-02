@@ -14,7 +14,7 @@
 
 
 <ion-content padding>
-  <ion-item *ngIf="settings.appVersion != settings.lastViewAppVersion">
+  <ion-item *ngIf="settings && settings.appVersion != settings.lastViewAppVersion">
     <ion-label>不再顯示此次更新訊息</ion-label>
     <ion-checkbox [(ngModel)]="neverShowAgain"></ion-checkbox>
   </ion-item>  

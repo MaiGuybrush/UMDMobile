@@ -56,7 +56,7 @@ export class MessagesPage {
 
   private isSameDate(date1: Date, date2: Date): boolean
   {
-    return moment(date1).utc().format('YYYYMMDD') == moment(date2).utc().format('YYYYMMDD')
+    return moment(date1).format('YYYYMMDD') == moment(date2).format('YYYYMMDD')
   }
 
   private getDateString(date: Date): string
@@ -65,7 +65,7 @@ export class MessagesPage {
     if (this.isSameDate(today, date)){
         return '今天';
     }else{
-        return moment(date).utc().format('YYYY-MM-DD');
+        return moment(date).format('YYYY-MM-DD');
     }
   }
 

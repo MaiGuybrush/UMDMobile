@@ -23,7 +23,7 @@ declare var window;
  * See http://ionicframework.com/docs/components/#navigation for more info
  * on Ionic pages and navigation.
  */
-//@IonicPage()
+@IonicPage()
 @Component({
   selector: 'page-init',
   templateUrl: 'init.html',
@@ -40,6 +40,7 @@ export class InitPage {
               , public pushProvider: PushProvider, public uniqueDeviceID:UniqueDeviceID, public configProvider: ConfigProvider
               , public splashScreen: SplashScreen) {
     this.test = 0;
+    console.log("InitPage constructor in.")
   }
 
   ionViewDidLoad() {

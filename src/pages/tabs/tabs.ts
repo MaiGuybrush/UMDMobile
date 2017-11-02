@@ -22,7 +22,7 @@ declare var window;
 export class TabsPage {
     // this tells the tabs component which Pages
     // should be each tab's root Page
-    tab1Root: any = CategorizedMessagesPage;
+    tab1Root: any = 'CategorizedMessagesPage';
     tab2Root: any = SubscribePage;
     tab3Root: any = GroupsPage;
     tab4Root: any = ConfigPage;

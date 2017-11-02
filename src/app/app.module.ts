@@ -29,7 +29,6 @@ import { SubscribeAddPage } from '../pages/subscribe-add/subscribe-add'
 import { SubscribeEditPage } from '../pages/subscribe-edit/subscribe-edit'
 import { SubscribeConfigPage } from '../pages/subscribe-config/subscribe-config'
 import { SubscribeMappgroupPage } from '../pages/subscribe-mappgroup/subscribe-mappgroup'
-import { InitPage } from '../pages/init/init'
 import { TabsPage } from '../pages/tabs/tabs'
 import { PeopleSearchPage } from '../pages/people-search/people-search'
 import { GroupSearchPage } from '../pages/group-search/group-search'
@@ -86,11 +85,9 @@ import { DbProvider } from '../providers/db/db';
     MyApp,
     FilterPipe,
     GroupByPipe,
-//    OrderByPipe,
     AboutPage,
     AuthTestPage,
     ConfigPage,
-    // CategorizedMessagesPage,
     MessagesPage,
     MessagesDetailPage,
     SubscribePage,
@@ -102,7 +99,6 @@ import { DbProvider } from '../providers/db/db';
     GroupEditPage,
     MessageDetailComponent,
     MessageComponent,
-//    MessageCategoryComponent,
     EmployeeComponent,
     GroupComponent,
     GroupEditComponent,
@@ -116,16 +112,14 @@ import { DbProvider } from '../providers/db/db';
     ConfigPage,
     TabsPage,
     DepartmentComponent,
-    NosubscriptionComponent,
-    InitPage
+    NosubscriptionComponent
   ],
   imports: [
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot(),
     HttpModule,
     BrowserModule,
-    BrowserAnimationsModule,
-    CategorizedMessagesPageModule
+    BrowserAnimationsModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -147,8 +141,8 @@ import { DbProvider } from '../providers/db/db';
     GroupSearchPage,
     DepartmentSelectPage,
     ConfigPage,
-    InitPage,
-    TabsPage
+    TabsPage    
+
   ],
   providers: [
               {provide: ErrorHandler, useClass: IonicErrorHandler} 

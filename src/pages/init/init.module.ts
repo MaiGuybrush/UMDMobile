@@ -7,7 +7,7 @@ import { InitPage } from './init';
     InitPage,
   ],
   imports: [
-    IonicPageModule.forChild(InitPage),
+    IonicPageModule.forChild(InitPage)
   ],
   exports: [
     InitPage
